@@ -1,0 +1,56 @@
+{
+  "operations": [
+    {
+      "type": "layer",
+      "method": "new",
+      "uid": "layer1",
+      "args": {
+        "class": "Dense",
+        "units": 64,
+        "activation": {
+          "method": "relu"
+        },
+        "inputs": "input1"
+      }
+    },
+    {
+      "type": "model",
+      "method": "new",
+      "uid": "model1",
+      "args": {
+        "inputs": "input1",
+        "outputs": "layer1"
+      }
+    },
+    {
+      "type": "model",
+      "method": "compile",
+      "uid": "model1",
+      "args": {
+        "optimizer": {
+          "method": "adam"
+        },
+        "loss": [
+          {
+            "method": "BinaryCrossentropy"
+          }
+        ],
+        "metrics": [
+          {
+            "method": "CategoricalAccuracy"
+          }
+        ]
+      }
+    },
+    {
+      "type": "model",
+      "method": "fit",
+      "uid": "model1",
+      "args": {
+        "dataset": "uid of dataset",
+        "epochs": 5,
+        "batch_size": 32
+      }
+    }
+  ]
+}
