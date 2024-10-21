@@ -1,5 +1,6 @@
 import json
 import f_keras_factory
+from src.model_factory.c_whitemind_model import WhitemindProject
 
 
 def read_json(file_path) -> dict:
@@ -7,4 +8,5 @@ def read_json(file_path) -> dict:
         return json.load(file)
 
 
-f_keras_factory.call(read_json("task.json"))
+a = WhitemindProject()
+f_keras_factory.call(read_json("../../task.json"), a)

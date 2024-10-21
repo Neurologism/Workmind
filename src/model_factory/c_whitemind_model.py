@@ -1,8 +1,5 @@
-from f_dense_factory import DenseFactory
+class WhitemindProject:
+    kerasData = {}
 
-
-class WhitemindProject(
-    DenseFactory,
-):
-    def __init__(self) -> None:
-        pass
+    # def __init__(self) -> None:
+    #     pass

@@ -1,9 +1,9 @@
 import keras
+from src.model_factory.c_whitemind_model import WhitemindProject
 
 
-class DenseFactory:
-    def dense_factory(json_data: dict, keras_data: dict) -> None:
-        keras_data[json_data["uid"]] = keras.layers.Dense(
-            json_data["args"]["units"],
-            activation=json_data["args"]["activation"]["method"],
-        )(keras_data[json_data["args"]["inputs"]])
+def call(json_data: dict, project: WhitemindProject) -> None:
+    project.kerasData[json_data["uid"]] = keras.layers.Dense(
+        json_data["args"]["units"],
+        activation=json_data["args"]["activation"]["method"],
+    )(project.kerasData[json_data["args"]["inputs"]])

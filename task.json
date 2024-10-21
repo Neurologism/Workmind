@@ -3,6 +3,16 @@
     {
       "type": "layer",
       "method": "new",
+      "uid": "input1",
+      "args": {
+          "class": "Input",
+          "shape": 28
+        }
+    },
+
+    {
+      "type": "layer",
+      "method": "new",
       "uid": "layer1",
       "args": {
         "class": "Dense",
