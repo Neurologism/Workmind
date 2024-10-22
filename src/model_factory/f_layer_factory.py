@@ -1,16 +1,15 @@
-from c_whitemind_model import WhitemindProject
-import f_dense_factory
-import f_input_factory
+from f_dense_factory import call as f_dense_factory_call
+from f_input_factory import call as f_input_factory_call
 
 
-def new(project: WhitemindProject) -> None:
-    if project.json_data["args"]["class"] == "Dense":
-        f_dense_factory.call(project.json_data, project)
+def new(self) -> None:
+    if self.json_data["args"]["class"] == "Dense":
+        f_dense_factory_call(self)
 
-    if project.json_data["args"]["class"] == "Input":
-        f_input_factory.call(project.json_data, project)
+    if self.json_data["args"]["class"] == "Input":
+        f_input_factory_call(self)
 
 
-def call(project: WhitemindProject) -> None:
-    if project.json_data["method"] == "new":
-        new(project.json_data, project)
+def call(self) -> None:
+    if self.json_data["method"] == "new":
+        new(self)

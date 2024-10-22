@@ -1,25 +1,22 @@
 import keras
 
-from c_whitemind_model import WhitemindProject
-
-
-def call(project: WhitemindProject) -> None:
-    if project.json_data["method"] == "new":
-        project.keras_data[project.json_data["uid"]] = keras.Model(
-            project.keras_data[project.json_data["args"]["inputs"]],
-            project.keras_data[project.json_data["args"]["outputs"]],
+def call(self) -> None:
+    if self.json_data["method"] == "new":
+        self.keras_data[self.json_data["uid"]] = keras.Model(
+            self.keras_data[self.json_data["args"]["inputs"]],
+            self.keras_data[self.json_data["args"]["outputs"]],
         )
 
-    elif project.json_data["method"] == "compile":
-        project.keras_data[project.json_data["uid"]].compile(
-            optimizer=project.json_data["args"]["optimizer"]["method"],
-            loss=project.json_data["args"]["loss"][0]["method"],
-            metrics=project.json_data["args"]["metrics"][0]["method"],
+    elif self.json_data["method"] == "compile":
+        self.keras_data[self.json_data["uid"]].compile(
+            optimizer=self.json_data["args"]["optimizer"]["method"],
+            loss=self.json_data["args"]["loss"][0]["method"],
+            metrics=self.json_data["args"]["metrics"][0]["method"],
         )
 
-    elif project.json_data["method"] == "fit":
-        project.keras_data[project.json_data["uid"]].fit(
-            intputs=project.keras_data[project.json_data["args"]["inputs"]],
-            epochs=project.json_data["args"]["epochs"],
-            batch_size=project.json_data["args"]["batch_size"],
+    elif self.json_data["method"] == "fit":
+        self.keras_data[self.json_data["uid"]].fit(
+            intputs=self.keras_data[self.json_data["args"]["inputs"]],
+            epochs=self.json_data["args"]["epochs"],
+            batch_size=self.json_data["args"]["batch_size"],
         )
