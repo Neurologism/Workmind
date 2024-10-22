@@ -1,5 +1,4 @@
 class WhitemindProject:
-    kerasData = {}
-
-    # def __init__(self) -> None:
-    #     pass
+    def __init__(self, json_data: dict) -> None:
+        self.json_data = json_data
+        self.keras_data = {}

@@ -1,10 +1,11 @@
-from c_whitemind_model import WhitemindProject
 import keras
 
+from c_whitemind_model import WhitemindProject
 
-def call(json_data: dict, project: WhitemindProject) -> None:
-    project.kerasData[json_data["uid"]] = keras.layers.Input(
+
+def call(project: WhitemindProject) -> None:
+    project.kerasData[project.json_data["uid"]] = keras.layers.Input(
         shape={
-            json_data["args"]["shape"],
+            project.json_data["args"]["shape"],
         }
     )

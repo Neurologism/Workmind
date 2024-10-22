@@ -1,6 +1,7 @@
 import json
+
+from c_whitemind_model import WhitemindProject
 import f_keras_factory
-from src.model_factory.c_whitemind_model import WhitemindProject
 
 
 def read_json(file_path) -> dict:
