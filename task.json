@@ -42,12 +42,12 @@
         },
         "loss": [
           {
-            "method": "BinaryCrossentropy"
+            "method": "sparse_categorical_crossentropy"
           }
         ],
         "metrics": [
           {
-            "method": "CategoricalAccuracy"
+            "method": "sparse_categorical_accuracy"
           }
         ]
       }

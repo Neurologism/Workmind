@@ -1,0 +1,9 @@
+import keras
+
+
+def call(self, operation: dict) -> None:
+    self.keras_data[operation["uid"]] = keras.layers.Input(
+        shape={
+            operation["args"]["shape"],
+        }
+    )

@@ -1,7 +1,9 @@
 import json
 
 class WhitemindProject:
-    def __init__(self, json_data: dict) -> None:
+    def __init__(self, json_data=None) -> None:
+        if json_data is None:
+            json_data = {}
         self.json_data = json_data
         self.keras_data = {}
 
@@ -9,14 +11,18 @@ class WhitemindProject:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
-    from f_layer_factory import call as layer_factory_call
-    from f_model_factory import call as f_model_factory_call
+    from m_layer_factory import call as layer_factory_call
+    from m_model_factory import call as f_model_factory_call
 
     def execute(self) -> None:
-        for i in self.json_data["operations"]:
-            datatype = i["type"]
-            if datatype == "layer":
-                self.layer_factory_call(self)
+        for operation in self.json_data["operations"]:
+            if operation["type"] == "layer":
+                self.layer_factory_call(operation)
 
-            if datatype == "model":
-                self.f_model_factory_call(self)
+            if operation["type"] == "model":
+                self.f_model_factory_call(operation)
+
+
+a = WhitemindProject()
+a.read_json("../../task.json")
+a.execute()
