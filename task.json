@@ -6,7 +6,11 @@
         "uid": "dataset1",
         "args": {
             "class": "mnist",
-            "split": "train"
+            "split": "train",
+            "preprocess": [
+              "normalize"
+            ],
+            "batch_size": 32
         }
     },
     {
@@ -67,8 +71,7 @@
       "uid": "model1",
       "args": {
         "dataset": "uid of dataset",
-        "epochs": 5,
-        "batch_size": 32
+        "epochs": 5
       }
     }
   ]
