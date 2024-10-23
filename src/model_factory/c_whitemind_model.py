@@ -1,26 +1,37 @@
 import json
 
+from numpy.f2py.auxfuncs import throw_error
+
+
 class WhitemindProject:
     def __init__(self, json_data=None) -> None:
         if json_data is None:
             json_data = {}
         self.json_data = json_data
-        self.keras_data = {}
+        self.project_data = {}
 
     def read_json(self, file_path) -> None:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
     from m_layer_factory import call as layer_factory_call
-    from m_model_factory import call as f_model_factory_call
+    from m_model_factory import call as model_factory_call
+    from m_dataset_factory import call as dataset_factory_call
 
     def execute(self) -> None:
         for operation in self.json_data["operations"]:
-            if operation["type"] == "layer":
-                self.layer_factory_call(operation)
+            match operation["type"]:
+                case "layer":
+                    self.layer_factory_call(operation)
 
-            if operation["type"] == "model":
-                self.f_model_factory_call(operation)
+                case "model":
+                    self.model_factory_call(operation)
+
+                case "dataset":
+                    self.dataset_factory_call(operation)
+
+                case _:
+                    throw_error("Invalid class specified in operation")
 
 
 a = WhitemindProject()

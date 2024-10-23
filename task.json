@@ -1,6 +1,15 @@
 {
   "operations": [
     {
+        "type": "dataset",
+        "method": "new",
+        "uid": "dataset1",
+        "args": {
+            "class": "mnist",
+            "split": "train"
+        }
+    },
+    {
       "type": "layer",
       "method": "new",
       "uid": "input1",
