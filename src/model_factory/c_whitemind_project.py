@@ -34,6 +34,7 @@ class WhitemindProject:
                     throw_error("Invalid class specified in operation")
 
 
-a = WhitemindProject()
-a.read_json("../../task.json")
-a.execute()
+if __name__ == "__main__":
+    a = WhitemindProject()
+    a.read_json("../../task.json")
+    a.execute()
