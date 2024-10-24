@@ -10,5 +10,5 @@ if not MONGO_URI:
     raise EnvironmentError("MONGO_URI is not set")
 DB_NAME = os.getenv("DB_NAME") or "backmind"
 
-if __name__ == "__main":
+if __name__ == "__main__":
     qi = QueueInterface(MONGO_URI, DB_NAME)
