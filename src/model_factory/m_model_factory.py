@@ -1,3 +1,4 @@
+import tensorflow as tf
 import keras
 
 
@@ -19,5 +20,5 @@ def call(self, operation: dict) -> None:
 
         self.project_data[operation["uid"]].fit(
             x=self.project_data["dataset1"],
-            epochs=5,
+            epochs=operation["args"]["epochs"],
         )

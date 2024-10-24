@@ -84,7 +84,7 @@
       "uid": "model1",
       "args": {
         "dataset": "dataset1",
-        "epochs": 5
+        "epochs": 1
       }
     }
   ]
