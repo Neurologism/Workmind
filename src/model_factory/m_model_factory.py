@@ -16,8 +16,8 @@ def call(self, operation: dict) -> None:
         )
 
     elif operation["method"] == "fit":
+
         self.project_data[operation["uid"]].fit(
-            intputs=self.project_data[operation["args"]["inputs"]],
-            epochs=operation["args"]["epochs"],
-            batch_size=operation["args"]["batch_size"],
+            x=self.project_data["dataset1"],
+            epochs=5,
         )
