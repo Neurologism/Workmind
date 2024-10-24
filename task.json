@@ -19,7 +19,20 @@
       "uid": "input1",
       "args": {
           "class": "Input",
-          "shape": 28
+          "shape": [
+            28,
+            28
+          ]
+        }
+    },
+
+    {
+        "type": "layer",
+        "method": "new",
+        "uid": "flatten1",
+        "args": {
+            "class": "Flatten",
+            "inputs": "input1"
         }
     },
 
@@ -29,11 +42,11 @@
       "uid": "layer1",
       "args": {
         "class": "Dense",
-        "units": 64,
+        "units": 10,
         "activation": {
-          "method": "relu"
+          "method": "softmax"
         },
-        "inputs": "input1"
+        "inputs": "flatten1"
       }
     },
     {
@@ -70,7 +83,7 @@
       "method": "fit",
       "uid": "model1",
       "args": {
-        "dataset": "uid of dataset",
+        "dataset": "dataset1",
         "epochs": 5
       }
     }
