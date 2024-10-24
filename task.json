@@ -1,12 +1,38 @@
 {
   "operations": [
     {
+        "type": "dataset",
+        "method": "new",
+        "uid": "dataset1",
+        "args": {
+            "class": "mnist",
+            "split": "train",
+            "preprocess": [
+              "normalize"
+            ],
+            "batch_size": 32
+        }
+    },
+    {
       "type": "layer",
       "method": "new",
       "uid": "input1",
       "args": {
           "class": "Input",
-          "shape": 28
+          "shape": [
+            28,
+            28
+          ]
+        }
+    },
+
+    {
+        "type": "layer",
+        "method": "new",
+        "uid": "flatten1",
+        "args": {
+            "class": "Flatten",
+            "inputs": "input1"
         }
     },
 
@@ -16,11 +42,11 @@
       "uid": "layer1",
       "args": {
         "class": "Dense",
-        "units": 64,
+        "units": 10,
         "activation": {
-          "method": "relu"
+          "method": "softmax"
         },
-        "inputs": "input1"
+        "inputs": "flatten1"
       }
     },
     {
@@ -42,12 +68,12 @@
         },
         "loss": [
           {
-            "method": "BinaryCrossentropy"
+            "method": "sparse_categorical_crossentropy"
           }
         ],
         "metrics": [
           {
-            "method": "CategoricalAccuracy"
+            "method": "sparse_categorical_accuracy"
           }
         ]
       }
@@ -57,9 +83,8 @@
       "method": "fit",
       "uid": "model1",
       "args": {
-        "dataset": "uid of dataset",
-        "epochs": 5,
-        "batch_size": 32
+        "dataset": "dataset1",
+        "epochs": 1
       }
     }
   ]
