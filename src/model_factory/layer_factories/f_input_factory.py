@@ -5,7 +5,7 @@ from keras.src.utils.module_utils import tensorflow
 
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.Input(
-        shape=tuple(x for x in operation["args"]["shape"]),
+        shape=(tuple(x for x in operation["args"]["shape"]) if "shape" in operation["args"] else None),
         batch_size=(operation["args"]["batch_size"] if "batch_size" in operation["args"] else None),
         dtype=(operation["args"]["dtype"] if "dtype" in operation["args"] else None),
         sparse=(operation["args"]["sparse"] if "sparse" in operation["args"] else False),
