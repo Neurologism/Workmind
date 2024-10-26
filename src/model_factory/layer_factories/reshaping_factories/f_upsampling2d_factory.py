@@ -1,0 +1,10 @@
+import tensorflow as tf
+import keras
+
+
+def call(self, operation: dict) -> None:
+    self.project_data[operation["uid"]] = keras.layers.UpSampling2D(
+        size=tuple(operation["args"]["size"]),
+        data_format=(operation["args"]["data_format"] if "data_format" in operation["args"] else None),
+        interpolation=(operation["args"]["interpolation"] if "interpolation" in operation["args"] else "nearest"),
+    )(self.project_data[operation["args"]["inputs"]])
