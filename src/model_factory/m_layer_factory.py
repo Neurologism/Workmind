@@ -1,6 +1,6 @@
-import layer_factories.f_dense_factory as f_dense_factory
-import layer_factories.f_input_factory as f_input_factory
-import layer_factories.f_flatten_factory as f_flatten_factory
+import src.model_factory.layer_factories.core_factories.f_dense_factory as f_dense_factory
+import src.model_factory.layer_factories.core_factories.f_input_factory as f_input_factory
+import src.model_factory.layer_factories.core_factories.f_flatten_factory as f_flatten_factory
 
 
 def new(self, operation: dict) -> None:

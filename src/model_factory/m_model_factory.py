@@ -19,6 +19,11 @@ def call(self, operation: dict) -> None:
     elif operation["method"] == "fit":
 
         self.project_data[operation["uid"]].fit(
-            x=self.project_data["dataset1"],
+            x=self.project_data[operation["args"]["dataset"]],
             epochs=operation["args"]["epochs"],
+        )
+
+    elif operation["method"] == "evaluate":
+        self.project_data[operation["uid"]].evaluate(
+            x=self.project_data[operation["args"]["dataset"]],
         )
