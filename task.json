@@ -14,6 +14,19 @@
         }
     },
     {
+        "type": "dataset",
+        "method": "new",
+        "uid": "dataset2",
+        "args": {
+            "class": "mnist",
+            "split": "test",
+            "preprocess": [
+              "normalize"
+            ],
+            "batch_size": 32
+        }
+    },
+    {
       "type": "layer",
       "method": "new",
       "uid": "input1",
@@ -85,6 +98,14 @@
       "args": {
         "dataset": "dataset1",
         "epochs": 1
+      }
+    },
+    {
+      "type": "model",
+      "method": "evaluate",
+      "uid": "model1",
+      "args": {
+        "dataset": "dataset2"
       }
     }
   ]
