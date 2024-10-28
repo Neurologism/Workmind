@@ -44,8 +44,7 @@
         "method": "new",
         "uid": "flatten1",
         "args": {
-            "class": "Flatten",
-            "inputs": "input1"
+            "class": "Flatten"
         }
     },
 
@@ -56,10 +55,7 @@
       "args": {
         "class": "Dense",
         "units": 10,
-        "activation": {
-          "method": "softmax"
-        },
-        "inputs": "flatten1"
+        "activation": "softmax"
       }
     },
     {
@@ -107,6 +103,18 @@
       "args": {
         "dataset": "dataset2"
       }
+    }
+  ],
+  "links": [
+    {
+      "uid": "link1",
+      "source": "input1",
+      "target": "flatten1"
+    },
+    {
+      "uid": "link2",
+      "source": "flatten1",
+      "target": "layer1"
     }
   ]
 }
