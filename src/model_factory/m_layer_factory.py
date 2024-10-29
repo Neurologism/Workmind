@@ -75,6 +75,15 @@ import layer_factories.normalization_factories.f_groupnormalization_factory as f
 import layer_factories.normalization_factories.f_layernormalization_factory as f_layernormalization_factory
 import layer_factories.normalization_factories.f_unitnormalization_factory as f_unitnormalization_factory
 
+import layer_factories.regularization_factories.f_activityregularization_factory as f_activityregularization_factory
+import layer_factories.regularization_factories.f_alphadropout_factory as f_alphadropout_factory
+import layer_factories.regularization_factories.f_dropout_factory as f_dropout_factory
+import layer_factories.regularization_factories.f_gaussiandropout_factory as f_gaussiandropout_factory
+import layer_factories.regularization_factories.f_gaussiannoise_factory as f_gaussiannoise_factory
+import layer_factories.regularization_factories.f_spatialdropout1d_factory as f_spatialdropout1d_factory
+import layer_factories.regularization_factories.f_spatialdropout2d_factory as f_spatialdropout2d_factory
+import layer_factories.regularization_factories.f_spatialdropout3d_factory as f_spatialdropout3d_factory
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -225,6 +234,22 @@ def new(self, operation: dict) -> None:
         case "UnitNormalization":
             f_unitnormalization_factory.call(self, operation)
 
+        case "ActivityRegularization":
+            f_activityregularization_factory.call(self, operation)
+        case "AlphaDropout":
+            f_alphadropout_factory.call(self, operation)
+        case "Dropout":
+            f_dropout_factory.call(self, operation)
+        case "GaussianDropout":
+            f_gaussiandropout_factory.call(self, operation)
+        case "GaussianNoise":
+            f_gaussiannoise_factory.call(self, operation)
+        case "SpatialDropout1D":
+            f_spatialdropout1d_factory.call(self, operation)
+        case "SpatialDropout2D":
+            f_spatialdropout2d_factory.call(self, operation)
+        case "SpatialDropout3D":
+            f_spatialdropout3d_factory.call(self, operation)
 
 
 def call(self, operation: dict) -> None:
