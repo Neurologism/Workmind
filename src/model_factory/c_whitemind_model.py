@@ -17,12 +17,18 @@ class WhitemindProject:
     from m_layer_factory import call as layer_factory_call
     from m_model_factory import call as model_factory_call
     from m_dataset_factory import call as dataset_factory_call
+    from m_initializer_factory import call as initializer_factory_call
+    from m_regularizer_factory import call as regularizer_factory_call
+    from m_constraint_factory import call as constraint_factory_call
 
     def execute(self) -> None:
         for operation in self.json_data["operations"]:
             match operation["type"]:
                 case "layer":
                     self.layer_factory_call(operation)
+                    inputs = self.search_input(operation["uid"])
+                    if inputs:
+                        self.project_data[operation["uid"]] = self.project_data[operation["uid"]](inputs)
 
                 case "model":
                     self.model_factory_call(operation)
@@ -30,8 +36,25 @@ class WhitemindProject:
                 case "dataset":
                     self.dataset_factory_call(operation)
 
+                case "initializer":
+                    self.initializer_factory_call(operation)
+
+                case "regularizer":
+                    self.regularizer_factory_call(operation)
+
+                case "constraint":
+                    self.constraint_factory_call(operation)
+
                 case _:
                     throw_error("Invalid class specified in operation")
+
+
+    def search_input(self, name: str) -> list:
+        inputs = []
+        for operation in self.json_data["links"]:
+            if operation["destination"] == name:
+                inputs.append(operation["source"])
+        return inputs
 
 
 a = WhitemindProject()
