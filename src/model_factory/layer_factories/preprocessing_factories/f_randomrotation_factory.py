@@ -10,4 +10,4 @@ def call(self, operation: dict) -> None:
         seed=(operation["args"]["seed"] if "seed" in operation["args"] else None),
         fill_value=(operation["args"]["fill_value"] if "fill_value" in operation["args"] else 0.0),
         data_format=(operation["args"]["data_format"] if "data_format" in operation["args"] else None),
-    )(self.project_data[operation["args"]["inputs"]])
+    )

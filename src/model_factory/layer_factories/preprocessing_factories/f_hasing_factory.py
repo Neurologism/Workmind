@@ -9,4 +9,4 @@ def call(self, operation: dict) -> None:
         salt=(operation["args"]["salt"] if "salt" in operation["args"] else None),
         output_mode=(operation["args"]["output_mode"] if "output_mode" in operation["args"] else "int"),
         sparse=(operation["args"]["sparse"] if "sparse" in operation["args"] else False),
-    )(self.project_data[operation["args"]["inputs"]])
+    )

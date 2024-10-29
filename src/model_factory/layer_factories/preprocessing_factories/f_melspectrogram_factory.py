@@ -17,4 +17,4 @@ def call(self, operation: dict) -> None:
         mag_exp=(operation["args"]["mag_exp"] if "mag_exp" in operation["args"] else 2.0),
         min_power=(operation["args"]["min_power"] if "min_power" in operation["args"] else 1e-10),
         ref_power=(operation["args"]["ref_power"] if "ref_power" in operation["args"] else 1.0),
-    )(self.project_data[operation["args"]["inputs"]])
+    )

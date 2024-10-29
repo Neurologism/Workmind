@@ -46,6 +46,31 @@ import layer_factories.recurrent_factories.f_simplernncell_factory as f_simplern
 import layer_factories.recurrent_factories.f_stackedrnncell_factory as f_stackedrnncell_factory
 import layer_factories.recurrent_factories.f_timedistributed_factory as f_timedistributed_factory
 
+import layer_factories.preprocessing_factories.f_autocontrast_factory as f_autocontrast_factory
+import layer_factories.preprocessing_factories.f_categoryencoding_factory as f_categoryencoding_factory
+import layer_factories.preprocessing_factories.f_centercrop_factory as f_centercrop_factory
+import layer_factories.preprocessing_factories.f_discretization_factory as f_discretization_factory
+import layer_factories.preprocessing_factories.f_hashedcrossing_factory as f_hashedcrossing_factory
+import layer_factories.preprocessing_factories.f_hasing_factory as f_hasing_factory
+import layer_factories.preprocessing_factories.f_integerlookup_factory as f_integerlookup_factory
+import layer_factories.preprocessing_factories.f_melspectrogram_factory as f_melspectrogram_factory
+import layer_factories.preprocessing_factories.f_normalization_factory as f_normalization_factory
+import layer_factories.preprocessing_factories.f_pipeline_factory as f_pipeline_factory
+import layer_factories.preprocessing_factories.f_randombrightness_factory as f_randombrightness_factory
+import layer_factories.preprocessing_factories.f_randomcontrast_factory as f_randomcontrast_factory
+import layer_factories.preprocessing_factories.f_randomcrop_factory as f_randomcrop_factory
+import layer_factories.preprocessing_factories.f_randomflip_factory as f_randomflip_factory
+import layer_factories.preprocessing_factories.f_randomrotation_factory as f_randomrotation_factory
+import layer_factories.preprocessing_factories.f_randomtranslation_factory as f_randomtranslation_factory
+import layer_factories.preprocessing_factories.f_randomzoom_factory as f_randomzoom_factory
+import layer_factories.preprocessing_factories.f_rescaling_factory as f_rescaling_factory
+import layer_factories.preprocessing_factories.f_resizing_factory as f_resizing_factory
+import layer_factories.preprocessing_factories.f_solarization_factory as f_solarization_factory
+import layer_factories.preprocessing_factories.f_spectralnormalization_factory as f_spectralnormalization_factory
+import layer_factories.preprocessing_factories.f_stringlookup_factory as f_stringlookup_factory
+import layer_factories.preprocessing_factories.f_textvectorization_factory as f_textvectorization_factory
+
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -139,6 +164,54 @@ def new(self, operation: dict) -> None:
             f_stackedrnncell_factory.call(self, operation)
         case "TimeDistributed":
             f_timedistributed_factory.call(self, operation)
+
+        case "AutoContrast":
+            f_autocontrast_factory.call(self, operation)
+        case "CategoryEncoding":
+            f_categoryencoding_factory.call(self, operation)
+        case "CenterCrop":
+            f_centercrop_factory.call(self, operation)
+        case "Discretization":
+            f_discretization_factory.call(self, operation)
+        case "HashedCrossing":
+            f_hashedcrossing_factory.call(self, operation)
+        case "Hashing":
+            f_hasing_factory.call(self, operation)
+        case "IntegerLookup":
+            f_integerlookup_factory.call(self, operation)
+        case "MelSpectrogram":
+            f_melspectrogram_factory.call(self, operation)
+        case "Normalization":
+            f_normalization_factory.call(self, operation)
+        case "Pipeline":
+            f_pipeline_factory.call(self, operation)
+        case "RandomBrightness":
+            f_randombrightness_factory.call(self, operation)
+        case "RandomContrast":
+            f_randomcontrast_factory.call(self, operation)
+        case "RandomCrop":
+            f_randomcrop_factory.call(self, operation)
+        case "RandomFlip":
+            f_randomflip_factory.call(self, operation)
+        case "RandomRotation":
+            f_randomrotation_factory.call(self, operation)
+        case "RandomTranslation":
+            f_randomtranslation_factory.call(self, operation)
+        case "RandomZoom":
+            f_randomzoom_factory.call(self, operation)
+        case "Rescaling":
+            f_rescaling_factory.call(self, operation)
+        case "Resizing":
+            f_resizing_factory.call(self, operation)
+        case "Solarization":
+            f_solarization_factory.call(self, operation)
+        case "SpectralNormalization":
+            f_spectralnormalization_factory.call(self, operation)
+        case "StringLookup":
+            f_stringlookup_factory.call(self, operation)
+        case "TextVectorization":
+            f_textvectorization_factory.call(self, operation)
+
 
 
 
