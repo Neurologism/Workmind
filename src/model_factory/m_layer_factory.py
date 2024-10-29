@@ -70,6 +70,10 @@ import layer_factories.preprocessing_factories.f_spectralnormalization_factory a
 import layer_factories.preprocessing_factories.f_stringlookup_factory as f_stringlookup_factory
 import layer_factories.preprocessing_factories.f_textvectorization_factory as f_textvectorization_factory
 
+import layer_factories.normalization_factories.f_batchnormalization_factory as f_batchnormalization_factory
+import layer_factories.normalization_factories.f_groupnormalization_factory as f_groupnormalization_factory
+import layer_factories.normalization_factories.f_layernormalization_factory as f_layernormalization_factory
+import layer_factories.normalization_factories.f_unitnormalization_factory as f_unitnormalization_factory
 
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
@@ -212,6 +216,14 @@ def new(self, operation: dict) -> None:
         case "TextVectorization":
             f_textvectorization_factory.call(self, operation)
 
+        case "BatchNormalization":
+            f_batchnormalization_factory.call(self, operation)
+        case "GroupNormalization":
+            f_groupnormalization_factory.call(self, operation)
+        case "LayerNormalization":
+            f_layernormalization_factory.call(self, operation)
+        case "UnitNormalization":
+            f_unitnormalization_factory.call(self, operation)
 
 
 

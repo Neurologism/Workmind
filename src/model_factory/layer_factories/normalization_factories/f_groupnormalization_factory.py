@@ -11,4 +11,8 @@ def call(self, operation: dict) -> None:
         scale=(operation["args"]["scale"] if "scale" in operation["args"] else True),
         beta_initializer=(operation["args"]["beta_initializer"] if "beta_initializer" in operation["args"] else "zeros"),
         gamma_initializer=(operation["args"]["gamma_initializer"] if "gamma_initializer" in operation["args"] else "ones"),
-    )(self.project_data[operation["args"]["inputs"]])
+        beta_regularizer=(self.project_data[operation["args"]["beta_regularizer"]] if "beta_regularizer" in operation["args"] else None),
+        gamma_regularizer=(self.project_data[operation["args"]["gamma_regularizer"]] if "gamma_regularizer" in operation["args"] else None),
+        beta_constraint=(self.project_data[operation["args"]["beta_constraint"]] if "beta_constraint" in operation["args"] else None),
+        gamma_constraint=(self.project_data[operation["args"]["gamma_constraint"]] if "gamma_constraint" in operation["args"] else None),
+    )
