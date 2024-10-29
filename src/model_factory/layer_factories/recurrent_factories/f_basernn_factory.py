@@ -11,5 +11,5 @@ def call(self, operation: dict) -> None:
         stateful=(operation["args"]["stateful"] if "stateful" in operation["args"] else False),
         unroll=(operation["args"]["unroll"] if "unroll" in operation["args"] else False),
         zero_output_for_mask=(operation["args"]["zero_output_for_mask"] if "zero_output_for_mask" in operation["args"] else False),
-    )(self.project_data[operation["args"]["inputs"]])
+    )
 

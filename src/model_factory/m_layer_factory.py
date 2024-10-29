@@ -32,6 +32,20 @@ import layer_factories.pooling_factories.f_maxpooling1d_factory as f_maxpooling1
 import layer_factories.pooling_factories.f_maxpooling2d_factory as f_maxpooling2d_factory
 import layer_factories.pooling_factories.f_maxpooling3d_factory as f_maxpooling3d_factory
 
+import layer_factories.recurrent_factories.f_basernn_factory as f_basernn_factory
+import layer_factories.recurrent_factories.f_bidirectional_factory as f_bidirectional_factory
+import layer_factories.recurrent_factories.f_convlstm1d_factory as f_convlstm1d_factory
+import layer_factories.recurrent_factories.f_convlstm2d_factory as f_convlstm2d_factory
+import layer_factories.recurrent_factories.f_convlstm3d_factory as f_convlstm3d_factory
+import layer_factories.recurrent_factories.f_gru_factory as f_gru_factory
+import layer_factories.recurrent_factories.f_grucell_factory as f_grucell_factory
+import layer_factories.recurrent_factories.f_lstm_factory as f_lstm_factory
+import layer_factories.recurrent_factories.f_lstmcell_factory as f_lstmcell_factory
+import layer_factories.recurrent_factories.f_simplernn_factory as f_simplernn_factory
+import layer_factories.recurrent_factories.f_simplernncell_factory as f_simplernncell_factory
+import layer_factories.recurrent_factories.f_stackedrnncell_factory as f_stackedrnncell_factory
+import layer_factories.recurrent_factories.f_timedistributed_factory as f_timedistributed_factory
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -98,6 +112,33 @@ def new(self, operation: dict) -> None:
             f_maxpooling2d_factory.call(self, operation)
         case "MaxPooling3D":
             f_maxpooling3d_factory.call(self, operation)
+
+        case "BaseRNN":
+            f_basernn_factory.call(self, operation)
+        case "Bidirectional":
+            f_bidirectional_factory.call(self, operation)
+        case "ConvLSTM1D":
+            f_convlstm1d_factory.call(self, operation)
+        case "ConvLSTM2D":
+            f_convlstm2d_factory.call(self, operation)
+        case "ConvLSTM3D":
+            f_convlstm3d_factory.call(self, operation)
+        case "GRU":
+            f_gru_factory.call(self, operation)
+        case "GRUCell":
+            f_grucell_factory.call(self, operation)
+        case "LSTM":
+            f_lstm_factory.call(self, operation)
+        case "LSTMCell":
+            f_lstmcell_factory.call(self, operation)
+        case "SimpleRNN":
+            f_simplernn_factory.call(self, operation)
+        case "SimpleRNNCell":
+            f_simplernncell_factory.call(self, operation)
+        case "StackedRNNCell":
+            f_stackedrnncell_factory.call(self, operation)
+        case "TimeDistributed":
+            f_timedistributed_factory.call(self, operation)
 
 
 
