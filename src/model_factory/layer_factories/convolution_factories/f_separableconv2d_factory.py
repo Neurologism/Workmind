@@ -16,6 +16,11 @@ def call(self, operation: dict) -> None:
         depthwise_initializer=(operation["args"]["depthwise_initializer"] if "depthwise_initializer" in operation["args"] else "glorot_uniform"),
         pointwise_initializer=(operation["args"]["pointwise_initializer"] if "pointwise_initializer" in operation["args"] else "glorot_uniform"),
         bias_initializer=(operation["args"]["bias_initializer"] if "bias_initializer" in operation["args"] else "zeros"),
-    )(self.project_data[operation["args"]["inputs"]])
-
-# not complete
+        depthwise_regularizer=(self.project_data[operation["args"]["depthwise_regularizer"]] if "depthwise_regularizer" in operation["args"] else None),
+        pointwise_regularizer=(self.project_data[operation["args"]["pointwise_regularizer"]] if "pointwise_regularizer" in operation["args"] else None),
+        bias_regularizer=(self.project_data[operation["args"]["bias_regularizer"]] if "bias_regularizer" in operation["args"] else None),
+        activity_regularizer=(self.project_data[operation["args"]["activity_regularizer"]] if "activity_regularizer" in operation["args"] else None),
+        depthwise_constraint=(self.project_data[operation["args"]["depthwise_constraint"]] if "depthwise_constraint" in operation["args"] else None),
+        pointwise_constraint=(self.project_data[operation["args"]["pointwise_constraint"]] if "pointwise_constraint" in operation["args"] else None),
+        bias_constraint=(self.project_data[operation["args"]["bias_constraint"]] if "bias_constraint" in operation["args"] else None),
+    )
