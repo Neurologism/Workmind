@@ -103,6 +103,15 @@ import layer_factories.reshaping_factories.f_zeropadding1d_factory as f_zero_pad
 import layer_factories.reshaping_factories.f_zeropadding2d_factory as f_zero_padding2d_factory
 import layer_factories.reshaping_factories.f_zeropadding3d_factory as f_zero_padding3d_factory
 
+import layer_factories.merging_factories.f_add_factory as f_add_factory
+import layer_factories.merging_factories.f_average_factory as f_average_factory
+import layer_factories.merging_factories.f_concatenate_factory as f_concatenate_factory
+import layer_factories.merging_factories.f_dot_factory as f_dot_factory
+import layer_factories.merging_factories.f_maximum_factory as f_maximum_factory
+import layer_factories.merging_factories.f_minimum_factory as f_minimum_factory
+import layer_factories.merging_factories.f_multiply_factory as f_multiply_factory
+import layer_factories.merging_factories.f_subtract_factory as f_subtract_factory
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -305,6 +314,23 @@ def new(self, operation: dict) -> None:
             f_zero_padding2d_factory.call(self, operation)
         case "ZeroPadding3D":
             f_zero_padding3d_factory.call(self, operation)
+
+        case "Add":
+            f_add_factory.call(self, operation)
+        case "Average":
+            f_average_factory.call(self, operation)
+        case "Concatenate":
+            f_concatenate_factory.call(self, operation)
+        case "Dot":
+            f_dot_factory.call(self, operation)
+        case "Maximum":
+            f_maximum_factory.call(self, operation)
+        case "Minimum":
+            f_minimum_factory.call(self, operation)
+        case "Multiply":
+            f_multiply_factory.call(self, operation)
+        case "Subtract":
+            f_subtract_factory.call(self, operation)
 
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":
