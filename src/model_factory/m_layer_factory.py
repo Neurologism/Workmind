@@ -19,6 +19,19 @@ import layer_factories.convolution_factories.f_depthwiseconv2d_factory as f_dept
 import layer_factories.convolution_factories.f_separableconv1d_factory as f_separableconv1d_factory
 import layer_factories.convolution_factories.f_separableconv2d_factory as f_separableconv2d_factory
 
+import layer_factories.pooling_factories.f_averagepooling1d_factory as f_averagepooling1d_factory
+import layer_factories.pooling_factories.f_averagepooling2d_factory as f_averagepooling2d_factory
+import layer_factories.pooling_factories.f_averagepooling3d_factory as f_averagepooling3d_factory
+import layer_factories.pooling_factories.f_globalaveragepooling1d_factory as f_globalaveragepooling1d_factory
+import layer_factories.pooling_factories.f_globalaveragepooling2d_factory as f_globalaveragepooling2d_factory
+import layer_factories.pooling_factories.f_globalaveragepooling3d_factory as f_globalaveragepooling3d_factory
+import layer_factories.pooling_factories.f_globalmaxpooling1d_factory as f_globamaxpooling1d_factory
+import layer_factories.pooling_factories.f_globalmaxpooling2d_factory as f_globamaxpooling2d_factory
+import layer_factories.pooling_factories.f_globalmaxpooling3d_factory as f_globamaxpooling3d_factory
+import layer_factories.pooling_factories.f_maxpooling1d_factory as f_maxpooling1d_factory
+import layer_factories.pooling_factories.f_maxpooling2d_factory as f_maxpooling2d_factory
+import layer_factories.pooling_factories.f_maxpooling3d_factory as f_maxpooling3d_factory
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -60,6 +73,33 @@ def new(self, operation: dict) -> None:
             f_separableconv1d_factory.call(self, operation)
         case "SeparableConv2D":
             f_separableconv2d_factory.call(self, operation)
+
+        case "AveragePooling1D":
+            f_averagepooling1d_factory.call(self, operation)
+        case "AveragePooling2D":
+            f_averagepooling2d_factory.call(self, operation)
+        case "AveragePooling3D":
+            f_averagepooling3d_factory.call(self, operation)
+        case "GlobalAveragePooling1D":
+            f_globalaveragepooling1d_factory.call(self, operation)
+        case "GlobalAveragePooling2D":
+            f_globalaveragepooling2d_factory.call(self, operation)
+        case "GlobalAveragePooling3D":
+            f_globalaveragepooling3d_factory.call(self, operation)
+        case "GlobalMaxPooling1D":
+            f_globamaxpooling1d_factory.call(self, operation)
+        case "GlobalMaxPooling2D":
+            f_globamaxpooling2d_factory.call(self, operation)
+        case "GlobalMaxPooling3D":
+            f_globamaxpooling3d_factory.call(self, operation)
+        case "MaxPooling1D":
+            f_maxpooling1d_factory.call(self, operation)
+        case "MaxPooling2D":
+            f_maxpooling2d_factory.call(self, operation)
+        case "MaxPooling3D":
+            f_maxpooling3d_factory.call(self, operation)
+
+
 
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":

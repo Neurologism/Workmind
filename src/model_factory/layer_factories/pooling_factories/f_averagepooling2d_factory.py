@@ -9,4 +9,4 @@ def call(self, operation: dict) -> None:
         padding=(operation["args"]["padding"] if "padding" in operation["args"] else "valid"),
         data_format=(operation["args"]["data_format"] if "data_format" in operation["args"] else None),
         name=(operation["args"]["name"] if "name" in operation["args"] else None),
-    )(self.project_data[operation["args"]["inputs"]])
+    )
