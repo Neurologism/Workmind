@@ -8,4 +8,4 @@ def call(self, operation: dict) -> None:
         score_mode=(operation["args"]["score_mode"] if "score_mode" in operation["args"] else "dot"),
         dropout=(operation["args"]["dropout"] if "dropout" in operation["args"] else 0.),
         seed=(operation["args"]["seed"] if "seed" in operation["args"] else None),
-    )(self.project_data[operation["args"]["inputs"]])
+    )

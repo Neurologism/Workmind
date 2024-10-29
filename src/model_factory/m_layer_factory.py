@@ -84,6 +84,12 @@ import layer_factories.regularization_factories.f_spatialdropout1d_factory as f_
 import layer_factories.regularization_factories.f_spatialdropout2d_factory as f_spatialdropout2d_factory
 import layer_factories.regularization_factories.f_spatialdropout3d_factory as f_spatialdropout3d_factory
 
+import layer_factories.attention_factories.f_additiveattention_factory as f_additiveattention_factory
+import layer_factories.attention_factories.f_attention_factory as f_attention_factory
+import layer_factories.attention_factories.f_groupqueryattention_factory as f_groupqueryattention_factory
+import layer_factories.attention_factories.f_multiheadattention_factory as f_multiheadattention_factory
+
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -251,6 +257,14 @@ def new(self, operation: dict) -> None:
         case "SpatialDropout3D":
             f_spatialdropout3d_factory.call(self, operation)
 
+        case "AdditiveAttention":
+            f_additiveattention_factory.call(self, operation)
+        case "Attention":
+            f_attention_factory.call(self, operation)
+        case "GroupQueryAttention":
+            f_groupqueryattention_factory.call(self, operation)
+        case "MultiHeadAttention":
+            f_multiheadattention_factory.call(self, operation)
 
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":
