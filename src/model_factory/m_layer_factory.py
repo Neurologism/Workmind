@@ -89,6 +89,19 @@ import layer_factories.attention_factories.f_attention_factory as f_attention_fa
 import layer_factories.attention_factories.f_groupqueryattention_factory as f_groupqueryattention_factory
 import layer_factories.attention_factories.f_multiheadattention_factory as f_multiheadattention_factory
 
+import layer_factories.reshaping_factories.f_cropping1d_factory as f_cropping1d_factory
+import layer_factories.reshaping_factories.f_cropping2d_factory as f_cropping2d_factory
+import layer_factories.reshaping_factories.f_cropping3d_factory as f_cropping3d_factory
+import layer_factories.reshaping_factories.f_flatten_factory as f_flatten_factory
+import layer_factories.reshaping_factories.f_permute_factory as f_permute_factory
+import layer_factories.reshaping_factories.f_repeatvector_factory as f_repeatvector_factory
+import layer_factories.reshaping_factories.f_reshape_factory as f_reshape_factory
+import layer_factories.reshaping_factories.f_upsampling1d_factory as f_upsampling1d_factory
+import layer_factories.reshaping_factories.f_upsampling2d_factory as f_upsampling2d_factory
+import layer_factories.reshaping_factories.f_upsampling3d_factory as f_upsampling3d_factory
+import layer_factories.reshaping_factories.f_zeropadding1d_factory as f_zero_padding1d_factory
+import layer_factories.reshaping_factories.f_zeropadding2d_factory as f_zero_padding2d_factory
+import layer_factories.reshaping_factories.f_zeropadding3d_factory as f_zero_padding3d_factory
 
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
@@ -265,6 +278,33 @@ def new(self, operation: dict) -> None:
             f_groupqueryattention_factory.call(self, operation)
         case "MultiHeadAttention":
             f_multiheadattention_factory.call(self, operation)
+
+        case "Cropping1D":
+            f_cropping1d_factory.call(self, operation)
+        case "Cropping2D":
+            f_cropping2d_factory.call(self, operation)
+        case "Cropping3D":
+            f_cropping3d_factory.call(self, operation)
+        case "Flatten":
+            f_flatten_factory.call(self, operation)
+        case "Permute":
+            f_permute_factory.call(self, operation)
+        case "RepeatVector":
+            f_repeatvector_factory.call(self, operation)
+        case "Reshape":
+            f_reshape_factory.call(self, operation)
+        case "Upsampling1D":
+            f_upsampling1d_factory.call(self, operation)
+        case "Upsampling2D":
+            f_upsampling2d_factory.call(self, operation)
+        case "Upsampling3D":
+            f_upsampling3d_factory.call(self, operation)
+        case "ZeroPadding1D":
+            f_zero_padding1d_factory.call(self, operation)
+        case "ZeroPadding2D":
+            f_zero_padding2d_factory.call(self, operation)
+        case "ZeroPadding3D":
+            f_zero_padding3d_factory.call(self, operation)
 
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":

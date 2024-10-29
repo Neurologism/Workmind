@@ -5,5 +5,5 @@ import keras
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.RepeatVector(
         operation["args"]["n"],
-    )(self.project_data[operation["args"]["inputs"]])
+    )
     
