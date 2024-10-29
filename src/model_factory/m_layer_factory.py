@@ -112,6 +112,12 @@ import layer_factories.merging_factories.f_minimum_factory as f_minimum_factory
 import layer_factories.merging_factories.f_multiply_factory as f_multiply_factory
 import layer_factories.merging_factories.f_subtract_factory as f_subtract_factory
 
+import layer_factories.activation_factories.f_elu_factory as f_elu_factory
+import layer_factories.activation_factories.f_leakyrelu_factory as f_leakyrelu_factory
+import layer_factories.activation_factories.f_prelu_factory as f_prelu_factory
+import layer_factories.activation_factories.f_relu_factory as f_relu_factory
+import layer_factories.activation_factories.f_softmax_factory as f_softmax_factory
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Activation":
@@ -331,6 +337,20 @@ def new(self, operation: dict) -> None:
             f_multiply_factory.call(self, operation)
         case "Subtract":
             f_subtract_factory.call(self, operation)
+
+        case "ELU":
+            f_elu_factory.call(self, operation)
+        case "LeakyReLU":
+            f_leakyrelu_factory.call(self, operation)
+        case "PReLU":
+            f_prelu_factory.call(self, operation)
+        case "ReLU":
+            f_relu_factory.call(self, operation)
+        case "Softmax":
+            f_softmax_factory.call(self, operation)
+
+        case _:
+            raise ValueError(f"Layer class {operation['args']['class']} not supported")
 
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":
