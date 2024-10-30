@@ -3,5 +3,4 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Subtract(
-    )
+    self.project_data[operation["uid"]] = keras.layers.Subtract()

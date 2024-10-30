@@ -28,7 +28,9 @@ class WhitemindProject:
                     self.layer_factory_call(operation)
                     inputs = self.search_input(operation["uid"])
                     if inputs:
-                        self.project_data[operation["uid"]] = self.project_data[operation["uid"]](inputs)
+                        self.project_data[operation["uid"]] = self.project_data[
+                            operation["uid"]
+                        ](inputs)
 
                 case "model":
                     self.model_factory_call(operation)
@@ -47,7 +49,6 @@ class WhitemindProject:
 
                 case _:
                     throw_error("Invalid class specified in operation")
-
 
     def search_input(self, name: str) -> list:
         inputs = []

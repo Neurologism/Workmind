@@ -12,6 +12,7 @@ import optimizer_factories.f_nadam_factory as f_nadam_factory
 import optimizer_factories.f_rmsprop_factory as f_rmsprop_factory
 import optimizer_factories.f_sgd_factory as f_sgd_factory
 
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Adadelta":
@@ -41,7 +42,10 @@ def new(self, operation: dict) -> None:
         case "SGD":
             f_sgd_factory.call(self, operation)
         case _:
-            raise ValueError(f"Optimizer class '{operation['args']['class']}' not recognized.")
+            raise ValueError(
+                f"Optimizer class '{operation['args']['class']}' not recognized."
+            )
+
 
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":

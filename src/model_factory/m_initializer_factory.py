@@ -48,7 +48,9 @@ def new(self, operation: dict) -> None:
         case "Zeros":
             f_zeros_factory.call(self, operation)
         case _:
-            raise ValueError(f"Initializer class '{operation['args']['class']}' not recognized.")
+            raise ValueError(
+                f"Initializer class '{operation['args']['class']}' not recognized."
+            )
 
 
 def call(self, operation: dict) -> None:
