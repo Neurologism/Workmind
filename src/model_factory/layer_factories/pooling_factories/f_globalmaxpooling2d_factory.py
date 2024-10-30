@@ -4,8 +4,12 @@ import keras
 
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.GlobalMaxPooling2D(
-        data_format=(operation["args"]["data_format"] if "data_format" in operation["args"] else None),
-        keepdims=(operation["args"]["keepdims"] if "keepdims" in operation["args"] else False),
-    )(self.project_data[operation["args"]["inputs"]])
-
-# not complete yet
+        data_format=(
+            operation["args"]["data_format"]
+            if "data_format" in operation["args"]
+            else None
+        ),
+        keepdims=(
+            operation["args"]["keepdims"] if "keepdims" in operation["args"] else False
+        ),
+    )

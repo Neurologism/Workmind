@@ -6,5 +6,3 @@ def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.TimeDistributed(
         layer=self.project_data[operation["args"]["layer"]],
     )
-
-    # not complete yet

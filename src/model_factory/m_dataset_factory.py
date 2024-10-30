@@ -2,6 +2,7 @@ import tensorflow as tf
 import keras
 import tensorflow_datasets as tfds
 
+
 def call(self, operation: dict) -> None:
     if operation["method"] == "new":
         ds = tfds.load(
@@ -20,5 +21,3 @@ def call(self, operation: dict) -> None:
         # expand with more preprocessing methods
 
         self.project_data[operation["uid"]] = ds
-
-
