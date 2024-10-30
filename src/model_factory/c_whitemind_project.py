@@ -4,13 +4,13 @@ from numpy.f2py.auxfuncs import throw_error
 
 
 class WhitemindProject:
-    def __init__(self, json_data=None) -> None:
+    def __init__(self, json_data: dict | None=None) -> None:
         if json_data is None:
             json_data = {}
         self.json_data = json_data
         self.project_data = {}
 
-    def read_json(self, file_path) -> None:
+    def read_json(self, file_path: str) -> None:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
@@ -58,6 +58,7 @@ class WhitemindProject:
         return inputs
 
 
-a = WhitemindProject()
-a.read_json("../../task.json")
-a.execute()
+if __name__ == "__main__":
+    a = WhitemindProject()
+    a.read_json("../../task.json")
+    a.execute()
