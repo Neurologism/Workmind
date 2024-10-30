@@ -4,6 +4,6 @@ import keras
 
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.ActivityRegularization(
-        l1=operation["args"]["l1"],
-        l2=operation["args"]["l2"],
-    )(self.project_data[operation["args"]["inputs"]])
+        l1=(operation["args"]["l1"] if "l1" in operation["args"] else 0.0),
+        l2=(operation["args"]["l2"] if "l2" in operation["args"] else 0.0),
+    )

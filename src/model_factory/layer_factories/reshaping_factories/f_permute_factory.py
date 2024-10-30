@@ -5,4 +5,4 @@ import keras
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.Permute(
         dims=operation["args"]["dims"],
-    )(self.project_data[operation["args"]["inputs"]])
+    )

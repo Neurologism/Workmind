@@ -7,4 +7,4 @@ def call(self, operation: dict) -> None:
         max_value=operation["args"]["max_value"],
         negative_slope=operation["args"]["negative_slope"],
         threshold=operation["args"]["threshold"],
-    )(self.project_data[operation["args"]["input"]])
+    )
