@@ -18,7 +18,7 @@
         "method": "new",
         "uid": "dataset2",
         "args": {
-            "class": "mnist",
+            "name": "mnist",
             "split": "test",
             "preprocess": [
               "normalize"

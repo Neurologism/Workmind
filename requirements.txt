@@ -1,5 +1,6 @@
-python-dotenv~=1.0.1
-pymongo~=4.10.1
+python-dotenv~=0.21.0
+pymongo~=4.8.0
 numpy~=1.26.4
-tensorflow~=2.16.1
-keras~=3.6.0
+tensorflow~=2.10.0
+keras~=2.10.0
+tensorflow-datasets~=1.2.0
