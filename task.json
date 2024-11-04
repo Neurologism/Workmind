@@ -72,9 +72,7 @@
       "method": "compile",
       "uid": "model1",
       "args": {
-        "optimizer": {
-          "method": "adam"
-        },
+        "optimizer": "adam",
         "loss": [
           {
             "method": "sparse_categorical_crossentropy"
