@@ -4,7 +4,7 @@ import keras
 
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.Dense(
-        operation["args"]["units"],
+        units=operation["args"]["units"],
         activation=(
             operation["args"]["activation"]
             if "activation" in operation["args"]

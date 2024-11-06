@@ -7,9 +7,6 @@
         "args": {
             "class": "mnist",
             "split": "train",
-            "preprocess": [
-              "normalize"
-            ],
             "batch_size": 32
         }
     },
@@ -20,9 +17,6 @@
         "args": {
             "name": "mnist",
             "split": "test",
-            "preprocess": [
-              "normalize"
-            ],
             "batch_size": 32
         }
     },
@@ -73,15 +67,9 @@
       "uid": "model1",
       "args": {
         "optimizer": "adam",
-        "loss": [
-          {
-            "method": "sparse_categorical_crossentropy"
-          }
-        ],
+        "loss": "sparse_categorical_crossentropy",
         "metrics": [
-          {
-            "method": "sparse_categorical_accuracy"
-          }
+          "sparse_categorical_accuracy"
         ]
       }
     },
@@ -90,7 +78,7 @@
       "method": "fit",
       "uid": "model1",
       "args": {
-        "dataset": "dataset1",
+        "x": "dataset1",
         "epochs": 1
       }
     },
@@ -99,7 +87,7 @@
       "method": "evaluate",
       "uid": "model1",
       "args": {
-        "dataset": "dataset2"
+        "x": "dataset2"
       }
     }
   ],
