@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import time
 from datetime import datetime
-from model_factory import WhitemindProject
+from tensorflow_middleware import WhitemindProject
 
 
 class QueueInterface:
