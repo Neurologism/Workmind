@@ -4,3 +4,4 @@ numpy~=1.26.4
 tensorflow~=2.10.0
 keras~=2.10.0
 tensorflow-datasets~=1.2.0
+mkl_random~=1.2.8
