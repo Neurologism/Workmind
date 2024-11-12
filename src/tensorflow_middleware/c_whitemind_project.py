@@ -53,6 +53,6 @@ class WhitemindProject:
     def search_input(self, name: str) -> list:
         inputs = []
         for operation in self.json_data["links"]:
-            if operation["destination"] == name:
+            if operation["target"] == name:
                 inputs.append(operation["source"])
         return inputs
