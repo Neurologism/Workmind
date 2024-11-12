@@ -378,3 +378,14 @@ def call(self, layers: dict) -> None:
     sorted_layers = topo_sort(self, layers)
     for layer in sorted_layers:
         create(self, layer)
+        inputs = layer["data"]["in"]
+        layer_inputs = []
+        for input_id in inputs:
+            if input_id in layers:
+                layer_inputs.append(self.project_data[input_id])
+
+        if len(layer_inputs) == 1:
+            self.project_data[layer["id"]] = self.project_data[layer["id"]](layer_inputs[0])
+
+        elif len(layer_inputs) > 1:
+            self.project_data[layer["id"]] = self.project_data[layer["id"]](layer_inputs)
