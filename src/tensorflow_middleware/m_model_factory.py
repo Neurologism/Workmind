@@ -4,13 +4,13 @@ from numpy.f2py.crackfortran import verbose
 
 
 def create(self, operation: dict) -> None:
-    self.project_data[operation["name"]] = keras.Model(
-        self.project_data[operation["data"]["inputs"]],
-        self.project_data[operation["data"]["outputs"]],
+    self.project_data[operation["data"]["name"]] = keras.Model(
+        self.project_data[operation["data"]["inputs"][0]],
+        self.project_data[operation["data"]["outputs"][0]],
     )
     
 def compile(self, operation: dict) -> None:
-    self.project_data[operation["name"]].compile(
+    self.project_data[operation["data"]["name"]].compile(
         optimizer=(
             operation["data"]["optimizer"]
             if "optimizer" in operation["data"]
@@ -59,8 +59,8 @@ def compile(self, operation: dict) -> None:
     )
     
 def fit(self, operation: dict) -> None:
-    self.project_data[operation["name"]].fit(
-        x=self.project_data[operation["data"]["x"]],
+    self.project_data[operation["data"]["name"]].fit(
+        x=self.project_data[operation["data"]["x"][0]],
         epochs=(
             operation["data"]["epochs"] if "epochs" in operation["data"] else 1
         ),
@@ -78,7 +78,7 @@ def fit(self, operation: dict) -> None:
             else None
         ),
         validation_data=(
-            self.project_data[operation["data"]["validation_data"]]
+            self.project_data[operation["data"]["validation_data"][0]]
             if "validation_data" in operation["data"]
             else None
         ),
@@ -115,8 +115,8 @@ def fit(self, operation: dict) -> None:
     )
     
 def evaluate(self, operation: dict) -> None:
-    self.project_data[operation["name"]].evaluate(
-        x=self.project_data[operation["data"]["x"]],
+    self.project_data[operation["data"]["name"]].evaluate(
+        x=self.project_data[operation["data"]["x"][0]],
         verbose=(
             operation["data"]["verbose"]
             if "verbose" in operation["data"]
@@ -146,8 +146,8 @@ def evaluate(self, operation: dict) -> None:
     )
     
 def predict(self, operation: dict) -> None:
-    self.project_data[operation["name"]].predict(
-        x=self.project_data[operation["data"]["x"]],
+    self.project_data[operation["data"]["name"]].predict(
+        x=self.project_data[operation["data"]["x"][0]],
         verbose=(
             operation["data"]["verbose"]
             if "verbose" in operation["data"]
@@ -171,12 +171,13 @@ def topo_sort(self, nodes: dict) -> list:
     stack = []
 
     def dfs(node: dict) -> None:
-        if node in visited:
+        if node["id"] in visited:
             return
-        visited.add(node)
-        for child_id in node["data"]["out"]:
-            if child_id in nodes:
-                dfs(nodes[child_id])
+        visited.add(node["id"])
+        if "out" in node["data"]:
+            for child_id in node["data"]["out"]:
+                if child_id in nodes:
+                    dfs(nodes[child_id])
 
         stack.append(node)
 

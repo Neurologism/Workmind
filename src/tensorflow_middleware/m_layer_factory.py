@@ -359,12 +359,13 @@ def topo_sort(self, layers: dict) -> list:
     stack = []
 
     def dfs(layer: dict) -> None:
-        if layer in visited:
+        if layer["id"] in visited:
             return
-        visited.add(layer)
-        for child_id in layer["data"]["out"]:
-            if child_id in layers:
-                dfs(layers[child_id])
+        visited.add(layer["id"])
+        if "out" in layer["data"]:
+            for child_id in layer["data"]["out"]:
+                if child_id in layers:
+                    dfs(layers[child_id])
 
         stack.append(layer)
 
