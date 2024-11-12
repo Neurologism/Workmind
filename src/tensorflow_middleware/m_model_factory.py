@@ -1,6 +1,5 @@
 import tensorflow as tf
 import keras
-from mkl_random.mklrand import shuffle
 from numpy.f2py.crackfortran import verbose
 
 

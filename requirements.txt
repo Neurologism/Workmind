@@ -1,7 +1,6 @@
-python-dotenv~=0.21.0
-pymongo~=4.8.0
-numpy~=1.26.4
-tensorflow~=2.10.0
-keras~=2.10.0
-tensorflow-datasets~=1.2.0
-mkl_random~=1.2.8
+python-dotenv
+pymongo
+numpy
+tensorflow
+keras
+tensorflow-datasets
