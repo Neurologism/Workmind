@@ -4,13 +4,13 @@ from numpy.f2py.crackfortran import verbose
 
 
 def create(self, operation: dict) -> None:
-    self.project_data[operation["id"]] = keras.Model(
+    self.project_data[operation["name"]] = keras.Model(
         self.project_data[operation["data"]["inputs"]],
         self.project_data[operation["data"]["outputs"]],
     )
     
 def compile(self, operation: dict) -> None:
-    self.project_data[operation["id"]].compile(
+    self.project_data[operation["name"]].compile(
         optimizer=(
             operation["data"]["optimizer"]
             if "optimizer" in operation["data"]
@@ -59,8 +59,8 @@ def compile(self, operation: dict) -> None:
     )
     
 def fit(self, operation: dict) -> None:
-    self.project_data[operation["id"]].fit(
-        x=operation["data"]["dataset"],
+    self.project_data[operation["name"]].fit(
+        x=self.project_data[operation["data"]["x"]],
         epochs=(
             operation["data"]["epochs"] if "epochs" in operation["data"] else 1
         ),
@@ -78,7 +78,7 @@ def fit(self, operation: dict) -> None:
             else None
         ),
         validation_data=(
-            operation["data"]["validation_data"]
+            self.project_data[operation["data"]["validation_data"]]
             if "validation_data" in operation["data"]
             else None
         ),
@@ -115,8 +115,8 @@ def fit(self, operation: dict) -> None:
     )
     
 def evaluate(self, operation: dict) -> None:
-    self.project_data[operation["id"]].evaluate(
-        x=operation["data"]["dataset"],
+    self.project_data[operation["name"]].evaluate(
+        x=self.project_data[operation["data"]["x"]],
         verbose=(
             operation["data"]["verbose"]
             if "verbose" in operation["data"]
@@ -146,8 +146,8 @@ def evaluate(self, operation: dict) -> None:
     )
     
 def predict(self, operation: dict) -> None:
-    self.project_data[operation["id"]].predict(
-        x=self.project_data[operation["data"]["dataset"]],
+    self.project_data[operation["name"]].predict(
+        x=self.project_data[operation["data"]["x"]],
         verbose=(
             operation["data"]["verbose"]
             if "verbose" in operation["data"]
