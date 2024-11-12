@@ -2,12 +2,13 @@ from pymongo import MongoClient
 import time
 from datetime import datetime
 from tensorflow_middleware import WhitemindProject
+from pprint import pprint
 
 
 class QueueInterface:
     def __init__(self, mongo_uri: str, db_name: str) -> None:
         self.mongo_client = MongoClient(mongo_uri)
-        self.db = self.mongo_client(db_name)
+        self.db = self.mongo_client[db_name]
         self.db_training_queue = self.db["training_queue"]
         self.db_models = self.db["models"]
 
@@ -22,12 +23,12 @@ class QueueInterface:
 
         print("Queue item found.")
 
-        model = self.db_models.find_one({"_id": queue_item.model_id})
+        model = self.db_models.find_one({"_id": queue_item["model_id"]})
         if model is None:
             raise ValueError("Model does not exist.")
 
         self.db_models.update_one(
-            {"_id": queue_item.model_id},
+            {"_id": queue_item["model_id"]},
             {
                 "$set": {
                     "status": "training",
@@ -38,7 +39,7 @@ class QueueInterface:
         )
 
         try:
-            project = WhitemindProject(model.task)
+            project = WhitemindProject(model["task"])
             project.execute()
         except Exception as e:
             print("Error during trainig")
