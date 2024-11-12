@@ -1,7 +1,6 @@
 import tensorflow as tf
 import keras
 import tensorflow_datasets as tfds
-from numpy.distutils.npy_pkg_config import read_config
 
 
 def call(self, operation: dict) -> None:
