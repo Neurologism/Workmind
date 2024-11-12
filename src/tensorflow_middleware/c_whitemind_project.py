@@ -22,33 +22,19 @@ class WhitemindProject:
     from .m_constraint_factory import call as constraint_factory_call
 
     def execute(self) -> None:
-        for operation in self.json_data["operations"]:
-            match operation["type"]:
-                case "layer":
-                    self.layer_factory_call(operation)
-                    inputs = self.search_input(operation["uid"])
-                    if inputs:
-                        self.project_data[operation["uid"]] = self.project_data[
-                            operation["uid"]
-                        ](inputs)
+        class_nodes = {"layer": [], "model": [], "dataset": []}
 
-                case "model":
-                    self.model_factory_call(operation)
+        for node in self.json_data["nodes"]:
+            class_nodes[node["group_identifier"]].append(node)
 
-                case "dataset":
-                    self.dataset_factory_call(operation)
+        for node in class_nodes["dataset"]:
+            self.dataset_factory_call(node)
 
-                case "initializer":
-                    self.initializer_factory_call(operation)
+        for node in class_nodes["layer"]:
+            self.layer_factory_call(node)
 
-                case "regularizer":
-                    self.regularizer_factory_call(operation)
-
-                case "constraint":
-                    self.constraint_factory_call(operation)
-
-                case _:
-                    throw_error("Invalid class specified in operation")
+        for node in class_nodes["model"]:
+            self.model_factory_call(node)
 
     def search_input(self, name: str) -> list:
         inputs = []

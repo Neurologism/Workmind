@@ -1,106 +1,277 @@
 {
-  "operations": [
+  "nodes": [
     {
-        "type": "dataset",
-        "method": "new",
-        "uid": "dataset1",
-        "args": {
-            "class": "mnist",
-            "split": "train",
-            "batch_size": 32
-        }
+      "id": "0.h3fmphkbq2t",
+      "type": "input_layer",
+      "initialized": false,
+      "position": {
+        "x": 717,
+        "y": 169
+      },
+      "data": {
+        "shape": [
+          28,
+          28
+        ],
+        "batch_size": null,
+        "dtype": "float32",
+        "sparse": false,
+        "optional": false
+      },
+      "identifier": "input",
+      "group_identifier": "layer"
     },
     {
-        "type": "dataset",
-        "method": "new",
-        "uid": "dataset2",
-        "args": {
-            "name": "mnist",
-            "split": "test",
-            "batch_size": 32
-        }
+      "id": "0.z10osr9nnus",
+      "type": "flatten",
+      "initialized": false,
+      "position": {
+        "x": 715,
+        "y": 252
+      },
+      "data": {
+        "data_format": "channels_last"
+      },
+      "identifier": "flatten",
+      "group_identifier": "layer"
     },
     {
-      "type": "layer",
-      "method": "new",
-      "uid": "input1",
-      "args": {
-          "class": "Input",
-          "shape": [
-            28,
-            28
-          ]
-        }
-    },
-
-    {
-        "type": "layer",
-        "method": "new",
-        "uid": "flatten1",
-        "args": {
-            "class": "Flatten"
-        }
-    },
-
-    {
-      "type": "layer",
-      "method": "new",
-      "uid": "layer1",
-      "args": {
-        "class": "Dense",
-        "units": 10,
-        "activation": "softmax"
-      }
+      "id": "0.xk0pi06gs3",
+      "type": "dense",
+      "initialized": false,
+      "position": {
+        "x": 718,
+        "y": 345
+      },
+      "data": {
+        "activation": "relu",
+        "use_bias": true,
+        "lora_rank": null,
+        "units": 128
+      },
+      "identifier": "dense",
+      "group_identifier": "layer"
     },
     {
-      "type": "model",
-      "method": "new",
-      "uid": "model1",
-      "args": {
-        "inputs": "input1",
-        "outputs": "layer1"
-      }
+      "id": "0.aqwp48b12dd",
+      "type": "dense",
+      "initialized": false,
+      "position": {
+        "x": 720,
+        "y": 437
+      },
+      "data": {
+        "activation": "softmax",
+        "use_bias": true,
+        "lora_rank": null,
+        "units": 10
+      },
+      "identifier": "dense",
+      "group_identifier": "layer"
     },
     {
-      "type": "model",
-      "method": "compile",
-      "uid": "model1",
-      "args": {
+      "id": "0.tssrbed6zcr",
+      "type": "create",
+      "initialized": false,
+      "position": {
+        "x": 463.3792468598791,
+        "y": 184.91592748263855
+      },
+      "data": {
+        "inputs": null,
+        "outputs": null
+      },
+      "identifier": "create",
+      "group_identifier": "model"
+    },
+    {
+      "id": "0.ppe1dyeipc",
+      "type": "compile",
+      "initialized": false,
+      "position": {
+        "x": 460.6359553676636,
+        "y": 263.14580195928505
+      },
+      "data": {
         "optimizer": "adam",
-        "loss": "sparse_categorical_crossentropy",
-        "metrics": [
-          "sparse_categorical_accuracy"
-        ]
-      }
+        "loss": "categorical_crossentropy"
+      },
+      "identifier": "compile",
+      "group_identifier": "model"
     },
     {
-      "type": "model",
-      "method": "fit",
-      "uid": "model1",
-      "args": {
-        "x": "dataset1",
-        "epochs": 1
-      }
+      "id": "0.i8wyv47d5ca",
+      "type": "fit",
+      "initialized": false,
+      "position": {
+        "x": 463.5822873053877,
+        "y": 349.6055509125781
+      },
+      "data": {
+        "x": null,
+        "epochs": 1,
+        "validation_data": null
+      },
+      "identifier": "fit",
+      "group_identifier": "model"
     },
     {
-      "type": "model",
-      "method": "evaluate",
-      "uid": "model1",
-      "args": {
-        "x": "dataset2"
-      }
+      "id": "0.71l0ukqbeqc",
+      "type": "evaluate",
+      "initialized": false,
+      "position": {
+        "x": 482.6779916263444,
+        "y": 429.4293444982075
+      },
+      "data": {
+        "x": null
+      },
+      "identifier": "evaluate",
+      "group_identifier": "model"
+    },
+    {
+      "id": "0.rurb53imans",
+      "type": "load",
+      "initialized": false,
+      "position": {
+        "x": 210,
+        "y": 295
+      },
+      "data": {
+        "split": "train[80:]",
+        "batch_size": 128,
+        "name": "mnist"
+      },
+      "identifier": "load",
+      "group_identifier": "dataset"
+    },
+    {
+      "id": "0.8zjmqgqj0nk",
+      "type": "load",
+      "initialized": false,
+      "position": {
+        "x": 180,
+        "y": 424
+      },
+      "data": {
+        "split": "train[:80]",
+        "batch_size": 128,
+        "name": "mnist"
+      },
+      "identifier": "load",
+      "group_identifier": "dataset"
+    },
+    {
+      "id": "0.249wd4w7i2s",
+      "type": "load",
+      "initialized": false,
+      "position": {
+        "x": 241,
+        "y": 518
+      },
+      "data": {
+        "split": "test",
+        "batch_size": 128,
+        "name": "mnist"
+      },
+      "identifier": "load",
+      "group_identifier": "dataset"
     }
   ],
-  "links": [
+  "edges": [
     {
-      "uid": "link1",
-      "source": "input1",
-      "target": "flatten1"
+      "id": "vueflow__edge-0.h3fmphkbq2tout-0.z10osr9nnusin",
+      "type": "default",
+      "source": "0.h3fmphkbq2t",
+      "target": "0.z10osr9nnus",
+      "sourceHandle": "out",
+      "targetHandle": "in",
+      "data": {},
+      "label": "",
+      "sourceX": 777,
+      "sourceY": 218,
+      "targetX": 779.7000122070312,
+      "targetY": 247
     },
     {
-      "uid": "link2",
-      "source": "flatten1",
-      "target": "layer1"
+      "id": "vueflow__edge-0.z10osr9nnusout-0.xk0pi06gs3in",
+      "type": "default",
+      "source": "0.z10osr9nnus",
+      "target": "0.xk0pi06gs3",
+      "sourceHandle": "out",
+      "targetHandle": "in",
+      "data": {},
+      "label": "",
+      "sourceX": 779.7000122070312,
+      "sourceY": 301,
+      "targetX": 781.36669921875,
+      "targetY": 340
+    },
+    {
+      "id": "vueflow__edge-0.xk0pi06gs3out-0.aqwp48b12ddin",
+      "type": "default",
+      "source": "0.xk0pi06gs3",
+      "target": "0.aqwp48b12dd",
+      "sourceHandle": "out",
+      "targetHandle": "in",
+      "data": {},
+      "label": "",
+      "sourceX": 781.36669921875,
+      "sourceY": 394,
+      "targetX": 783.36669921875,
+      "targetY": 432
+    },
+    {
+      "id": "vueflow__edge-0.tssrbed6zcrout-0.ppe1dyeipcin",
+      "type": "default",
+      "source": "0.tssrbed6zcr",
+      "target": "0.ppe1dyeipc",
+      "sourceHandle": "out",
+      "targetHandle": "in",
+      "data": {},
+      "label": "",
+      "sourceX": 523.3792468598791,
+      "sourceY": 233.91592748263855,
+      "targetX": 520.6359553676637,
+      "targetY": 258.14580195928505
+    },
+    {
+      "id": "vueflow__edge-0.ppe1dyeipcout-0.i8wyv47d5cain",
+      "type": "default",
+      "source": "0.ppe1dyeipc",
+      "target": "0.i8wyv47d5ca",
+      "sourceHandle": "out",
+      "targetHandle": "in",
+      "data": {},
+      "label": "",
+      "sourceX": 520.6359553676637,
+      "sourceY": 312.14580195928505,
+      "targetX": 523.5822873053877,
+      "targetY": 344.6055509125781
+    },
+    {
+      "id": "vueflow__edge-0.i8wyv47d5caout-0.71l0ukqbeqcin",
+      "type": "default",
+      "source": "0.i8wyv47d5ca",
+      "target": "0.71l0ukqbeqc",
+      "sourceHandle": "out",
+      "targetHandle": "in",
+      "data": {},
+      "label": "",
+      "sourceX": 523.5822873053877,
+      "sourceY": 398.6055509125781,
+      "targetX": 542.6779916263445,
+      "targetY": 424.4293444982075
     }
-  ]
+  ],
+  "position": [
+    218.62683673789473,
+    -302.19676365110115
+  ],
+  "zoom": 1.5073349095583808,
+  "viewport": {
+    "x": 218.62683673789473,
+    "y": -302.19676365110115,
+    "zoom": 1.5073349095583808
+  }
 }

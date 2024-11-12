@@ -28,4 +28,4 @@ model.compile(
     metrics=["accuracy"],
 )
 
-model.fit(ds, epochs=1)
+model.fit(ds, epochs=10)

@@ -4,165 +4,166 @@ from numpy.f2py.crackfortran import verbose
 
 
 def call(self, operation: dict) -> None:
-    if operation["method"] == "new":
-        self.project_data[operation["uid"]] = keras.Model(
-            self.project_data[operation["args"]["inputs"]],
-            self.project_data[operation["args"]["outputs"]],
-        )
+    match operation["identifier"]:
+        case "create":
+            self.project_data[operation["id"]] = keras.Model(
+                self.project_data[operation["data"]["inputs"]],
+                self.project_data[operation["data"]["outputs"]],
+            )
 
-    elif operation["method"] == "compile":
-        self.project_data[operation["uid"]].compile(
-            optimizer=(
-                self.project_data[operation["args"]["optimizer"]]
-                if "optimizer" in operation["args"]
-                else "adam"
-            ),
-            loss=(
-                self.project_data[operation["args"]["loss"]]
-                if "loss" in operation["args"]
-                else None
-            ),
-            loss_weights=(
-                operation["args"]["loss_weights"]
-                if "loss_weights" in operation["args"]
-                else None
-            ),
-            metrics=(
-                [self.project_data[metric] for metric in operation["args"]["metrics"]]
-                if "metrics" in operation["args"]
-                else None
-            ),
-            weighted_metrics=(
-                operation["args"]["weighted_metrics"]
-                if "weighted_metrics" in operation["args"]
-                else None
-            ),
-            run_eagerly=(
-                operation["args"]["run_eagerly"]
-                if "run_eagerly" in operation["args"]
-                else False
-            ),
-            steps_per_execution=(
-                operation["args"]["steps_per_execution"]
-                if "steps_per_execution" in operation["args"]
-                else 1
-            ),
-            jit_compile=(
-                operation["args"]["jit_compile"]
-                if "jit_compile" in operation["args"]
-                else "auto"
-            ),
-            auto_scale_loss=(
-                operation["args"]["auto_scale_loss"]
-                if "auto_scale_loss" in operation["args"]
-                else True
-            ),
-        )
+        case "compile":
+            self.project_data[operation["id"]].compile(
+                optimizer=(
+                    operation["data"]["optimizer"]
+                    if "optimizer" in operation["data"]
+                    else "adam"
+                ),
+                loss=(
+                    operation["data"]["loss"]
+                    if "loss" in operation["data"]
+                    else None
+                ),
+                loss_weights=(
+                    operation["data"]["loss_weights"]
+                    if "loss_weights" in operation["data"]
+                    else None
+                ),
+                metrics=(
+                    [metric for metric in operation["data"]["metrics"]]
+                    if "metrics" in operation["data"]
+                    else None
+                ),
+                weighted_metrics=(
+                    operation["data"]["weighted_metrics"]
+                    if "weighted_metrics" in operation["data"]
+                    else None
+                ),
+                run_eagerly=(
+                    operation["data"]["run_eagerly"]
+                    if "run_eagerly" in operation["data"]
+                    else False
+                ),
+                steps_per_execution=(
+                    operation["data"]["steps_per_execution"]
+                    if "steps_per_execution" in operation["data"]
+                    else 1
+                ),
+                jit_compile=(
+                    operation["data"]["jit_compile"]
+                    if "jit_compile" in operation["data"]
+                    else "auto"
+                ),
+                auto_scale_loss=(
+                    operation["data"]["auto_scale_loss"]
+                    if "auto_scale_loss" in operation["data"]
+                    else True
+                ),
+            )
 
-    elif operation["method"] == "fit":
-        self.project_data[operation["uid"]].fit(
-            x=self.project_data[operation["args"]["dataset"]],
-            epochs=(
-                operation["args"]["epochs"] if "epochs" in operation["args"] else 1
-            ),
-            verbose=(
-                operation["args"]["verbose"]
-                if "verbose" in operation["args"]
-                else "auto"
-            ),
-            callbacks=(
-                [
-                    self.project_data[callback]
-                    for callback in operation["args"]["callbacks"]
-                ]
-                if "callbacks" in operation["args"]
-                else None
-            ),
-            validation_data=(
-                self.project_data[operation["args"]["validation_data"]]
-                if "validation_data" in operation["args"]
-                else None
-            ),
-            class_weight=(
-                operation["args"]["class_weight"]
-                if "class_weight" in operation["args"]
-                else None
-            ),
-            sample_weight=(
-                operation["args"]["sample_weight"]
-                if "sample_weight" in operation["args"]
-                else None
-            ),
-            initial_epoch=(
-                operation["args"]["initial_epoch"]
-                if "initial_epoch" in operation["args"]
-                else 0
-            ),
-            steps_per_epoch=(
-                operation["args"]["steps_per_epoch"]
-                if "steps_per_epoch" in operation["args"]
-                else None
-            ),
-            validation_steps=(
-                operation["args"]["validation_steps"]
-                if "validation_steps" in operation["args"]
-                else None
-            ),
-            validation_freq=(
-                operation["args"]["validation_freq"]
-                if "validation_freq" in operation["args"]
-                else 1
-            ),
-        )
+        case "fit":
+            self.project_data[operation["id"]].fit(
+                x=operation["data"]["dataset"],
+                epochs=(
+                    operation["data"]["epochs"] if "epochs" in operation["data"] else 1
+                ),
+                verbose=(
+                    operation["data"]["verbose"]
+                    if "verbose" in operation["data"]
+                    else "auto"
+                ),
+                callbacks=(
+                    [
+                        self.project_data[callback]
+                        for callback in operation["data"]["callbacks"]
+                    ]
+                    if "callbacks" in operation["data"]
+                    else None
+                ),
+                validation_data=(
+                    operation["data"]["validation_data"]
+                    if "validation_data" in operation["data"]
+                    else None
+                ),
+                class_weight=(
+                    operation["data"]["class_weight"]
+                    if "class_weight" in operation["data"]
+                    else None
+                ),
+                sample_weight=(
+                    operation["data"]["sample_weight"]
+                    if "sample_weight" in operation["data"]
+                    else None
+                ),
+                initial_epoch=(
+                    operation["data"]["initial_epoch"]
+                    if "initial_epoch" in operation["data"]
+                    else 0
+                ),
+                steps_per_epoch=(
+                    operation["data"]["steps_per_epoch"]
+                    if "steps_per_epoch" in operation["data"]
+                    else None
+                ),
+                validation_steps=(
+                    operation["data"]["validation_steps"]
+                    if "validation_steps" in operation["data"]
+                    else None
+                ),
+                validation_freq=(
+                    operation["data"]["validation_freq"]
+                    if "validation_freq" in operation["data"]
+                    else 1
+                ),
+            )
 
-    elif operation["method"] == "evaluate":
-        self.project_data[operation["uid"]].evaluate(
-            x=self.project_data[operation["args"]["dataset"]],
-            verbose=(
-                operation["args"]["verbose"]
-                if "verbose" in operation["args"]
-                else "auto"
-            ),
-            sample_weight=(
-                operation["args"]["sample_weight"]
-                if "sample_weight" in operation["args"]
-                else None
-            ),
-            steps=(
-                operation["args"]["steps"] if "steps" in operation["args"] else None
-            ),
-            callbacks=(
-                [
-                    self.project_data[callback]
-                    for callback in operation["args"]["callbacks"]
-                ]
-                if "callbacks" in operation["args"]
-                else None
-            ),
-            return_dict=(
-                operation["args"]["return_dict"]
-                if "return_dict" in operation["args"]
-                else False
-            ),
-        )
+        case "evaluate":
+            self.project_data[operation["id"]].evaluate(
+                x=operation["data"]["dataset"],
+                verbose=(
+                    operation["data"]["verbose"]
+                    if "verbose" in operation["data"]
+                    else "auto"
+                ),
+                sample_weight=(
+                    operation["data"]["sample_weight"]
+                    if "sample_weight" in operation["data"]
+                    else None
+                ),
+                steps=(
+                    operation["data"]["steps"] if "steps" in operation["data"] else None
+                ),
+                callbacks=(
+                    [
+                        self.project_data[callback]
+                        for callback in operation["data"]["callbacks"]
+                    ]
+                    if "callbacks" in operation["data"]
+                    else None
+                ),
+                return_dict=(
+                    operation["data"]["return_dict"]
+                    if "return_dict" in operation["data"]
+                    else False
+                ),
+            )
 
-    elif operation["method"] == "predict":
-        self.project_data[operation["uid"]].predict(
-            x=self.project_data[operation["args"]["dataset"]],
-            verbose=(
-                operation["args"]["verbose"]
-                if "verbose" in operation["args"]
-                else "auto"
-            ),
-            steps=(
-                operation["args"]["steps"] if "steps" in operation["args"] else None
-            ),
-            callbacks=(
-                [
-                    self.project_data[callback]
-                    for callback in operation["args"]["callbacks"]
-                ]
-                if "callbacks" in operation["args"]
-                else None
-            ),
-        )
+        case "predict":
+            self.project_data[operation["id"]].predict(
+                x=self.project_data[operation["data"]["dataset"]],
+                verbose=(
+                    operation["data"]["verbose"]
+                    if "verbose" in operation["data"]
+                    else "auto"
+                ),
+                steps=(
+                    operation["data"]["steps"] if "steps" in operation["data"] else None
+                ),
+                callbacks=(
+                    [
+                        self.project_data[callback]
+                        for callback in operation["data"]["callbacks"]
+                    ]
+                    if "callbacks" in operation["data"]
+                    else None
+                ),
+            )
