@@ -14,12 +14,12 @@ class WhitemindProject:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
-    from m_layer_factory import call as layer_factory_call
-    from m_model_factory import call as model_factory_call
-    from m_dataset_factory import call as dataset_factory_call
-    from m_initializer_factory import call as initializer_factory_call
-    from m_regularizer_factory import call as regularizer_factory_call
-    from m_constraint_factory import call as constraint_factory_call
+    from .m_layer_factory import call as layer_factory_call
+    from .m_model_factory import call as model_factory_call
+    from .m_dataset_factory import call as dataset_factory_call
+    from .m_initializer_factory import call as initializer_factory_call
+    from .m_regularizer_factory import call as regularizer_factory_call
+    from .m_constraint_factory import call as constraint_factory_call
 
     def execute(self) -> None:
         for operation in self.json_data["operations"]:
@@ -56,9 +56,3 @@ class WhitemindProject:
             if operation["destination"] == name:
                 inputs.append(operation["source"])
         return inputs
-
-
-if __name__ == "__main__":
-    a = WhitemindProject()
-    a.read_json("../../task.json")
-    a.execute()

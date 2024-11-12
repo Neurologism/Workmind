@@ -1,7 +1,7 @@
-import constraint_factories.f_maxnorm_factory as f_maxnorm_factory
-import constraint_factories.f_minmaxnorm_factory as f_minmaxnorm_factory
-import constraint_factories.f_nonneg_factory as f_nonneg_factory
-import constraint_factories.f_unitnorm_factory as f_unitnorm_factory
+from .constraint_factories import f_maxnorm_factory
+from .constraint_factories import f_minmaxnorm_factory
+from .constraint_factories import f_nonneg_factory
+from .constraint_factories import f_unitnorm_factory
 
 
 def new(self, operation: dict) -> None:

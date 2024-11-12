@@ -1,18 +1,18 @@
-import initializer_factories.f_constant_factory as f_constant_factory
-import initializer_factories.f_glorotnormal_factory as f_glorotnormal_factory
-import initializer_factories.f_glorotuniform_factory as f_glorotuniform_factory
-import initializer_factories.f_henormal_factory as f_henormal_factory
-import initializer_factories.f_heuniform_factory as f_heuniform_factory
-import initializer_factories.f_identity_factory as f_identity_factory
-import initializer_factories.f_lecunnormal_factory as f_lecunnormal_factory
-import initializer_factories.f_lecununiform_factory as f_lecununiform_factory
-import initializer_factories.f_ones_factory as f_ones_factory
-import initializer_factories.f_orthogonal_factory as f_orthogonal_factory
-import initializer_factories.f_randomnormal_factory as f_randomnormal_factory
-import initializer_factories.f_randomuniform_factory as f_randomuniform_factory
-import initializer_factories.f_truncatednormal_factory as f_truncatednormal_factory
-import initializer_factories.f_variancescaling_factory as f_variance_scaling_factory
-import initializer_factories.f_zeros_factory as f_zeros_factory
+from .initializer_factories import f_constant_factory
+from .initializer_factories import f_glorotnormal_factory
+from .initializer_factories import f_glorotuniform_factory
+from .initializer_factories import f_henormal_factory
+from .initializer_factories import f_heuniform_factory
+from .initializer_factories import f_identity_factory
+from .initializer_factories import f_lecunnormal_factory
+from .initializer_factories import f_lecununiform_factory
+from .initializer_factories import f_ones_factory
+from .initializer_factories import f_orthogonal_factory
+from .initializer_factories import f_randomnormal_factory
+from .initializer_factories import f_randomuniform_factory
+from .initializer_factories import f_truncatednormal_factory
+from .initializer_factories import f_variance_scaling_factory
+from .initializer_factories import f_zeros_factory
 
 
 def new(self, operation: dict) -> None:
