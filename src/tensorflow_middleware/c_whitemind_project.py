@@ -1,7 +1,12 @@
 import json
 import tensorflow as tf
 from numpy.f2py.auxfuncs import throw_error
-
+from .m_layer_factory import call as layer_factory_call
+from .m_model_factory import call as model_factory_call
+from .m_dataset_factory import call as dataset_factory_call
+from .m_initializer_factory import call as initializer_factory_call
+from .m_regularizer_factory import call as regularizer_factory_call
+from .m_constraint_factory import call as constraint_factory_call
 
 class WhitemindProject:
     def __init__(self, json_data: dict | None = None) -> None:
@@ -14,27 +19,43 @@ class WhitemindProject:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
-    from .m_layer_factory import call as layer_factory_call
-    from .m_model_factory import call as model_factory_call
-    from .m_dataset_factory import call as dataset_factory_call
-    from .m_initializer_factory import call as initializer_factory_call
-    from .m_regularizer_factory import call as regularizer_factory_call
-    from .m_constraint_factory import call as constraint_factory_call
+
 
     def execute(self) -> None:
-        class_nodes = {"layer": [], "model": [], "dataset": []}
+        class_nodes = {"layer": {}, "model": {}, "dataset": {}}
+        group_map = {}
 
+        # sort nodes by group
         for node in self.json_data["nodes"]:
-            class_nodes[node["group_identifier"]].append(node)
+            class_nodes[node["group_identifier"]][node["id"]] = node
+            group_map[node["id"]] = node["group_identifier"]
 
-        for node in class_nodes["dataset"]:
-            self.dataset_factory_call(node)
+        # store convert edge list to attributes of nodes
+        for edge in self.json_data["edges"]:
+            source_handle = edge["sourceHandle"].split("-")
+            target_handle = edge["targetHandle"].split("-")
 
-        for node in class_nodes["layer"]:
-            self.layer_factory_call(node)
+            if source_handle[0] == "val":
+                source_handle = source_handle[1:]
 
-        for node in class_nodes["model"]:
-            self.model_factory_call(node)
+            if target_handle[0] == "val":
+                target_handle = target_handle[1:]
+
+            if source_handle[0] not in class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"]:
+                class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][source_handle[0]] = []
+
+            if target_handle[0] not in class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"]:
+                class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][target_handle[0]] = []
+
+            class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][source_handle[0]].append(target_handle[1])
+            class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][target_handle[0]].append(source_handle[1])
+
+        # ATTENTION order of execution is important
+        dataset_factory_call(self, class_nodes["dataset"])
+
+        layer_factory_call(self, class_nodes["layer"])
+
+        model_factory_call(self, class_nodes["model"])
 
     def search_input(self, name: str) -> list:
         inputs = []
