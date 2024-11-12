@@ -119,15 +119,12 @@ from .layer_factories.activation_factories import f_prelu_factory
 from .layer_factories.activation_factories import f_relu_factory
 from .layer_factories.activation_factories import f_softmax_factory
 
-
-
-
-def call(self, operation: dict) -> None:
-    match operation["identifier"]:
+def create(self, layer: dict) -> None:
+    match layer["identifier"]:
         # case "Activation":
         #     f_activation_factory.call(self, operation)
         case "dense":
-            f_dense_factory.call(self, operation)
+            f_dense_factory.call(self, layer)
         # case "EinsumDense":
         #     f_einsumdense_factory.call(self, operation)
         # case "Embedding":
@@ -135,7 +132,7 @@ def call(self, operation: dict) -> None:
         # case "Identity":
         #     f_identity_factory.call(self, operation)
         case "input":
-            f_input_factory.call(self, operation)
+            f_input_factory.call(self, layer)
         # case "InputSpec":
         #     f_inputspec_factory.call(self, operation)
         # case "Lambda":
@@ -233,7 +230,7 @@ def call(self, operation: dict) -> None:
         # case "MelSpectrogram":
         #     f_melspectrogram_factory.call(self, operation)
         case "normalization":
-            f_normalization_factory.call(self, operation)
+            f_normalization_factory.call(self, layer)
         # case "Pipeline":
         #     f_pipeline_factory.call(self, operation)
         # case "RandomBrightness":
@@ -305,7 +302,7 @@ def call(self, operation: dict) -> None:
         # case "Cropping3D":
         #     f_cropping3d_factory.call(self, operation)
         case "flatten":
-            f_flatten_factory.call(self, operation)
+            f_flatten_factory.call(self, layer)
         # case "Permute":
         #     f_permute_factory.call(self, operation)
         # case "RepeatVector":
@@ -354,4 +351,30 @@ def call(self, operation: dict) -> None:
         #     f_softmax_factory.call(self, operation)
 
         case _:
-            raise ValueError(f"Layer class {operation["identifier"]} not supported")
+            raise ValueError(f"Layer class {layer["identifier"]} not supported")
+
+
+def topo_sort(self, layers: dict) -> list:
+    visited = set()
+    stack = []
+
+    def dfs(layer: dict) -> None:
+        if layer in visited:
+            return
+        visited.add(layer)
+        for child_id in layer["data"]["out"]:
+            if child_id in layers:
+                dfs(layers[child_id])
+
+        stack.append(layer)
+
+    for layer in layers.values():
+        dfs(layer)
+
+    return stack[::-1]
+
+
+def call(self, layers: dict) -> None:
+    sorted_layers = topo_sort(self, layers)
+    for layer in sorted_layers:
+        create(self, layer)
