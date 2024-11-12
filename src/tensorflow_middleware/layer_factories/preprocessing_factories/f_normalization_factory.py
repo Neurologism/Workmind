@@ -3,13 +3,13 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Normalization(
-        axis=(operation["args"]["axis"] if "axis" in operation["args"] else -1),
-        mean=(operation["args"]["mean"] if "mean" in operation["args"] else None),
+    self.project_data[operation["id"]] = keras.layers.Normalization(
+        axis=(operation["data"]["axis"] if "axis" in operation["data"] else -1),
+        mean=(operation["data"]["mean"] if "mean" in operation["data"] else None),
         variance=(
-            operation["args"]["variance"] if "variance" in operation["args"] else None
+            operation["data"]["variance"] if "variance" in operation["data"] else None
         ),
         invert=(
-            operation["args"]["invert"] if "invert" in operation["args"] else False
+            operation["data"]["invert"] if "invert" in operation["data"] else False
         ),
     )
