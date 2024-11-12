@@ -1,16 +1,16 @@
-import optimizer_factories.f_adadelta_factory as f_adadelta_factory
-import optimizer_factories.f_adafactor_factory as f_adafactor_factory
-import optimizer_factories.f_adagrad_factory as f_adagrad_factory
-import optimizer_factories.f_adam_factory as f_adam_factory
-import optimizer_factories.f_adamax_factory as f_adamax_factory
-import optimizer_factories.f_adamw_factory as f_adamw_factory
-import optimizer_factories.f_ftrl_factory as f_ftrl_factory
-import optimizer_factories.f_lamb_factory as f_lamb_factory
-import optimizer_factories.f_lion_factory as f_lion_factory
-import optimizer_factories.f_lossscaleoptimizer_factory as f_lossscaleoptimizer_factory
-import optimizer_factories.f_nadam_factory as f_nadam_factory
-import optimizer_factories.f_rmsprop_factory as f_rmsprop_factory
-import optimizer_factories.f_sgd_factory as f_sgd_factory
+from .optimizer_factories import f_adadelta_factory
+from .optimizer_factories import f_adafactor_factory
+from .optimizer_factories import f_adagrad_factory
+from .optimizer_factories import f_adam_factory
+from .optimizer_factories import f_adamax_factory
+from .optimizer_factories import f_adamw_factory
+from .optimizer_factories import f_ftrl_factory
+from .optimizer_factories import f_lamb_factory
+from .optimizer_factories import f_lion_factory
+from .optimizer_factories import f_lossscaleoptimizer_factory
+from .optimizer_factories import f_nadam_factory
+from .optimizer_factories import f_rmsprop_factory
+from .optimizer_factories import f_sgd_factory
 
 
 def new(self, operation: dict) -> None:
