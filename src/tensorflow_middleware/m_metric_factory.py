@@ -41,6 +41,7 @@ import metric_factories.f_topkcategoricalaccuracy_factory as f_topkcategoricalac
 import metric_factories.f_truenegatives_factory as f_truenegatives_factory
 import metric_factories.f_truepositives_factory as f_truepositives_factory
 
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "Accuracy":

@@ -4,8 +4,20 @@ import keras
 
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.metrics.BinaryCrossentropy(
-        name=(operation["args"]["name"] if "name" in operation["args"] else "binary_crossentropy"),
+        name=(
+            operation["args"]["name"]
+            if "name" in operation["args"]
+            else "binary_crossentropy"
+        ),
         dtype=(operation["args"]["dtype"] if "dtype" in operation["args"] else None),
-        from_logits=(operation["args"]["from_logits"] if "from_logits" in operation["args"] else False),
-        label_smoothing=(operation["args"]["label_smoothing"] if "label_smoothing" in operation["args"] else 0),
+        from_logits=(
+            operation["args"]["from_logits"]
+            if "from_logits" in operation["args"]
+            else False
+        ),
+        label_smoothing=(
+            operation["args"]["label_smoothing"]
+            if "label_smoothing" in operation["args"]
+            else 0
+        ),
     )

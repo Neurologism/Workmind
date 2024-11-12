@@ -4,6 +4,10 @@ import keras
 
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.metrics.SparseCategoricalAccuracy(
-        name=(operation["args"]["name"] if "name" in operation["args"] else "sparse_categorical_accuracy"),
+        name=(
+            operation["args"]["name"]
+            if "name" in operation["args"]
+            else "sparse_categorical_accuracy"
+        ),
         dtype=(operation["args"]["dtype"] if "dtype" in operation["args"] else None),
     )

@@ -19,6 +19,7 @@ import loss_factories.f_sparsecategoricalcrossentropy_factory as f_sparsecategor
 import loss_factories.f_squaredhinge_factory as f_squaredhinge_factory
 import loss_factories.f_tversky_factory as f_tversky_factory
 
+
 def new(self, operation: dict) -> None:
     match operation["args"]["class"]:
         case "BinaryCrossentropy":
