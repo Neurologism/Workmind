@@ -11,12 +11,13 @@ ds = tfds.load(
 )
 ds = ds.batch(32)
 
-layer = keras.layers.Normalization()
-layer.adapt(ds.map(lambda x, y: x))
-ds = ds.map(lambda x, y: (layer(x), y))
 
-input = keras.layers.Input(shape=(28, 28))
-x = keras.layers.Flatten()(input)
+
+input = keras.layers.Input(shape=(28, 28, 1))
+normalization = keras.layers.Normalization()
+normalization.adapt(ds.map(lambda x, y: x))
+x = normalization(input)
+x = keras.layers.Flatten()(x)
 x = keras.layers.Dense(128, activation="relu")(x)
 output = keras.layers.Dense(10, activation="softmax")(x)
 
