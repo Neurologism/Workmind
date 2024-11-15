@@ -205,3 +205,9 @@ def call(self, nodes: dict) -> None:
 
             case "predict":
                 predict(self, node)
+
+            case "start":
+                pass
+
+            case _:
+                raise ValueError(f"Unknown operation: {node['identifier']}")
