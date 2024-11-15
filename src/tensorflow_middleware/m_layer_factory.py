@@ -121,234 +121,234 @@ from .layer_factories.activation_factories import f_softmax_factory
 
 def create(self, layer: dict) -> None:
     match layer["identifier"]:
-        # case "Activation":
-        #     f_activation_factory.call(self, operation)
+        case "Activation":
+            f_activation_factory.call(self, layer)
         case "dense":
             f_dense_factory.call(self, layer)
         # case "EinsumDense":
-        #     f_einsumdense_factory.call(self, operation)
-        # case "Embedding":
-        #     f_embedding_factory.call(self, operation)
+        #     f_einsumdense_factory.call(self, layer)
+        case "Embedding":
+            f_embedding_factory.call(self, layer)
         # case "Identity":
-        #     f_identity_factory.call(self, operation)
+        #     f_identity_factory.call(self, layer)
         case "input":
             f_input_factory.call(self, layer)
         # case "InputSpec":
-        #     f_inputspec_factory.call(self, operation)
+        #     f_inputspec_factory.call(self, layer)
         # case "Lambda":
-        #     f_lambda_factory.call(self, operation)
+        #     f_lambda_factory.call(self, layer)
         # case "Masking":
-        #     f_masking_factory.call(self, operation)
+        #     f_masking_factory.call(self, layer)
         #
-        # case "Conv1D":
-        #     f_conv1d_factory.call(self, operation)
+        case "Conv1D":
+            f_conv1d_factory.call(self, layer)
         # case "Conv1DTranspose":
-        #     f_conv1dtranspose_factory.call(self, operation)
-        # case "Conv2D":
-        #     f_conv2d_factory.call(self, operation)
+        #     f_conv1dtranspose_factory.call(self, layer)
+        case "Conv2D":
+            f_conv2d_factory.call(self, layer)
         # case "Conv2DTranspose":
-        #     f_conv2dtranspose_factory.call(self, operation)
-        # case "Conv3D":
-        #     f_conv3d_factory.call(self, operation)
+        #     f_conv2dtranspose_factory.call(self, layer)
+        case "Conv3D":
+            f_conv3d_factory.call(self, layer)
         # case "Conv3DTranspose":
-        #     f_conv3dtranspose_factory.call(self, operation)
+        #     f_conv3dtranspose_factory.call(self, layer)
         # case "DepthwiseConv1D":
-        #     f_depthwiseconv1d_factory.call(self, operation)
+        #     f_depthwiseconv1d_factory.call(self, layer)
         # case "DepthwiseConv2D":
-        #     f_depthwiseconv2d_factory.call(self, operation)
+        #     f_depthwiseconv2d_factory.call(self, layer)
         # case "SeparableConv1D":
-        #     f_separableconv1d_factory.call(self, operation)
+        #     f_separableconv1d_factory.call(self, layer)
         # case "SeparableConv2D":
-        #     f_separableconv2d_factory.call(self, operation)
+        #     f_separableconv2d_factory.call(self, layer)
         #
         # case "AveragePooling1D":
-        #     f_averagepooling1d_factory.call(self, operation)
+        #     f_averagepooling1d_factory.call(self, layer)
         # case "AveragePooling2D":
-        #     f_averagepooling2d_factory.call(self, operation)
+        #     f_averagepooling2d_factory.call(self, layer)
         # case "AveragePooling3D":
-        #     f_averagepooling3d_factory.call(self, operation)
+        #     f_averagepooling3d_factory.call(self, layer)
         # case "GlobalAveragePooling1D":
-        #     f_globalaveragepooling1d_factory.call(self, operation)
+        #     f_globalaveragepooling1d_factory.call(self, layer)
         # case "GlobalAveragePooling2D":
-        #     f_globalaveragepooling2d_factory.call(self, operation)
+        #     f_globalaveragepooling2d_factory.call(self, layer)
         # case "GlobalAveragePooling3D":
-        #     f_globalaveragepooling3d_factory.call(self, operation)
+        #     f_globalaveragepooling3d_factory.call(self, layer)
         # case "GlobalMaxPooling1D":
-        #     f_globalmaxpooling1d_factory.call(self, operation)
+        #     f_globalmaxpooling1d_factory.call(self, layer)
         # case "GlobalMaxPooling2D":
-        #     f_globalmaxpooling2d_factory.call(self, operation)
+        #     f_globalmaxpooling2d_factory.call(self, layer)
         # case "GlobalMaxPooling3D":
-        #     f_globalmaxpooling3d_factory.call(self, operation)
+        #     f_globalmaxpooling3d_factory.call(self, layer)
         # case "MaxPooling1D":
-        #     f_maxpooling1d_factory.call(self, operation)
+        #     f_maxpooling1d_factory.call(self, layer)
         # case "MaxPooling2D":
-        #     f_maxpooling2d_factory.call(self, operation)
+        #     f_maxpooling2d_factory.call(self, layer)
         # case "MaxPooling3D":
-        #     f_maxpooling3d_factory.call(self, operation)
+        #     f_maxpooling3d_factory.call(self, layer)
         #
         # case "BaseRNN":
-        #     f_basernn_factory.call(self, operation)
+        #     f_basernn_factory.call(self, layer)
         # case "Bidirectional":
-        #     f_bidirectional_factory.call(self, operation)
+        #     f_bidirectional_factory.call(self, layer)
         # case "ConvLSTM1D":
-        #     f_convlstm1d_factory.call(self, operation)
+        #     f_convlstm1d_factory.call(self, layer)
         # case "ConvLSTM2D":
-        #     f_convlstm2d_factory.call(self, operation)
+        #     f_convlstm2d_factory.call(self, layer)
         # case "ConvLSTM3D":
-        #     f_convlstm3d_factory.call(self, operation)
+        #     f_convlstm3d_factory.call(self, layer)
         # case "GRU":
-        #     f_gru_factory.call(self, operation)
+        #     f_gru_factory.call(self, layer)
         # case "GRUCell":
-        #     f_grucell_factory.call(self, operation)
+        #     f_grucell_factory.call(self, layer)
         # case "LSTM":
-        #     f_lstm_factory.call(self, operation)
+        #     f_lstm_factory.call(self, layer)
         # case "LSTMCell":
-        #     f_lstmcell_factory.call(self, operation)
+        #     f_lstmcell_factory.call(self, layer)
         # case "SimpleRNN":
-        #     f_simplernn_factory.call(self, operation)
+        #     f_simplernn_factory.call(self, layer)
         # case "SimpleRNNCell":
-        #     f_simplernncell_factory.call(self, operation)
+        #     f_simplernncell_factory.call(self, layer)
         # case "StackedRNNCell":
-        #     f_stackedrnncell_factory.call(self, operation)
+        #     f_stackedrnncell_factory.call(self, layer)
         # case "TimeDistributed":
-        #     f_timedistributed_factory.call(self, operation)
+        #     f_timedistributed_factory.call(self, layer)
         #
         # case "AutoContrast":
-        #     f_autocontrast_factory.call(self, operation)
+        #     f_autocontrast_factory.call(self, layer)
         # case "CategoryEncoding":
-        #     f_categoryencoding_factory.call(self, operation)
+        #     f_categoryencoding_factory.call(self, layer)
         # case "CenterCrop":
-        #     f_centercrop_factory.call(self, operation)
+        #     f_centercrop_factory.call(self, layer)
         # case "Discretization":
-        #     f_discretization_factory.call(self, operation)
+        #     f_discretization_factory.call(self, layer)
         # case "HashedCrossing":
-        #     f_hashedcrossing_factory.call(self, operation)
+        #     f_hashedcrossing_factory.call(self, layer)
         # case "Hashing":
-        #     f_hasing_factory.call(self, operation)
+        #     f_hasing_factory.call(self, layer)
         # case "IntegerLookup":
-        #     f_integerlookup_factory.call(self, operation)
+        #     f_integerlookup_factory.call(self, layer)
         # case "MelSpectrogram":
-        #     f_melspectrogram_factory.call(self, operation)
+        #     f_melspectrogram_factory.call(self, layer)
         case "normalization":
             f_normalization_factory.call(self, layer)
         # case "Pipeline":
-        #     f_pipeline_factory.call(self, operation)
+        #     f_pipeline_factory.call(self, layer)
         # case "RandomBrightness":
-        #     f_randombrightness_factory.call(self, operation)
+        #     f_randombrightness_factory.call(self, layer)
         # case "RandomContrast":
-        #     f_randomcontrast_factory.call(self, operation)
+        #     f_randomcontrast_factory.call(self, layer)
         # case "RandomCrop":
-        #     f_randomcrop_factory.call(self, operation)
+        #     f_randomcrop_factory.call(self, layer)
         # case "RandomFlip":
-        #     f_randomflip_factory.call(self, operation)
+        #     f_randomflip_factory.call(self, layer)
         # case "RandomRotation":
-        #     f_randomrotation_factory.call(self, operation)
+        #     f_randomrotation_factory.call(self, layer)
         # case "RandomTranslation":
-        #     f_randomtranslation_factory.call(self, operation)
+        #     f_randomtranslation_factory.call(self, layer)
         # case "RandomZoom":
-        #     f_randomzoom_factory.call(self, operation)
+        #     f_randomzoom_factory.call(self, layer)
         # case "Rescaling":
-        #     f_rescaling_factory.call(self, operation)
+        #     f_rescaling_factory.call(self, layer)
         # case "Resizing":
-        #     f_resizing_factory.call(self, operation)
+        #     f_resizing_factory.call(self, layer)
         # case "Solarization":
-        #     f_solarization_factory.call(self, operation)
+        #     f_solarization_factory.call(self, layer)
         # case "SpectralNormalization":
-        #     f_spectralnormalization_factory.call(self, operation)
+        #     f_spectralnormalization_factory.call(self, layer)
         # case "StringLookup":
-        #     f_stringlookup_factory.call(self, operation)
+        #     f_stringlookup_factory.call(self, layer)
         # case "TextVectorization":
-        #     f_textvectorization_factory.call(self, operation)
+        #     f_textvectorization_factory.call(self, layer)
         #
-        # case "BatchNormalization":
-        #     f_batchnormalization_factory.call(self, operation)
+        case "BatchNormalization":
+            f_batchnormalization_factory.call(self, layer)
         # case "GroupNormalization":
-        #     f_groupnormalization_factory.call(self, operation)
+        #     f_groupnormalization_factory.call(self, layer)
         # case "LayerNormalization":
-        #     f_layernormalization_factory.call(self, operation)
+        #     f_layernormalization_factory.call(self, layer)
         # case "UnitNormalization":
-        #     f_unitnormalization_factory.call(self, operation)
+        #     f_unitnormalization_factory.call(self, layer)
         #
         # case "ActivityRegularization":
-        #     f_activityregularization_factory.call(self, operation)
+        #     f_activityregularization_factory.call(self, layer)
         # case "AlphaDropout":
-        #     f_alphadropout_factory.call(self, operation)
-        # case "Dropout":
-        #     f_dropout_factory.call(self, operation)
+        #     f_alphadropout_factory.call(self, layer)
+        case "Dropout":
+            f_dropout_factory.call(self, layer)
         # case "GaussianDropout":
-        #     f_gaussiandropout_factory.call(self, operation)
+        #     f_gaussiandropout_factory.call(self, layer)
         # case "GaussianNoise":
-        #     f_gaussiannoise_factory.call(self, operation)
+        #     f_gaussiannoise_factory.call(self, layer)
         # case "SpatialDropout1D":
-        #     f_spatialdropout1d_factory.call(self, operation)
+        #     f_spatialdropout1d_factory.call(self, layer)
         # case "SpatialDropout2D":
-        #     f_spatialdropout2d_factory.call(self, operation)
+        #     f_spatialdropout2d_factory.call(self, layer)
         # case "SpatialDropout3D":
-        #     f_spatialdropout3d_factory.call(self, operation)
+        #     f_spatialdropout3d_factory.call(self, layer)
         #
         # case "AdditiveAttention":
-        #     f_additiveattention_factory.call(self, operation)
+        #     f_additiveattention_factory.call(self, layer)
         # case "Attention":
-        #     f_attention_factory.call(self, operation)
+        #     f_attention_factory.call(self, layer)
         # case "GroupQueryAttention":
-        #     f_groupqueryattention_factory.call(self, operation)
+        #     f_groupqueryattention_factory.call(self, layer)
         # case "MultiHeadAttention":
-        #     f_multiheadattention_factory.call(self, operation)
+        #     f_multiheadattention_factory.call(self, layer)
         #
         # case "Cropping1D":
-        #     f_cropping1d_factory.call(self, operation)
+        #     f_cropping1d_factory.call(self, layer)
         # case "Cropping2D":
-        #     f_cropping2d_factory.call(self, operation)
+        #     f_cropping2d_factory.call(self, layer)
         # case "Cropping3D":
-        #     f_cropping3d_factory.call(self, operation)
+        #     f_cropping3d_factory.call(self, layer)
         case "flatten":
             f_flatten_factory.call(self, layer)
         # case "Permute":
-        #     f_permute_factory.call(self, operation)
+        #     f_permute_factory.call(self, layer)
         # case "RepeatVector":
-        #     f_repeatvector_factory.call(self, operation)
+        #     f_repeatvector_factory.call(self, layer)
         # case "Reshape":
-        #     f_reshape_factory.call(self, operation)
+        #     f_reshape_factory.call(self, layer)
         # case "Upsampling1D":
-        #     f_upsampling1d_factory.call(self, operation)
+        #     f_upsampling1d_factory.call(self, layer)
         # case "Upsampling2D":
-        #     f_upsampling2d_factory.call(self, operation)
+        #     f_upsampling2d_factory.call(self, layer)
         # case "Upsampling3D":
-        #     f_upsampling3d_factory.call(self, operation)
+        #     f_upsampling3d_factory.call(self, layer)
         # case "ZeroPadding1D":
-        #     f_zeropadding1d_factory.call(self, operation)
+        #     f_zeropadding1d_factory.call(self, layer)
         # case "ZeroPadding2D":
-        #     f_zeropadding2d_factory.call(self, operation)
+        #     f_zeropadding2d_factory.call(self, layer)
         # case "ZeroPadding3D":
-        #     f_zeropadding3d_factory.call(self, operation)
+        #     f_zeropadding3d_factory.call(self, layer)
         #
         # case "Add":
-        #     f_add_factory.call(self, operation)
-        # case "Average":
-        #     f_average_factory.call(self, operation)
+        #     f_add_factory.call(self, layer)
+        case "Average":
+            f_average_factory.call(self, layer)
         # case "Concatenate":
-        #     f_concatenate_factory.call(self, operation)
+        #     f_concatenate_factory.call(self, layer)
         # case "Dot":
-        #     f_dot_factory.call(self, operation)
+        #     f_dot_factory.call(self, layer)
         # case "Maximum":
-        #     f_maximum_factory.call(self, operation)
+        #     f_maximum_factory.call(self, layer)
         # case "Minimum":
-        #     f_minimum_factory.call(self, operation)
+        #     f_minimum_factory.call(self, layer)
         # case "Multiply":
-        #     f_multiply_factory.call(self, operation)
+        #     f_multiply_factory.call(self, layer)
         # case "Subtract":
-        #     f_subtract_factory.call(self, operation)
+        #     f_subtract_factory.call(self, layer)
         #
         # case "ELU":
-        #     f_elu_factory.call(self, operation)
+        #     f_elu_factory.call(self, layer)
         # case "LeakyReLU":
-        #     f_leakyrelu_factory.call(self, operation)
+        #     f_leakyrelu_factory.call(self, layer)
         # case "PReLU":
-        #     f_prelu_factory.call(self, operation)
-        # case "ReLU":
-        #     f_relu_factory.call(self, operation)
+        #     f_prelu_factory.call(self, layer)
+        case "ReLU":
+            f_relu_factory.call(self, layer)
         # case "Softmax":
-        #     f_softmax_factory.call(self, operation)
+        #     f_softmax_factory.call(self, layer)
 
         case _:
             raise ValueError(f"Layer class {layer["identifier"]} not supported")
