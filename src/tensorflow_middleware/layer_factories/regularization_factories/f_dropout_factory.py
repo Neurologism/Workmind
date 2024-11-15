@@ -3,12 +3,12 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Dropout(
-        rate=operation["args"]["rate"],
+    self.project_data[operation["id"]] = keras.layers.Dropout(
+        rate=operation["data"]["rate"],
         noise_shape=(
-            operation["args"]["noise_shape"]
-            if "noise_shape" in operation["args"]
+            operation["data"]["noise_shape"]
+            if "noise_shape" in operation["data"]
             else None
         ),
-        seed=(operation["args"]["seed"] if "seed" in operation["args"] else None),
+        seed=(operation["data"]["seed"] if "seed" in operation["data"] else None),
     )

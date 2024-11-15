@@ -3,52 +3,52 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Dense(
-        operation["args"]["units"],
+    self.project_data[operation["id"]] = keras.layers.Dense(
+        units=operation["data"]["units"],
         activation=(
-            operation["args"]["activation"]
-            if "activation" in operation["args"]
+            operation["data"]["activation"]
+            if "activation" in operation["data"]
             else None
         ),
         use_bias=(
-            operation["args"]["use_bias"] if "use_bias" in operation["args"] else True
+            operation["data"]["use_bias"] if "use_bias" in operation["data"] else True
         ),
         kernel_initializer=(
-            operation["args"]["kernel_initializer"]
-            if "kernel_initializer" in operation["args"]
+            operation["data"]["kernel_initializer"]
+            if "kernel_initializer" in operation["data"]
             else "glorot_uniform"
         ),
         bias_initializer=(
-            operation["args"]["bias_initializer"]
-            if "bias_initializer" in operation["args"]
+            operation["data"]["bias_initializer"]
+            if "bias_initializer" in operation["data"]
             else "zeros"
         ),
         kernel_regularizer=(
-            self.project_data[operation["args"]["kernel_regularizer"]]
-            if "kernel_regularizer" in operation["args"]
+            self.project_data[operation["data"]["kernel_regularizer"]]
+            if "kernel_regularizer" in operation["data"]
             else None
         ),
         bias_regularizer=(
-            self.project_data[operation["args"]["bias_regularizer"]]
-            if "bias_regularizer" in operation["args"]
+            self.project_data[operation["data"]["bias_regularizer"]]
+            if "bias_regularizer" in operation["data"]
             else None
         ),
         activity_regularizer=(
-            self.project_data[operation["args"]["activity_regularizer"]]
-            if "activity_regularizer" in operation["args"]
+            self.project_data[operation["data"]["activity_regularizer"]]
+            if "activity_regularizer" in operation["data"]
             else None
         ),
         kernel_constraint=(
-            self.project_data[operation["args"]["kernel_constraint"]]
-            if "kernel_constraint" in operation["args"]
+            self.project_data[operation["data"]["kernel_constraint"]]
+            if "kernel_constraint" in operation["data"]
             else None
         ),
         bias_constraint=(
-            self.project_data[operation["args"]["bias_constraint"]]
-            if "bias_constraint" in operation["args"]
+            self.project_data[operation["data"]["bias_constraint"]]
+            if "bias_constraint" in operation["data"]
             else None
         ),
         lora_rank=(
-            operation["args"]["lora_rank"] if "lora_rank" in operation["args"] else None
+            operation["data"]["lora_rank"] if "lora_rank" in operation["data"] else None
         ),
     )

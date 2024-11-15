@@ -1,6 +1,6 @@
-import regularizer_factories.f_l1_factory as f_l1_factory
-import regularizer_factories.f_l1l2_factory as f_l1l2_factory
-import regularizer_factories.f_l2_factory as f_l2_factory
+from .regularizer_factories import f_l1_factory
+from .regularizer_factories import f_l1l2_factory
+from .regularizer_factories import f_l2_factory
 
 
 def new(self, operation: dict) -> None:

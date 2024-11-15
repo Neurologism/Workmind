@@ -3,65 +3,65 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Conv1D(
-        operation["args"]["filters"],
-        operation["args"]["kernel_size"],
-        strides=(operation["args"]["strides"] if "strides" in operation["args"] else 1),
+    self.project_data[operation["id"]] = keras.layers.Conv1D(
+        operation["data"]["filters"],
+        operation["data"]["kernel_size"],
+        strides=(operation["data"]["strides"] if "strides" in operation["data"] else 1),
         padding=(
-            operation["args"]["padding"] if "padding" in operation["args"] else "valid"
+            operation["data"]["padding"] if "padding" in operation["data"] else "valid"
         ),
         data_format=(
-            operation["args"]["data_format"]
-            if "data_format" in operation["args"]
+            operation["data"]["data_format"]
+            if "data_format" in operation["data"]
             else "channels_last"
         ),
         dilation_rate=(
-            operation["args"]["dilation_rate"]
-            if "dilation_rate" in operation["args"]
+            operation["data"]["dilation_rate"]
+            if "dilation_rate" in operation["data"]
             else 1
         ),
-        groups=(operation["args"]["groups"] if "groups" in operation["args"] else 1),
+        groups=(operation["data"]["groups"] if "groups" in operation["data"] else 1),
         activation=(
-            operation["args"]["activation"]
-            if "activation" in operation["args"]
+            operation["data"]["activation"]
+            if "activation" in operation["data"]
             else None
         ),
         use_bias=(
-            operation["args"]["use_bias"] if "use_bias" in operation["args"] else True
+            operation["data"]["use_bias"] if "use_bias" in operation["data"] else True
         ),
         kernel_initializer=(
-            operation["args"]["kernel_initializer"]
-            if "kernel_initializer" in operation["args"]
+            operation["data"]["kernel_initializer"]
+            if "kernel_initializer" in operation["data"]
             else "glorot_uniform"
         ),
         bias_initializer=(
-            operation["args"]["bias_initializer"]
-            if "bias_initializer" in operation["args"]
+            operation["data"]["bias_initializer"]
+            if "bias_initializer" in operation["data"]
             else "zeros"
         ),
         kernel_regularizer=(
-            self.project_data[operation["args"]["kernel_regularizer"]]
-            if "kernel_regularizer" in operation["args"]
+            self.project_data[operation["data"]["kernel_regularizer"]]
+            if "kernel_regularizer" in operation["data"]
             else None
         ),
         bias_regularizer=(
-            self.project_data[operation["args"]["bias_regularizer"]]
-            if "bias_regularizer" in operation["args"]
+            self.project_data[operation["data"]["bias_regularizer"]]
+            if "bias_regularizer" in operation["data"]
             else None
         ),
         activity_regularizer=(
-            self.project_data[operation["args"]["activity_regularizer"]]
-            if "activity_regularizer" in operation["args"]
+            self.project_data[operation["data"]["activity_regularizer"]]
+            if "activity_regularizer" in operation["data"]
             else None
         ),
         kernel_constraint=(
-            self.project_data[operation["args"]["kernel_constraint"]]
-            if "kernel_constraint" in operation["args"]
+            self.project_data[operation["data"]["kernel_constraint"]]
+            if "kernel_constraint" in operation["data"]
             else None
         ),
         bias_constraint=(
-            self.project_data[operation["args"]["bias_constraint"]]
-            if "bias_constraint" in operation["args"]
+            self.project_data[operation["data"]["bias_constraint"]]
+            if "bias_constraint" in operation["data"]
             else None
         ),
     )

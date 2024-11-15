@@ -3,8 +3,16 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.ReLU(
-        max_value=operation["args"]["max_value"],
-        negative_slope=operation["args"]["negative_slope"],
-        threshold=operation["args"]["threshold"],
+    self.project_data[operation["id"]] = keras.layers.ReLU(
+        max_value=(
+            operation["data"]["max_value"] if "max_value" in operation["data"] else None
+        ),
+        negative_slope=(
+            operation["data"]["negative_slope"]
+            if "negative_slope" in operation["data"]
+            else 0
+        ),
+        threshold=(
+            operation["data"]["threshold"] if "threshold" in operation["data"] else 0
+        ),
     )

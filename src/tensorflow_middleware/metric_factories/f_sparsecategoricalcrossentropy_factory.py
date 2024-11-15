@@ -1,0 +1,19 @@
+import tensorflow as tf
+import keras
+
+
+def call(self, operation: dict) -> None:
+    self.project_data[operation["uid"]] = keras.metrics.SparseCategoricalCrossentropy(
+        name=(
+            operation["args"]["name"]
+            if "name" in operation["args"]
+            else "sparse_categorical_crossentropy"
+        ),
+        dtype=(operation["args"]["dtype"] if "dtype" in operation["args"] else None),
+        from_logits=(
+            operation["args"]["from_logits"]
+            if "from_logits" in operation["args"]
+            else False
+        ),
+        axis=(operation["args"]["axis"] if "axis" in operation["args"] else -1),
+    )

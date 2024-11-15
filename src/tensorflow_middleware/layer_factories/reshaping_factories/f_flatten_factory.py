@@ -3,10 +3,10 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Flatten(
+    self.project_data[operation["id"]] = keras.layers.Flatten(
         data_format=(
-            operation["args"]["data_format"]
-            if "data_format" in operation["args"]
+            operation["data"]["data_format"]
+            if "data_format" in operation["data"]
             else None
         ),
     )

@@ -4,33 +4,31 @@ from keras.src.utils.module_utils import tensorflow
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.Input(
+    self.project_data[operation["id"]] = keras.layers.Input(
         shape=(
-            tuple(x for x in operation["args"]["shape"])
-            if "shape" in operation["args"]
+            tuple(x for x in operation["data"]["shape"])
+            if "shape" in operation["data"]
             else None
         ),
         batch_size=(
-            operation["args"]["batch_size"]
-            if "batch_size" in operation["args"]
-            else None
+            operation["data"]["batch_size"] if operation["data"]["batch_size"] else None
         ),
-        dtype=(operation["args"]["dtype"] if "dtype" in operation["args"] else None),
+        dtype=(operation["data"]["dtype"] if "dtype" in operation["data"] else None),
         sparse=(
-            operation["args"]["sparse"] if "sparse" in operation["args"] else False
+            operation["data"]["sparse"] if "sparse" in operation["data"] else False
         ),
         batch_shape=(
-            tuple(x for x in operation["args"]["batch_shape"])
-            if "batch_shape" in operation["args"]
+            tuple(x for x in operation["data"]["batch_shape"])
+            if "batch_shape" in operation["data"]
             else None
         ),
-        name=(operation["args"]["name"] if "name" in operation["args"] else None),
+        name=(operation["data"]["name"] if "name" in operation["data"] else None),
         tensor=(
-            self.project_data[operation["args"]["tensor"]]
-            if "tensor" in operation["args"]
+            self.project_data[operation["data"]["tensor"]]
+            if "tensor" in operation["data"]
             else None
         ),
         optional=(
-            operation["args"]["optional"] if "optional" in operation["args"] else False
+            operation["data"]["optional"] if "optional" in operation["data"] else False
         ),
     )
