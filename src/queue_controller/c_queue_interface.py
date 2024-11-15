@@ -47,7 +47,7 @@ class QueueInterface:
             db_updater_thread.start()
             project.execute()
         except Exception as e:
-            print("Error during trainig")
+            print("Error during trainig, check database for details")
             self.db_models.update_one(
                 {"_id": queue_item["model_id"]},
                 {
@@ -58,7 +58,6 @@ class QueueInterface:
                     }
                 },
             )
-            raise e
         finally:
             self.db_updater_running = False
 
