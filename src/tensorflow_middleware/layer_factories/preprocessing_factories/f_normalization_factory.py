@@ -13,5 +13,6 @@ def call(self, operation: dict) -> None:
             operation["data"]["invert"] if "invert" in operation["data"] else False
         ),
     )
-    self.project_data[operation["id"]].adapt(self.project_data[operation["data"]["adapt"][0]].map(lambda x, y: x))
-
+    self.project_data[operation["id"]].adapt(
+        self.project_data[operation["data"]["adapt"][0]].map(lambda x, y: x)
+    )

@@ -119,6 +119,7 @@ from .layer_factories.activation_factories import f_prelu_factory
 from .layer_factories.activation_factories import f_relu_factory
 from .layer_factories.activation_factories import f_softmax_factory
 
+
 def create(self, layer: dict) -> None:
     match layer["identifier"]:
         case "Activation":
@@ -386,7 +387,11 @@ def call(self, layers: dict) -> None:
                 layer_inputs.append(self.project_data[input_id])
 
         if len(layer_inputs) == 1:
-            self.project_data[layer["id"]] = self.project_data[layer["id"]](layer_inputs[0])
+            self.project_data[layer["id"]] = self.project_data[layer["id"]](
+                layer_inputs[0]
+            )
 
         elif len(layer_inputs) > 1:
-            self.project_data[layer["id"]] = self.project_data[layer["id"]](layer_inputs)
+            self.project_data[layer["id"]] = self.project_data[layer["id"]](
+                layer_inputs
+            )

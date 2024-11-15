@@ -11,9 +11,7 @@ def call(self, operation: dict) -> None:
             else None
         ),
         batch_size=(
-            operation["data"]["batch_size"]
-            if operation["data"]["batch_size"]
-            else None
+            operation["data"]["batch_size"] if operation["data"]["batch_size"] else None
         ),
         dtype=(operation["data"]["dtype"] if "dtype" in operation["data"] else None),
         sparse=(

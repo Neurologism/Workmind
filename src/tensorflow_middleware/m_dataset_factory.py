@@ -6,13 +6,9 @@ import tensorflow_datasets as tfds
 def load(self, operation: dict) -> None:
     ds = tfds.load(
         name=operation["data"]["name"],
-        split=(
-            operation["data"]["split"] if "split" in operation["data"] else None
-        ),
+        split=(operation["data"]["split"] if "split" in operation["data"] else None),
         data_dir=(
-            operation["data"]["data_dir"]
-            if "data_dir" in operation["data"]
-            else None
+            operation["data"]["data_dir"] if "data_dir" in operation["data"] else None
         ),
         batch_size=(
             operation["data"]["batch_size"]
@@ -25,9 +21,7 @@ def load(self, operation: dict) -> None:
             else True
         ),
         download=(
-            operation["data"]["download"]
-            if "download" in operation["data"]
-            else True
+            operation["data"]["download"] if "download" in operation["data"] else True
         ),
         as_supervised=(
             operation["data"]["as_supervised"]
@@ -35,10 +29,7 @@ def load(self, operation: dict) -> None:
             else True
         ),
         decoders=(
-            [
-                self.project_data[decoder]
-                for decoder in operation["data"]["decoders"]
-            ]
+            [self.project_data[decoder] for decoder in operation["data"]["decoders"]]
             if "decoders" in operation["data"]
             else None
         ),
@@ -68,9 +59,7 @@ def load(self, operation: dict) -> None:
             else None
         ),
         try_gcs=(
-            operation["data"]["try_gcs"]
-            if "try_gcs" in operation["data"]
-            else False
+            operation["data"]["try_gcs"] if "try_gcs" in operation["data"] else False
         ),
     )
     # assert isinstance(ds, tf.data.Dataset)
@@ -82,6 +71,7 @@ def load(self, operation: dict) -> None:
     # expand with more preprocessing methods
 
     self.project_data[operation["id"]] = ds
+
 
 def call(self, nodes: dict) -> None:
     for node in nodes.values():
