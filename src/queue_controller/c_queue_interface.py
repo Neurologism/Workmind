@@ -2,7 +2,7 @@ from pymongo import MongoClient
 import time
 from datetime import datetime
 from tensorflow_middleware import WhitemindProject
-from pprint import pprint
+import threading
 
 
 class QueueInterface:
@@ -11,6 +11,9 @@ class QueueInterface:
         self.db = self.mongo_client[db_name]
         self.db_training_queue = self.db["training_queue"]
         self.db_models = self.db["models"]
+        self.db_updater_running = False
+        self.logging_payloads = []
+        self.model = None
 
     def train_one(self) -> None:
         queue_item = self.db_training_queue.find_one_and_delete({})
@@ -20,11 +23,10 @@ class QueueInterface:
             while queue_item is None:
                 time.sleep(5)
                 queue_item = self.db_training_queue.find_one_and_delete({})
-
         print("Queue item found.")
 
-        model = self.db_models.find_one({"_id": queue_item["model_id"]})
-        if model is None:
+        self.model = self.db_models.find_one({"_id": queue_item["model_id"]})
+        if self.model is None:
             raise ValueError("Model does not exist.")
 
         self.db_models.update_one(
@@ -38,9 +40,58 @@ class QueueInterface:
             },
         )
 
+        project = WhitemindProject(self.model["task"], self.define_log())
+        self.db_updater_running = True
         try:
-            project = WhitemindProject(model["task"])
+            db_updater_thread = threading.Thread(target=self.db_updater)
+            db_updater_thread.start()
             project.execute()
         except Exception as e:
             print("Error during trainig")
+            self.db_models.update_one(
+                {"_id": queue_item["model_id"]},
+                {
+                    "$set": {
+                        "status": "error",
+                        "last_updated": datetime.now().timestamp(),
+                        "error": str(e),
+                    }
+                },
+            )
             raise e
+        finally:
+            self.db_updater_running = False
+
+        db_updater_thread.join()
+
+        self.db_models.update_one(
+            {"_id": queue_item["model_id"]},
+            {
+                "$set": {
+                    "status": "finished",
+                    "last_updated": datetime.now().timestamp(),
+                    "finished_at": datetime.now().timestamp(),
+                }
+            },
+        )
+
+    def define_log(self) -> None:
+        def log(payload):
+            self.logging_payloads.append(payload)
+
+        return log
+
+    def db_updater(self) -> None:
+        while self.db_updater_running or len(self.logging_payloads):
+            payloads = self.logging_payloads
+            self.logging_payloads = []
+            self.db_models.update_one(
+                {"_id": self.model["_id"]},
+                {
+                    "$set": {
+                        "last_updated": datetime.now().timestamp(),
+                    },
+                    "$push": {"output": {"$each": payloads}},
+                },
+            )
+            time.sleep(1)

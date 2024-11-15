@@ -8,7 +8,8 @@ def create(self, operation: dict) -> None:
         self.project_data[operation["data"]["inputs"][0]],
         self.project_data[operation["data"]["outputs"][0]],
     )
-    
+
+
 def compile(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].compile(
         optimizer=(
@@ -16,11 +17,7 @@ def compile(self, operation: dict) -> None:
             if "optimizer" in operation["data"]
             else "adam"
         ),
-        loss=(
-            operation["data"]["loss"]
-            if "loss" in operation["data"]
-            else None
-        ),
+        loss=(operation["data"]["loss"] if "loss" in operation["data"] else None),
         loss_weights=(
             operation["data"]["loss_weights"]
             if "loss_weights" in operation["data"]
@@ -57,25 +54,25 @@ def compile(self, operation: dict) -> None:
             else True
         ),
     )
-    
+
+
 def fit(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].fit(
         x=self.project_data[operation["data"]["x"][0]],
-        epochs=(
-            operation["data"]["epochs"] if "epochs" in operation["data"] else 1
-        ),
+        epochs=(operation["data"]["epochs"] if "epochs" in operation["data"] else 1),
         verbose=(
-            operation["data"]["verbose"]
-            if "verbose" in operation["data"]
-            else "auto"
+            operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),
         callbacks=(
-            [
-                self.project_data[callback]
-                for callback in operation["data"]["callbacks"]
-            ]
-            if "callbacks" in operation["data"]
-            else None
+            (
+                [
+                    self.project_data[callback]
+                    for callback in operation["data"]["callbacks"]
+                ]
+                if "callbacks" in operation["data"]
+                else []
+            )
+            + self.callbacks
         ),
         validation_data=(
             self.project_data[operation["data"]["validation_data"][0]]
@@ -113,28 +110,22 @@ def fit(self, operation: dict) -> None:
             else 1
         ),
     )
-    
+
+
 def evaluate(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].evaluate(
         x=self.project_data[operation["data"]["x"][0]],
         verbose=(
-            operation["data"]["verbose"]
-            if "verbose" in operation["data"]
-            else "auto"
+            operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),
         sample_weight=(
             operation["data"]["sample_weight"]
             if "sample_weight" in operation["data"]
             else None
         ),
-        steps=(
-            operation["data"]["steps"] if "steps" in operation["data"] else None
-        ),
+        steps=(operation["data"]["steps"] if "steps" in operation["data"] else None),
         callbacks=(
-            [
-                self.project_data[callback]
-                for callback in operation["data"]["callbacks"]
-            ]
+            [self.project_data[callback] for callback in operation["data"]["callbacks"]]
             if "callbacks" in operation["data"]
             else None
         ),
@@ -144,28 +135,23 @@ def evaluate(self, operation: dict) -> None:
             else False
         ),
     )
-    
+
+
 def predict(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].predict(
         x=self.project_data[operation["data"]["x"][0]],
         verbose=(
-            operation["data"]["verbose"]
-            if "verbose" in operation["data"]
-            else "auto"
+            operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),
-        steps=(
-            operation["data"]["steps"] if "steps" in operation["data"] else None
-        ),
+        steps=(operation["data"]["steps"] if "steps" in operation["data"] else None),
         callbacks=(
-            [
-                self.project_data[callback]
-                for callback in operation["data"]["callbacks"]
-            ]
+            [self.project_data[callback] for callback in operation["data"]["callbacks"]]
             if "callbacks" in operation["data"]
             else None
         ),
     )
-    
+
+
 def topo_sort(self, nodes: dict) -> list:
     visited = set()
     stack = []
@@ -185,7 +171,8 @@ def topo_sort(self, nodes: dict) -> list:
         dfs(node)
 
     return stack[::-1]
-    
+
+
 def call(self, nodes: dict) -> None:
     sorted_nodes = topo_sort(self, nodes)
 

@@ -7,19 +7,20 @@ from .m_dataset_factory import call as dataset_factory_call
 from .m_initializer_factory import call as initializer_factory_call
 from .m_regularizer_factory import call as regularizer_factory_call
 from .m_constraint_factory import call as constraint_factory_call
+from .c_callbacks import DatabaseLogger
+
 
 class WhitemindProject:
-    def __init__(self, json_data: dict | None = None) -> None:
+    def __init__(self, json_data: dict | None = None, log_function=None) -> None:
         if json_data is None:
             json_data = {}
         self.json_data = json_data
         self.project_data = {}
+        self.callbacks = [DatabaseLogger(log_function)] if log_function else []
 
     def read_json(self, file_path: str) -> None:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
-
-
 
     def execute(self) -> None:
         class_nodes = {"layer": {}, "model": {}, "dataset": {}}
@@ -41,14 +42,32 @@ class WhitemindProject:
             if target_handle[0] == "val":
                 target_handle = target_handle[1:]
 
-            if source_handle[0] not in class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"]:
-                class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][source_handle[0]] = []
+            if (
+                source_handle[0]
+                not in class_nodes[group_map[source_handle[1]]][source_handle[1]][
+                    "data"
+                ]
+            ):
+                class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][
+                    source_handle[0]
+                ] = []
 
-            if target_handle[0] not in class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"]:
-                class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][target_handle[0]] = []
+            if (
+                target_handle[0]
+                not in class_nodes[group_map[target_handle[1]]][target_handle[1]][
+                    "data"
+                ]
+            ):
+                class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][
+                    target_handle[0]
+                ] = []
 
-            class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][source_handle[0]].append(target_handle[1])
-            class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][target_handle[0]].append(source_handle[1])
+            class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][
+                source_handle[0]
+            ].append(target_handle[1])
+            class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][
+                target_handle[0]
+            ].append(source_handle[1])
 
         # ATTENTION order of execution is important
         dataset_factory_call(self, class_nodes["dataset"])
