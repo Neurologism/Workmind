@@ -30,7 +30,7 @@ class QueueInterface:
             raise ValueError("Model does not exist.")
 
         self.db_models.update_one(
-            {"_id": queue_item["model_id"]},
+            {"_id": self.model["_id"]},
             {
                 "$set": {
                     "status": "training",
@@ -49,7 +49,7 @@ class QueueInterface:
         except Exception as e:
             print("Error during trainig, check database for details")
             self.db_models.update_one(
-                {"_id": queue_item["model_id"]},
+                {"_id": self.model["_id"]},
                 {
                     "$set": {
                         "status": "error",
@@ -64,7 +64,7 @@ class QueueInterface:
         db_updater_thread.join()
 
         self.db_models.update_one(
-            {"_id": queue_item["model_id"]},
+            {"_id": self.model["_id"]},
             {
                 "$set": {
                     "status": "finished",
@@ -94,3 +94,39 @@ class QueueInterface:
                 },
             )
             time.sleep(1)
+
+    def requeue_abandoned_trainigs(self) -> None:
+        print("Searching for abandoned trainings...")
+        abandoned_trainings = self.db_models.find(
+            {
+                "status": "training",
+                "last_updated": {"$lt": datetime.now().timestamp() - 10},
+            }
+        )
+
+        if len(list(abandoned_trainings)) == 0:
+            print("No abandoned trainings found.")
+            return
+        print("Found abandoned trainings, requeuing...")
+
+        self.db_models.update_many(
+            {
+                "status": "training",
+                "last_updated": {"$lt": datetime.now().timestamp() - 10},
+            },
+            {
+                "$set": {
+                    "status": "queued",
+                    "last_updated": datetime.now().timestamp(),
+                }
+            },
+        )
+
+        for model in abandoned_trainings:
+            self.db_training_queue.insert_one(
+                {
+                    "model_id": model["_id"],
+                }
+            )
+
+        print("Requeuing finished.")
