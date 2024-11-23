@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from tensorflow_middleware import WhitemindProject
 import threading
 
@@ -25,7 +25,7 @@ class QueueInterface:
                 queue_item = self.db_training_queue.find_one_and_delete({})
         print("Queue item found.")
 
-        self.model = self.db_models.find_one({"_id": queue_item["model_id"]})
+        self.model = self.db_models.find_one({"_id": queue_item["task_id"]})
         if self.model is None:
             raise ValueError("Model does not exist.")
 
@@ -34,8 +34,14 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "training",
-                    "last_updated": datetime.now().timestamp(),
-                    "started_at": datetime.now().timestamp(),
+                    "last_updated": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
+                    "started_at": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
                 }
             },
         )
@@ -47,17 +53,21 @@ class QueueInterface:
             db_updater_thread.start()
             project.execute()
         except Exception as e:
-            print("Error during trainig, check database for details")
+            print("Error during training, check database for details")
             self.db_models.update_one(
                 {"_id": self.model["_id"]},
                 {
                     "$set": {
                         "status": "error",
-                        "last_updated": datetime.now().timestamp(),
-                        "error": str(e),
+                        "last_updated": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z",
+                        "error": e,
                     }
                 },
             )
+            print(e)
         finally:
             self.db_updater_running = False
 
@@ -68,8 +78,14 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "finished",
-                    "last_updated": datetime.now().timestamp(),
-                    "finished_at": datetime.now().timestamp(),
+                    "last_updated": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
+                    "finished_at": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
                 }
             },
         )
@@ -88,7 +104,10 @@ class QueueInterface:
                 {"_id": self.model["_id"]},
                 {
                     "$set": {
-                        "last_updated": datetime.now().timestamp(),
+                        "last_updated": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z",
                     },
                     "$push": {"output": {"$each": payloads}},
                 },
@@ -97,36 +116,26 @@ class QueueInterface:
 
     def requeue_abandoned_trainigs(self) -> None:
         print("Searching for abandoned trainings...")
-        abandoned_trainings = self.db_models.find(
-            {
-                "status": "training",
-                "last_updated": {"$lt": datetime.now().timestamp() - 10},
-            }
-        )
+        found = False
+        for model in self.db_models.find({"status": "training"}):
+            if datetime.strptime(
+                model.last_updated, "%Y-%m-%dT%H:%M:%S.%fZ"
+            ) < datetime.now(timezone.utc) - timedelta(minutes=1):
+                self.db_models.update_one(
+                    {"_id": model._id},
+                    {
+                        "$set": {
+                            "status": "queued",
+                            "last_updated": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z",
+                        }
+                    },
+                )
+                found = True
 
-        if len(list(abandoned_trainings)) == 0:
+        if found:
+            print("Found and requeued abandoned trainings.")
+        else:
             print("No abandoned trainings found.")
-            return
-        print("Found abandoned trainings, requeuing...")
-
-        self.db_models.update_many(
-            {
-                "status": "training",
-                "last_updated": {"$lt": datetime.now().timestamp() - 10},
-            },
-            {
-                "$set": {
-                    "status": "queued",
-                    "last_updated": datetime.now().timestamp(),
-                }
-            },
-        )
-
-        for model in abandoned_trainings:
-            self.db_training_queue.insert_one(
-                {
-                    "model_id": model["_id"],
-                }
-            )
-
-        print("Requeuing finished.")
