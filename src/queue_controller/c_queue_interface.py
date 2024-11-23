@@ -9,8 +9,8 @@ class QueueInterface:
     def __init__(self, mongo_uri: str, db_name: str) -> None:
         self.mongo_client = MongoClient(mongo_uri)
         self.db = self.mongo_client[db_name]
-        self.db_training_queue = self.db["training_queue"]
-        self.db_models = self.db["models"]
+        self.db_training_queue = self.db["queueitems"]
+        self.db_models = self.db["tasks"]
         self.db_updater_running = False
         self.logging_payloads = []
         self.model = None
