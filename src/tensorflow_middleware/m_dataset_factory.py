@@ -81,7 +81,9 @@ def split(self, operation: dict) -> None:
 
 def call(self, nodes: dict) -> None:
     for node in nodes.values():
+        if node["type"] != "split":
+            load(self, node)
+
+    for node in nodes.values():
         if node["type"] == "split":
             split(self, node)
-        else:
-            load(self, node)
