@@ -5,7 +5,7 @@ import tensorflow_datasets as tfds
 
 def load(self, operation: dict) -> None:
     ds = tfds.load(
-        name=operation["data"]["name"],
+        name=operation["type"],
         split=(operation["data"]["split"] if "split" in operation["data"] else None),
         data_dir=(
             operation["data"]["data_dir"] if "data_dir" in operation["data"] else None
@@ -62,17 +62,26 @@ def load(self, operation: dict) -> None:
             operation["data"]["try_gcs"] if "try_gcs" in operation["data"] else False
         ),
     )
-    # assert isinstance(ds, tf.data.Dataset)
-    # if "normalize" in operation["data"]["preprocess"]:
-    #     layer = keras.layers.Normalization()
-    #     layer.adapt(ds.map(lambda x, y: x))
-    #     ds = ds.map(lambda x, y: (layer(x), y))
-
-    # expand with more preprocessing methods
 
     self.project_data[operation["id"]] = ds
+
+def split(self, operation: dict) -> None:
+    result = {}
+    dataset = self.project_data[operation["data"]["in"][0][0]][operation["data"]["in"][0][1]]
+
+    split_ratio = operation["data"]["ratio"]
+    total_size = dataset.cardinality().numpy()
+    split_index = int(total_size * split_ratio)
+
+    result["split1"] = dataset.take(split_index)
+    result["split2"] = dataset.skip(split_index)
+
+    self.project_data[operation["id"]] = result
 
 
 def call(self, nodes: dict) -> None:
     for node in nodes.values():
-        load(self, node)
+        if node["type"] == "split":
+            split(self, node)
+        else:
+            load(self, node)

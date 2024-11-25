@@ -5,8 +5,8 @@ from numpy.f2py.crackfortran import verbose
 
 def create(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]] = keras.Model(
-        self.project_data[operation["data"]["inputs"][0]],
-        self.project_data[operation["data"]["outputs"][0]],
+        self.project_data[operation["data"]["inputs"][0][0]],
+        self.project_data[operation["data"]["outputs"][0][0]],
     )
 
 
@@ -58,7 +58,7 @@ def compile(self, operation: dict) -> None:
 
 def fit(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].fit(
-        x=self.project_data[operation["data"]["x"][0]],
+        x=self.project_data[operation["data"]["x"][0][0]][operation["data"]["x"][0][1]],
         epochs=(operation["data"]["epochs"] if "epochs" in operation["data"] else 1),
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
@@ -75,7 +75,7 @@ def fit(self, operation: dict) -> None:
             + self.callbacks
         ),
         validation_data=(
-            self.project_data[operation["data"]["validation_data"][0]]
+            self.project_data[operation["data"]["validation_data"][0][0]][operation["data"]["validation_data"][0][1]]
             if "validation_data" in operation["data"]
             else None
         ),
@@ -114,7 +114,7 @@ def fit(self, operation: dict) -> None:
 
 def evaluate(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].evaluate(
-        x=self.project_data[operation["data"]["x"][0]],
+        x=self.project_data[operation["data"]["x"][0][0]][operation["data"]["x"][0][1]],
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),
@@ -139,7 +139,7 @@ def evaluate(self, operation: dict) -> None:
 
 def predict(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].predict(
-        x=self.project_data[operation["data"]["x"][0]],
+        x=self.project_data[operation["data"]["x"][0][0]][operation["data"]["x"][0][1]],
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),
@@ -162,8 +162,8 @@ def topo_sort(self, nodes: dict) -> list:
         visited.add(node["id"])
         if "out" in node["data"]:
             for child_id in node["data"]["out"]:
-                if child_id in nodes:
-                    dfs(nodes[child_id])
+                if child_id[0] in nodes:
+                    dfs(nodes[child_id[0]])
 
         stack.append(node)
 
