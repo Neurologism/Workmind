@@ -42,6 +42,7 @@ class WhitemindProject:
             if target_handle[0] == "val":
                 target_handle = target_handle[1:]
 
+            # create empty list if attribute is not present
             if (
                 source_handle[0]
                 not in class_nodes[group_map[source_handle[1]]][source_handle[1]][
@@ -62,12 +63,13 @@ class WhitemindProject:
                     target_handle[0]
                 ] = []
 
+            # create a list of edges for each node containing the other node and the attribute
             class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][
                 source_handle[0]
-            ].append(target_handle[1])
+            ].append([target_handle[1],target_handle[0]])
             class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][
                 target_handle[0]
-            ].append(source_handle[1])
+            ].append([source_handle[1],source_handle[0]])
 
         # ATTENTION order of execution is important
         dataset_factory_call(self, class_nodes["dataset"])

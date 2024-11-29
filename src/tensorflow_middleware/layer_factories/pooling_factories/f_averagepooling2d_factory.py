@@ -3,18 +3,18 @@ import keras
 
 
 def call(self, operation: dict) -> None:
-    self.project_data[operation["uid"]] = keras.layers.AveragePooling2D(
-        pool_size=operation["args"]["pool_size"],
+    self.project_data[operation["id"]] = keras.layers.AveragePooling2D(
+        pool_size=operation["data"]["pool_size"],
         strides=(
-            operation["args"]["strides"] if "strides" in operation["args"] else None
+            operation["data"]["strides"] if "strides" in operation["data"] else None
         ),
         padding=(
-            operation["args"]["padding"] if "padding" in operation["args"] else "valid"
+            operation["data"]["padding"] if "padding" in operation["data"] else "valid"
         ),
         data_format=(
-            operation["args"]["data_format"]
-            if "data_format" in operation["args"]
+            operation["data"]["data_format"]
+            if "data_format" in operation["data"]
             else None
         ),
-        name=(operation["args"]["name"] if "name" in operation["args"] else None),
+        name=(operation["data"]["name"] if "name" in operation["data"] else None),
     )

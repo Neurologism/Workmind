@@ -122,13 +122,13 @@ from .layer_factories.activation_factories import f_softmax_factory
 
 def create(self, layer: dict) -> None:
     match layer["identifier"]:
-        case "Activation":
+        case "activation":
             f_activation_factory.call(self, layer)
         case "dense":
             f_dense_factory.call(self, layer)
         # case "EinsumDense":
         #     f_einsumdense_factory.call(self, layer)
-        case "Embedding":
+        case "embedding":
             f_embedding_factory.call(self, layer)
         # case "Identity":
         #     f_identity_factory.call(self, layer)
@@ -141,15 +141,15 @@ def create(self, layer: dict) -> None:
         # case "Masking":
         #     f_masking_factory.call(self, layer)
         #
-        case "Conv1D":
+        case "conv1d":
             f_conv1d_factory.call(self, layer)
         # case "Conv1DTranspose":
         #     f_conv1dtranspose_factory.call(self, layer)
-        case "Conv2D":
+        case "conv2d":
             f_conv2d_factory.call(self, layer)
         # case "Conv2DTranspose":
         #     f_conv2dtranspose_factory.call(self, layer)
-        case "Conv3D":
+        case "conv3d":
             f_conv3d_factory.call(self, layer)
         # case "Conv3DTranspose":
         #     f_conv3dtranspose_factory.call(self, layer)
@@ -164,8 +164,8 @@ def create(self, layer: dict) -> None:
         #
         # case "AveragePooling1D":
         #     f_averagepooling1d_factory.call(self, layer)
-        # case "AveragePooling2D":
-        #     f_averagepooling2d_factory.call(self, layer)
+        case "averagepooling2d":
+            f_averagepooling2d_factory.call(self, layer)
         # case "AveragePooling3D":
         #     f_averagepooling3d_factory.call(self, layer)
         # case "GlobalAveragePooling1D":
@@ -261,7 +261,7 @@ def create(self, layer: dict) -> None:
         # case "TextVectorization":
         #     f_textvectorization_factory.call(self, layer)
         #
-        case "BatchNormalization":
+        case "batch_normalization":
             f_batchnormalization_factory.call(self, layer)
         # case "GroupNormalization":
         #     f_groupnormalization_factory.call(self, layer)
@@ -274,7 +274,7 @@ def create(self, layer: dict) -> None:
         #     f_activityregularization_factory.call(self, layer)
         # case "AlphaDropout":
         #     f_alphadropout_factory.call(self, layer)
-        case "Dropout":
+        case "dropout":
             f_dropout_factory.call(self, layer)
         # case "GaussianDropout":
         #     f_gaussiandropout_factory.call(self, layer)
@@ -325,7 +325,7 @@ def create(self, layer: dict) -> None:
         #
         # case "Add":
         #     f_add_factory.call(self, layer)
-        case "Average":
+        case "average":
             f_average_factory.call(self, layer)
         # case "Concatenate":
         #     f_concatenate_factory.call(self, layer)
@@ -346,7 +346,7 @@ def create(self, layer: dict) -> None:
         #     f_leakyrelu_factory.call(self, layer)
         # case "PReLU":
         #     f_prelu_factory.call(self, layer)
-        case "ReLU":
+        case "relu":
             f_relu_factory.call(self, layer)
         # case "Softmax":
         #     f_softmax_factory.call(self, layer)
@@ -365,8 +365,8 @@ def topo_sort(self, layers: dict) -> list:
         visited.add(layer["id"])
         if "out" in layer["data"]:
             for child_id in layer["data"]["out"]:
-                if child_id in layers:
-                    dfs(layers[child_id])
+                if child_id[0] in layers:
+                    dfs(layers[child_id[0]])
 
         stack.append(layer)
 
@@ -383,8 +383,8 @@ def call(self, layers: dict) -> None:
         inputs = layer["data"]["in"]
         layer_inputs = []
         for input_id in inputs:
-            if input_id in layers:
-                layer_inputs.append(self.project_data[input_id])
+            if input_id[0] in layers:
+                layer_inputs.append(self.project_data[input_id[0]])
 
         if len(layer_inputs) == 1:
             self.project_data[layer["id"]] = self.project_data[layer["id"]](
