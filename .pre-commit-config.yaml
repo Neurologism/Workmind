@@ -3,5 +3,4 @@ repos:
     rev: 24.10.0
     hooks:
       - id: black
-        stages: [commit]
         args: ["--safe"]
