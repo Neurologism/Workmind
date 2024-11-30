@@ -25,7 +25,7 @@ class QueueInterface:
                 queue_item = self.db_training_queue.find_one_and_delete({})
         print("Queue item found.")
 
-        self.model = self.db_models.find_one({"_id": queue_item["task_id"]})
+        self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
         if self.model is None:
             raise ValueError("Model does not exist.")
 
@@ -34,11 +34,11 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "training",
-                    "last_updated": datetime.now(timezone.utc).strftime(
+                    "datelastUpdated": datetime.now(timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%S.%f"
                     )[:-3]
                     + "Z",
-                    "started_at": datetime.now(timezone.utc).strftime(
+                    "dateStarted": datetime.now(timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%S.%f"
                     )[:-3]
                     + "Z",
@@ -59,7 +59,7 @@ class QueueInterface:
                 {
                     "$set": {
                         "status": "error",
-                        "last_updated": datetime.now(timezone.utc).strftime(
+                        "datelastUpdated": datetime.now(timezone.utc).strftime(
                             "%Y-%m-%dT%H:%M:%S.%f"
                         )[:-3]
                         + "Z",
@@ -78,11 +78,11 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "finished",
-                    "last_updated": datetime.now(timezone.utc).strftime(
+                    "datelastUpdated": datetime.now(timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%S.%f"
                     )[:-3]
                     + "Z",
-                    "finished_at": datetime.now(timezone.utc).strftime(
+                    "dateFinished": datetime.now(timezone.utc).strftime(
                         "%Y-%m-%dT%H:%M:%S.%f"
                     )[:-3]
                     + "Z",
@@ -104,7 +104,7 @@ class QueueInterface:
                 {"_id": self.model["_id"]},
                 {
                     "$set": {
-                        "last_updated": datetime.now(timezone.utc).strftime(
+                        "datelastUpdated": datetime.now(timezone.utc).strftime(
                             "%Y-%m-%dT%H:%M:%S.%f"
                         )[:-3]
                         + "Z",
@@ -119,14 +119,14 @@ class QueueInterface:
         found = False
         for model in self.db_models.find({"status": "training"}):
             if datetime.strptime(
-                model.last_updated, "%Y-%m-%dT%H:%M:%S.%fZ"
+                model.datelastUpdated, "%Y-%m-%dT%H:%M:%S.%fZ"
             ) < datetime.now(timezone.utc) - timedelta(minutes=1):
                 self.db_models.update_one(
                     {"_id": model._id},
                     {
                         "$set": {
                             "status": "queued",
-                            "last_updated": datetime.now(timezone.utc).strftime(
+                            "datelastUpdated": datetime.now(timezone.utc).strftime(
                                 "%Y-%m-%dT%H:%M:%S.%f"
                             )[:-3]
                             + "Z",
