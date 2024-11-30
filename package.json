@@ -1,19 +1,24 @@
 {
-    "name": "workmind",
-    "version": "1.0.0",
-    "description": "Welcome to the training repository for our innovative educational AI project, [Whitemind](https://github.com/Neurologism/whitemind)! Our goal is to empower users to build artificial intelligence systems using a visual, block-based interface similar to Scratch or LEGO, making AI development accessible and fun for everyone.",
-    "main": "src/main.py",
-    "scripts": {
-        "setup": "virtualenv venv && source venv/bin/activate && pip install -r requirements-dev.txt",
-        "prepare": "husky",
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Neurologism/Workmind.git",
-    },
-    "author": "",
-    "license": "ISC",
-    "bugs": {"url": "https://github.com/Neurologism/Workmind/issues"},
-    "homepage": "https://github.com/Neurologism/Workmind#readme",
-    "dependencies": {"husky": "^9.1.7"},
+  "name": "workmind",
+  "version": "1.0.0",
+  "description": "Welcome to the training repository for our innovative educational AI project, [Whitemind](https://github.com/Neurologism/whitemind)! Our goal is to empower users to build artificial intelligence systems using a visual, block-based interface similar to Scratch or LEGO, making AI development accessible and fun for everyone.",
+  "main": "src/main.py",
+  "scripts": {
+    "prepare": "husky && virtualenv venv && source venv/bin/activate && pip install -r requirements-dev.txt",
+    "format": "prettier --write . && black ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neurologism/Workmind.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Neurologism/Workmind/issues"
+  },
+  "homepage": "https://github.com/Neurologism/Workmind#readme",
+  "dependencies": {
+    "husky": "^9.1.7",
+    "prettier": "^3.4.1"
+  }
 }
