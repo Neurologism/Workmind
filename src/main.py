@@ -11,7 +11,6 @@ if not MONGO_URI:
 DB_NAME = os.getenv("DB_NAME") or "backmind"
 
 if __name__ == "__main__":
-
     qi = QueueInterface(MONGO_URI, DB_NAME)
     qi.requeue_abandoned_trainigs()
     while True:
