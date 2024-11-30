@@ -34,7 +34,7 @@ Keras is a high-level neural networks API that runs on top of TensorFlow, simpli
 
 ### 1. Install Required Tools
 
-You can either install Python using your package manager [or downloading it](https://www.python.org/downloads/) if you haven't installed it already. Afterwards, verify that you've installed the correct version of python. 
+You can either install Python using your package manager [or downloading it](https://www.python.org/downloads/) if you haven't installed it already. Afterwards, verify that you've installed the correct version of python.
 
 ```bash
 python --version # should print something like `Python 3.12.6`
@@ -72,7 +72,7 @@ virtualenv venv
 source venv/bin/activate
 ```
 
-To install all packages needed, run the following commands. Some packages are pretty big, so this step could take a while. Consider to get a coffee. 
+To install all packages needed, run the following commands. Some packages are pretty big, so this step could take a while. Consider to get a coffee.
 
 ```bash
 pip install -r requirements-dev.txt # or requirements.txt in production

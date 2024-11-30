@@ -9,11 +9,7 @@
         "y": -42.81931052727974
       },
       "data": {
-        "shape": [
-          28,
-          28,
-          1
-        ],
+        "shape": [28, 28, 1],
         "batch_size": null,
         "dtype": "float32",
         "sparse": false,
@@ -90,9 +86,7 @@
       "data": {
         "optimizer": "adam",
         "loss": "sparse_categorical_crossentropy",
-        "metrics": [
-          "accuracy"
-        ],
+        "metrics": ["accuracy"],
         "name": "model"
       },
       "identifier": "compile",
@@ -412,10 +406,7 @@
       "targetY": 76.15163371217945
     }
   ],
-  "position": [
-    367.5098758912334,
-    -40.96248145341855
-  ],
+  "position": [367.5098758912334, -40.96248145341855],
   "zoom": 0.8010698775896221,
   "viewport": {
     "x": 367.5098758912334,
