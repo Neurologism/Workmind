@@ -66,10 +66,10 @@ class WhitemindProject:
             # create a list of edges for each node containing the other node and the attribute
             class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][
                 source_handle[0]
-            ].append([target_handle[1],target_handle[0]])
+            ].append([target_handle[1], target_handle[0]])
             class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][
                 target_handle[0]
-            ].append([source_handle[1],source_handle[0]])
+            ].append([source_handle[1], source_handle[0]])
 
         # ATTENTION order of execution is important
         dataset_factory_call(self, class_nodes["dataset"])

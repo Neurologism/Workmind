@@ -65,9 +65,12 @@ def load(self, operation: dict) -> None:
 
     self.project_data[operation["id"]] = ds
 
+
 def split(self, operation: dict) -> None:
     result = {}
-    dataset = self.project_data[operation["data"]["in"][0][0]][operation["data"]["in"][0][1]]
+    dataset = self.project_data[operation["data"]["in"][0][0]][
+        operation["data"]["in"][0][1]
+    ]
 
     split_ratio = operation["data"]["ratio"]
     total_size = dataset.cardinality().numpy()

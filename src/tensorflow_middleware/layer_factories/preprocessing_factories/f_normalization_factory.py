@@ -14,5 +14,7 @@ def call(self, operation: dict) -> None:
         ),
     )
     self.project_data[operation["id"]].adapt(
-        self.project_data[operation["data"]["adapt"][0][0]][operation["data"]["adapt"][0][1]].map(lambda x, y: x)
+        self.project_data[operation["data"]["adapt"][0][0]][
+            operation["data"]["adapt"][0][1]
+        ].map(lambda x, y: x)
     )

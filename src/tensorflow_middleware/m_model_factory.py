@@ -75,7 +75,9 @@ def fit(self, operation: dict) -> None:
             + self.callbacks
         ),
         validation_data=(
-            self.project_data[operation["data"]["validation_data"][0][0]][operation["data"]["validation_data"][0][1]]
+            self.project_data[operation["data"]["validation_data"][0][0]][
+                operation["data"]["validation_data"][0][1]
+            ]
             if "validation_data" in operation["data"]
             else None
         ),
