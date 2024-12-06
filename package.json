@@ -4,7 +4,7 @@
   "description": "Welcome to the training repository for our innovative educational AI project, [Whitemind](https://github.com/Neurologism/whitemind)! Our goal is to empower users to build artificial intelligence systems using a visual, block-based interface similar to Scratch or LEGO, making AI development accessible and fun for everyone.",
   "main": "src/main.py",
   "scripts": {
-    "prepare": "husky && virtualenv venv && source venv/bin/activate && pip install -r requirements-dev.txt",
+    "prepare": "husky && pip3 install -r requirements-dev.txt",
     "format": "prettier --write . && black ."
   },
   "repository": {
