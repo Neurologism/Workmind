@@ -53,7 +53,7 @@ class QueueInterface:
             db_updater_thread.start()
             project.execute()
         except Exception as e:
-            print("Error during training, check database for details")
+            print(f"Error during training, check database for details: {e}")
             self.db_models.update_one(
                 {"_id": self.model["_id"]},
                 {
@@ -63,11 +63,11 @@ class QueueInterface:
                             "%Y-%m-%dT%H:%M:%S.%f"
                         )[:-3]
                         + "Z",
-                        "error": e,
+                        "error": str(e),
                     }
                 },
             )
-            print(e)
+            print(f"Error: ")
         finally:
             self.db_updater_running = False
 
@@ -118,11 +118,12 @@ class QueueInterface:
         print("Searching for abandoned trainings...")
         found = False
         for model in self.db_models.find({"status": "training"}):
-            if datetime.strptime(
-                model.datelastUpdated, "%Y-%m-%dT%H:%M:%S.%fZ"
-            ) < datetime.now(timezone.utc) - timedelta(minutes=1):
+            lastUpdated = datetime.strptime(
+                model["datelastUpdated"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            ).replace(tzinfo=timezone.utc)
+            if lastUpdated < datetime.now(timezone.utc) - timedelta(minutes=1):
                 self.db_models.update_one(
-                    {"_id": model._id},
+                    {"_id": model["_id"]},
                     {
                         "$set": {
                             "status": "queued",
@@ -133,6 +134,13 @@ class QueueInterface:
                         }
                     },
                 )
+
+                self.db_training_queue.insert_one(
+                    {
+                        "taskId": model["_id"],
+                    }
+                )
+
                 found = True
 
         if found:
