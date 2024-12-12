@@ -42,6 +42,13 @@ class WhitemindProject:
             if target_handle[0] == "val":
                 target_handle = target_handle[1:]
 
+            # create empty data attribute if not present
+            if "data" not in class_nodes[group_map[source_handle[1]]][source_handle[1]]:
+                class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"] = {}
+
+            if "data" not in class_nodes[group_map[target_handle[1]]][target_handle[1]]:
+                class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"] = {}
+
             # create empty list if attribute is not present
             if (
                 source_handle[0]
