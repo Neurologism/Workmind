@@ -63,10 +63,10 @@ def load(self, operation: dict) -> None:
         ),
     )
     if isinstance(ds, tf.data.Dataset):
-        ds.prefetch(tf.data.experimental.AUTOTUNE)
+        ds = ds.prefetch(tf.data.experimental.AUTOTUNE)
     else:
         for key in ds:
-            ds[key].prefetch(tf.data.experimental.AUTOTUNE)
+            ds[key] = ds[key].prefetch(tf.data.experimental.AUTOTUNE)
     self.project_data[operation["id"]] = ds
 
 
