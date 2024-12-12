@@ -62,7 +62,7 @@ def load(self, operation: dict) -> None:
             operation["data"]["try_gcs"] if "try_gcs" in operation["data"] else False
         ),
     )
-
+    ds.prefetch(tf.data.experimental.AUTOTUNE)
     self.project_data[operation["id"]] = ds
 
 def split(self, operation: dict) -> None:
