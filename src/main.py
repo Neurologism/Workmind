@@ -14,4 +14,10 @@ if __name__ == "__main__":
     qi = QueueInterface(MONGO_URI, DB_NAME)
     qi.requeue_abandoned_trainigs()
     while True:
-        qi.train_one()
+        try:
+            qi.train_one()
+        except Exception as e:
+            print(f"Error during training: {e}")
+            print("Reloading queue interface...")
+            qi = QueueInterface(MONGO_URI, DB_NAME)
+            qi.requeue_abandoned_trainigs()
