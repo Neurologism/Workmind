@@ -83,6 +83,9 @@ def split(self, operation: dict) -> None:
     result["split1"] = dataset.take(split_index)
     result["split2"] = dataset.skip(split_index)
 
+    result["split1"] = result["split1"].prefetch(tf.data.experimental.AUTOTUNE)
+    result["split2"] = result["split2"].prefetch(tf.data.experimental.AUTOTUNE)
+
     self.project_data[operation["id"]] = result
 
 
