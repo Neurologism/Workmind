@@ -62,7 +62,11 @@ def load(self, operation: dict) -> None:
             operation["data"]["try_gcs"] if "try_gcs" in operation["data"] else False
         ),
     )
-    ds.prefetch(tf.data.experimental.AUTOTUNE)
+    if isinstance(ds, tf.data.Dataset):
+        ds.prefetch(tf.data.experimental.AUTOTUNE)
+    else:
+        for key in ds:
+            ds[key].prefetch(tf.data.experimental.AUTOTUNE)
     self.project_data[operation["id"]] = ds
 
 
