@@ -180,10 +180,8 @@ def call(self, nodes: dict) -> None:
 
     for node in sorted_nodes:
         match node["identifier"]:
-            case "create":
+            case "Model":
                 create(self, node)
-
-            case "compile":
                 compile(self, node)
 
             case "fit":
