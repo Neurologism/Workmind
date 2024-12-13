@@ -117,36 +117,33 @@ class QueueInterface:
     def requeue_abandoned_trainigs(self) -> None:
         print("Searching for abandoned trainings...")
         found = False
-        try:
-            for model in self.db_models.find({"status": "training"}):
-                lastUpdated = datetime.strptime(
-                    model["datelastUpdated"], "%Y-%m-%dT%H:%M:%S.%fZ"
-                ).replace(tzinfo=timezone.utc)
-                if lastUpdated < datetime.now(timezone.utc) - timedelta(minutes=1):
-                    self.db_models.update_one(
-                        {"_id": model["_id"]},
-                        {
-                            "$set": {
-                                "status": "queued",
-                                "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                    "%Y-%m-%dT%H:%M:%S.%f"
-                                )[:-3]
-                                + "Z",
-                            }
-                        },
-                    )
-
-                    self.db_training_queue.insert_one(
-                        {
-                            "taskId": model["_id"],
+        for model in self.db_models.find({"status": "training"}):
+            lastUpdated = datetime.strptime(
+                model["datelastUpdated"], "%Y-%m-%dT%H:%M:%S.%fZ"
+            ).replace(tzinfo=timezone.utc)
+            if lastUpdated < datetime.now(timezone.utc) - timedelta(minutes=1):
+                self.db_models.update_one(
+                    {"_id": model["_id"]},
+                    {
+                        "$set": {
+                            "status": "queued",
+                            "datelastUpdated": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z",
                         }
-                    )
+                    },
+                )
 
-                    found = True
+                self.db_training_queue.insert_one(
+                    {
+                        "taskId": model["_id"],
+                    }
+                )
 
-            if found:
-                print("Found and requeued abandoned trainings.")
-            else:
-                print("No abandoned trainings found.")
-        except Exception as e:
-            print(f"Error during requeueing abandoned trainings, aborting: {e}")
+                found = True
+
+        if found:
+            print("Found and requeued abandoned trainings.")
+        else:
+            print("No abandoned trainings found.")
