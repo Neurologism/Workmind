@@ -1,4 +1,4 @@
-from src.tensorflow_middleware.m_dependencies import *
+from .m_dependencies import *
 
 
 def load(self, operation: dict) -> None:

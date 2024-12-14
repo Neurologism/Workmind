@@ -1,5 +1,4 @@
-from src.tensorflow_middleware.m_dependencies import *
-
+from .m_dependencies import *
 
 class DatabaseLogger(Callback):
     def __init__(self, log):

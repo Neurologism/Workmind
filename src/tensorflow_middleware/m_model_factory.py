@@ -1,4 +1,4 @@
-from src.tensorflow_middleware.m_dependencies import *
+from .m_dependencies import *
 
 
 def create(self, operation: dict) -> None:
