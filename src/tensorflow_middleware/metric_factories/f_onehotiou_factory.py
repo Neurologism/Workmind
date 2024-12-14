@@ -1,6 +1,4 @@
-import tensorflow as tf
-import keras
-from tensorflow_datasets.image.colorectal_histology_test import num_classes
+from src.tensorflow_middleware.m_dependencies import *
 
 
 def call(self, operation: dict) -> None:

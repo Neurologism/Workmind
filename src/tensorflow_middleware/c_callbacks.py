@@ -1,8 +1,7 @@
-from keras import callbacks
-from datetime import datetime, timezone
+from src.tensorflow_middleware.m_dependencies import *
 
 
-class DatabaseLogger(callbacks.Callback):
+class DatabaseLogger(Callback):
     def __init__(self, log):
         super().__init__()
         self.log = log

@@ -1,6 +1,4 @@
-import json
-import tensorflow as tf
-from numpy.f2py.auxfuncs import throw_error
+from src.tensorflow_middleware.m_dependencies import *
 from .m_layer_factory import call as layer_factory_call
 from .m_model_factory import call as model_factory_call
 from .m_dataset_factory import call as dataset_factory_call

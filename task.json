@@ -24,7 +24,7 @@
       },
       "data": {
         "shape": [
-          0
+          11
         ],
         "batch_size": null,
         "dtype": "float32",
@@ -63,7 +63,7 @@
         "activation": "linear",
         "use_bias": true,
         "lora_rank": null,
-        "units": 10
+        "units": 1
       },
       "identifier": "dense",
       "group_identifier": "layer"
@@ -78,9 +78,9 @@
       },
       "data": {
         "optimizer": "adam",
-        "loss": "categorical_crossentropy",
+        "loss": "mean_squared_error",
         "metrics": [
-          "accuracy"
+          "mean_absolute_error"
         ],
         "name": "model"
       },
@@ -92,11 +92,11 @@
       "type": "fit",
       "initialized": false,
       "position": {
-        "x": 476.47846824387403,
-        "y": 548.5236935298597
+        "x": 491.4584348306934,
+        "y": 478.61718279136926
       },
       "data": {
-        "epochs": 1,
+        "epochs": 5,
         "name": "model"
       },
       "identifier": "fit",
@@ -113,7 +113,7 @@
       "targetHandle": "in-0.wtvuy5z3mj",
       "data": {},
       "label": "",
-      "sourceX": 1125.700226513531,
+      "sourceX": 1125.6795022784204,
       "sourceY": 287.94804231667047,
       "targetX": 1171.4931720600478,
       "targetY": 363.7707728989831
@@ -143,9 +143,9 @@
         "key": "inputs"
       },
       "label": "",
-      "sourceX": 645.4243103939237,
-      "sourceY": 308.93409976844544,
-      "targetX": 1125.700226513531,
+      "sourceX": 645.4035099667722,
+      "sourceY": 308.9549382916175,
+      "targetX": 1125.6795022784204,
       "targetY": 233.94439581321546
     },
     {
@@ -159,8 +159,8 @@
       "label": "",
       "sourceX": 1094.0966780281478,
       "sourceY": 513.8958716678621,
-      "targetX": 645.4243103939237,
-      "targetY": 352.93774627190044
+      "targetX": 645.4035099667722,
+      "targetY": 352.93778436792087
     },
     {
       "id": "vueflow__edge-0.9csa4xlenoout-0.9csa4xleno-0.8stbki9r509in-0.8stbki9r509",
@@ -171,36 +171,36 @@
       "targetHandle": "in-0.8stbki9r509",
       "data": {},
       "label": "",
-      "sourceX": 583.9247682902318,
-      "sourceY": 387.93931475649134,
-      "targetX": 556.4822942153003,
-      "targetY": 543.5303719408151
+      "sourceX": 583.9039678630802,
+      "sourceY": 387.9393528525118,
+      "targetX": 571.4622608021197,
+      "targetY": 473.62386120232475
     },
     {
-      "id": "vueflow__edge-0.8stbki9r509val-x-0.8stbki9r509-0.7ejxflskoreval-train-0.7ejxflskore",
+      "id": "vueflow__edge-0.7ejxflskoreval-train-0.7ejxflskore-0.8stbki9r509val-x-0.8stbki9r509",
       "type": "smoothstep",
-      "source": "0.8stbki9r509",
-      "target": "0.7ejxflskore",
-      "sourceHandle": "val-x-0.8stbki9r509",
-      "targetHandle": "val-train-0.7ejxflskore",
+      "source": "0.7ejxflskore",
+      "target": "0.8stbki9r509",
+      "sourceHandle": "val-train-0.7ejxflskore",
+      "targetHandle": "val-x-0.8stbki9r509",
       "data": {
-        "key": "x"
+        "key": "train"
       },
       "label": "",
-      "sourceX": 637.975923102322,
-      "sourceY": 618.5200758960451,
-      "targetX": 861.8432563771178,
-      "targetY": 430.0221630119019
+      "sourceX": 861.8224559499661,
+      "sourceY": 430.0430015350739,
+      "targetX": 652.9558896891414,
+      "targetY": 548.6344417767473
     }
   ],
   "position": [
-    356.30745176978917,
-    22.594191969027918
+    363.73740834229864,
+    45.669083400301474
   ],
   "zoom": 0.8010698775896221,
   "viewport": {
-    "x": 356.30745176978917,
-    "y": 22.594191969027918,
+    "x": 363.73740834229864,
+    "y": 45.669083400301474,
     "zoom": 0.8010698775896221
   }
 }

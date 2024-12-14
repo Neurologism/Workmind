@@ -1,6 +1,4 @@
-import tensorflow as tf
-import keras
-import tensorflow_datasets as tfds
+from src.tensorflow_middleware.m_dependencies import *
 
 
 def load(self, operation: dict) -> None:
@@ -65,7 +63,7 @@ def load(self, operation: dict) -> None:
     if operation["type"] == "wine_quality":
         def preprocess(features, label):
             feature_list = [
-                tf.cast(features[key], tf.float32) for key in sorted(features.keys())
+                tf.cast(features[key], np.float32) for key in sorted(features.keys())
             ]
             return tf.stack(feature_list, axis=-1), label
 
