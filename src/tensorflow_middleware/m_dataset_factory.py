@@ -62,6 +62,14 @@ def load(self, operation: dict) -> None:
             operation["data"]["try_gcs"] if "try_gcs" in operation["data"] else False
         ),
     )
+    if operation["type"] == "wine_quality":
+        def preprocess(features, label):
+            feature_list = [
+                tf.cast(features[key], tf.float32) for key in sorted(features.keys())
+            ]
+            return tf.stack(feature_list, axis=-1), label
+
+        ds["train"] = ds["train"].map(preprocess)
     if isinstance(ds, tf.data.Dataset):
         ds = ds.prefetch(tf.data.experimental.AUTOTUNE)
     else:
