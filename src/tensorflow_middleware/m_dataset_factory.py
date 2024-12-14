@@ -86,11 +86,8 @@ def split(self, operation: dict) -> None:
     total_size = dataset.cardinality().numpy()
     split_index = int(total_size * split_ratio)
 
-    result["split1"] = dataset.take(split_index)
-    result["split2"] = dataset.skip(split_index)
-
-    result["split1"] = result["split1"].prefetch(tf.data.experimental.AUTOTUNE)
-    result["split2"] = result["split2"].prefetch(tf.data.experimental.AUTOTUNE)
+    result["split1"] = dataset.take(split_index).prefetch(tf.data.experimental.AUTOTUNE)
+    result["split2"] = dataset.skip(split_index).prefetch(tf.data.experimental.AUTOTUNE)
 
     self.project_data[operation["id"]] = result
 
