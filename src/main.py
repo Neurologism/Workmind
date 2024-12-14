@@ -1,5 +1,6 @@
 import dotenv
 import os
+import datetime
 from queue_controller import QueueInterface
 
 dotenv.load_dotenv()
@@ -17,7 +18,7 @@ if __name__ == "__main__":
         try:
             qi.train_one()
         except Exception as e:
-            print(f"Error during training: {e}")
+            print(f"At {datetime.datetime.now()} an Error occurred: {e}")
             print("Reloading queue interface...")
             qi = QueueInterface(MONGO_URI, DB_NAME)
             qi.requeue_abandoned_trainigs()
