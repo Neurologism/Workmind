@@ -6,6 +6,7 @@ from .m_initializer_factory import call as initializer_factory_call
 from .m_regularizer_factory import call as regularizer_factory_call
 from .m_constraint_factory import call as constraint_factory_call
 from .c_callbacks import DatabaseLogger
+from .m_visualizer_factory import call as visualizer_factory_call
 
 
 class WhitemindProject:
@@ -14,14 +15,14 @@ class WhitemindProject:
             json_data = {}
         self.json_data = json_data
         self.project_data = {}
-        self.callbacks = [DatabaseLogger(log_function)] if log_function else []
+        self.callbacks = [DatabaseLogger(log_function, self)] if log_function else []
 
     def read_json(self, file_path: str) -> None:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
     def execute(self) -> None:
-        class_nodes = {"layer": {}, "model": {}, "dataset": {}}
+        class_nodes = {"layer": {}, "model": {}, "dataset": {}, "visualizer": {}}
         group_map = {}
 
         # sort nodes by group
@@ -80,6 +81,8 @@ class WhitemindProject:
         dataset_factory_call(self, class_nodes["dataset"])
 
         layer_factory_call(self, class_nodes["layer"])
+
+        visualizer_factory_call(self, class_nodes["visualizer"])
 
         model_factory_call(self, class_nodes["model"])
 
