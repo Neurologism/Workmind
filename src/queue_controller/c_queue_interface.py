@@ -2,11 +2,42 @@ from pymongo import MongoClient
 import time
 from datetime import datetime, timedelta, timezone
 from tensorflow_middleware import WhitemindProject
-import threading
+import multiprocessing
+
+
+def run_whitemind_project(conn, task):
+    project = WhitemindProject(task, lambda payload: conn.send(payload))
+    project.execute()
+
+
+def db_updater(conn, mongo_uri, db_name, id):
+    mongo_client = MongoClient(mongo_uri)
+    db = mongo_client[db_name]
+    db_models = db["tasks"]
+
+    while 1:
+        payloads = []
+        while conn.poll():
+            payloads.append(conn.recv())
+        db_models.update_one(
+            {"_id": id},
+            {
+                "$set": {
+                    "datelastUpdated": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
+                },
+                "$push": {"output": {"$each": payloads}},
+            },
+        )
+        time.sleep(1)
 
 
 class QueueInterface:
     def __init__(self, mongo_uri: str, db_name: str) -> None:
+        self.mongo_uri = mongo_uri
+        self.db_name = db_name
         self.mongo_client = MongoClient(mongo_uri)
         self.db = self.mongo_client[db_name]
         self.db_training_queue = self.db["queueitems"]
@@ -26,6 +57,7 @@ class QueueInterface:
         print("Queue item found.")
 
         self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
+
         if self.model is None:
             raise ValueError("Model does not exist.")
 
@@ -46,32 +78,55 @@ class QueueInterface:
             },
         )
 
-        project = WhitemindProject(self.model["task"], self.define_log())
-        self.db_updater_running = True
-        try:
-            db_updater_thread = threading.Thread(target=self.db_updater)
-            db_updater_thread.start()
-            project.execute()
-        except Exception as e:
-            print(f"Error during training, check database for details: {e}")
-            self.db_models.update_one(
-                {"_id": self.model["_id"]},
-                {
-                    "$set": {
-                        "status": "error",
-                        "datelastUpdated": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z",
-                        "error": str(e),
-                    }
-                },
-            )
-            print(f"Error: ")
-        finally:
-            self.db_updater_running = False
+        parent_conn, child_conn = multiprocessing.Pipe()
 
-        db_updater_thread.join()
+        p1 = multiprocessing.Process(
+            target=run_whitemind_project, args=(parent_conn, self.model["task"])
+        )
+        p2 = multiprocessing.Process(
+            target=db_updater,
+            args=(child_conn, self.mongo_uri, self.db_name, self.model["_id"]),
+        )
+
+        p1.start()
+        p2.start()
+
+        while p1.is_alive() and p2.is_alive():
+            time.sleep(1)
+            model = self.db_models.find_one({"_id": self.model["_id"]})
+            if model["status"] == "stopped":
+                break
+
+        if p1.is_alive():
+            p1.terminate()
+
+        if p2.is_alive():
+            p2.terminate()
+
+        # try:
+        #     db_updater_thread = threading.Thread(target=self.db_updater)
+        #     db_updater_thread.start()
+        #     project.execute()
+        # except Exception as e:
+        #     print(f"Error during training, check database for details: {e}")
+        #     self.db_models.update_one(
+        #         {"_id": self.model["_id"]},
+        #         {
+        #             "$set": {
+        #                 "status": "error",
+        #                 "datelastUpdated": datetime.now(timezone.utc).strftime(
+        #                     "%Y-%m-%dT%H:%M:%S.%f"
+        #                 )[:-3]
+        #                 + "Z",
+        #                 "error": str(e),
+        #             }
+        #         },
+        #     )
+        #     print(f"Error: ")
+        # finally:
+        #     self.db_updater_running = False
+        #
+        # db_updater_thread.join()
 
         self.db_models.update_one(
             {"_id": self.model["_id"]},
@@ -89,30 +144,6 @@ class QueueInterface:
                 }
             },
         )
-
-    def define_log(self) -> None:
-        def log(payload):
-            self.logging_payloads.append(payload)
-
-        return log
-
-    def db_updater(self) -> None:
-        while self.db_updater_running or len(self.logging_payloads):
-            payloads = self.logging_payloads
-            self.logging_payloads = []
-            self.db_models.update_one(
-                {"_id": self.model["_id"]},
-                {
-                    "$set": {
-                        "datelastUpdated": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z",
-                    },
-                    "$push": {"output": {"$each": payloads}},
-                },
-            )
-            time.sleep(1)
 
     def requeue_abandoned_trainigs(self) -> None:
         print("Searching for abandoned trainings...")
