@@ -42,7 +42,7 @@ class QueueInterface:
         self.db = self.mongo_client[db_name]
         self.db_training_queue = self.db["queueitems"]
         self.db_models = self.db["tasks"]
-        self.db_updater_running = False
+        self.db_users = self.db["users"]
         self.logging_payloads = []
         self.model = None
 
@@ -96,6 +96,28 @@ class QueueInterface:
             model = self.db_models.find_one({"_id": self.model["_id"]})
             if model["status"] == "stopped":
                 break
+
+            user = self.db_users.find_one({"_id": model["ownerId"]})
+            credits = user["remainingCredits"] if "remainingCredits" in user else 0
+            if credits <= 0:
+                self.db_models.update_one(
+                    {"_id": self.model["_id"]},
+                    {
+                        "$set": {
+                            "status": "stopped",
+                            "datelastUpdated": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z",
+                            "error": "Insufficient credits",
+                        }
+                    },
+                )
+            else:
+                self.db_users.update_one(
+                    {"_id": model["ownerId"]},
+                    {"$set": {"remainingCredits": credits - 1}},
+                )
 
         if p1.is_alive():
             p1.terminate()
