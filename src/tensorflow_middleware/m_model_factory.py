@@ -184,15 +184,15 @@ def call(self, nodes: dict) -> None:
                     compile(self, node)
 
             case "fit":
-                if node["data"]["model"] in self.project_data:
+                if node["data"]["name"] in self.project_data:
                     fit(self, node)
 
             case "evaluate":
-                if node["data"]["model"] in self.project_data:
+                if node["data"]["name"] in self.project_data:
                     evaluate(self, node)
 
             case "predict":
-                if node["data"]["model"] in self.project_data:
+                if node["data"]["name"] in self.project_data:
                     predict(self, node)
 
             case _:
