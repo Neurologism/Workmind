@@ -77,6 +77,26 @@ class WhitemindProject:
                 target_handle[0]
             ].append([source_handle[1], source_handle[0]])
 
+        def get_dataset(model_name: str, node: str):
+            if (
+                class_nodes["model"][node]["data"]["name"] == model_name
+                and class_nodes["model"][node]["identifier"] == "fit"
+            ):
+                return class_nodes["model"][node]["data"]["x"][0][0]
+
+            for child in class_nodes["model"][node]["data"]["out"]:
+                dataset = get_dataset(model_name, child[0])
+                if dataset:
+                    return dataset
+
+            return None
+
+        for node in class_nodes["model"].values():
+            if node["identifier"] == "Model":
+                dataset = get_dataset(node["data"]["name"], node["id"])
+                if dataset:
+                    class_nodes["model"][node["id"]]["data"]["dataset"] = dataset
+
         # ATTENTION order of execution is important
         dataset_factory_call(self, class_nodes["dataset"])
 
