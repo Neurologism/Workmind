@@ -1,11 +1,9 @@
-import tensorflow as tf
-import keras
-import tensorflow_datasets as tfds
+from .m_dependencies import *
 
 
 def load(self, operation: dict) -> None:
     ds = tfds.load(
-        name=operation["data"]["name"],
+        name=operation["type"],
         split=(operation["data"]["split"] if "split" in operation["data"] else None),
         data_dir=(
             operation["data"]["data_dir"] if "data_dir" in operation["data"] else None
@@ -62,17 +60,44 @@ def load(self, operation: dict) -> None:
             operation["data"]["try_gcs"] if "try_gcs" in operation["data"] else False
         ),
     )
-    # assert isinstance(ds, tf.data.Dataset)
-    # if "normalize" in operation["data"]["preprocess"]:
-    #     layer = keras.layers.Normalization()
-    #     layer.adapt(ds.map(lambda x, y: x))
-    #     ds = ds.map(lambda x, y: (layer(x), y))
+    if operation["type"] == "wine_quality":
 
-    # expand with more preprocessing methods
+        def preprocess(features, label):
+            feature_list = [
+                tf.cast(features[key], np.float32) for key in sorted(features.keys())
+            ]
+            return tf.stack(feature_list, axis=-1), label
 
+        ds["train"] = ds["train"].map(preprocess)
+    if isinstance(ds, tf.data.Dataset):
+        ds = ds.prefetch(tf.data.experimental.AUTOTUNE)
+    else:
+        for key in ds:
+            ds[key] = ds[key].prefetch(tf.data.experimental.AUTOTUNE)
     self.project_data[operation["id"]] = ds
+
+
+def split(self, operation: dict) -> None:
+    result = {}
+    dataset = self.project_data[operation["data"]["in"][0][0]][
+        operation["data"]["in"][0][1]
+    ]
+
+    split_ratio = operation["data"]["ratio"]
+    total_size = dataset.cardinality().numpy()
+    split_index = int(total_size * split_ratio)
+
+    result["split1"] = dataset.take(split_index).prefetch(tf.data.experimental.AUTOTUNE)
+    result["split2"] = dataset.skip(split_index).prefetch(tf.data.experimental.AUTOTUNE)
+
+    self.project_data[operation["id"]] = result
 
 
 def call(self, nodes: dict) -> None:
     for node in nodes.values():
-        load(self, node)
+        if node["type"] != "split":
+            load(self, node)
+
+    for node in nodes.values():
+        if node["type"] == "split":
+            split(self, node)

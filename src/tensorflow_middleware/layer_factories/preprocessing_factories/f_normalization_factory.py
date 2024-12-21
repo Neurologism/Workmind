@@ -1,5 +1,4 @@
-import tensorflow as tf
-import keras
+from ...m_dependencies import *
 
 
 def call(self, operation: dict) -> None:
@@ -14,5 +13,7 @@ def call(self, operation: dict) -> None:
         ),
     )
     self.project_data[operation["id"]].adapt(
-        self.project_data[operation["data"]["adapt"][0]].map(lambda x, y: x)
+        self.project_data[operation["data"]["dataset"][0]][
+            operation["data"]["dataset"][1]
+        ].map(lambda x, y: x)
     )

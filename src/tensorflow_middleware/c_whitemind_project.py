@@ -1,6 +1,4 @@
-import json
-import tensorflow as tf
-from numpy.f2py.auxfuncs import throw_error
+from .m_dependencies import *
 from .m_layer_factory import call as layer_factory_call
 from .m_model_factory import call as model_factory_call
 from .m_dataset_factory import call as dataset_factory_call
@@ -8,6 +6,7 @@ from .m_initializer_factory import call as initializer_factory_call
 from .m_regularizer_factory import call as regularizer_factory_call
 from .m_constraint_factory import call as constraint_factory_call
 from .c_callbacks import DatabaseLogger
+from .m_visualizer_factory import call as visualizer_factory_call
 
 
 class WhitemindProject:
@@ -16,14 +15,14 @@ class WhitemindProject:
             json_data = {}
         self.json_data = json_data
         self.project_data = {}
-        self.callbacks = [DatabaseLogger(log_function)] if log_function else []
+        self.callbacks = [DatabaseLogger(log_function, self)] if log_function else []
 
     def read_json(self, file_path: str) -> None:
         with open(file_path, "r") as file:
             self.json_data = json.load(file)
 
     def execute(self) -> None:
-        class_nodes = {"layer": {}, "model": {}, "dataset": {}}
+        class_nodes = {"layer": {}, "model": {}, "dataset": {}, "visualizer": {}}
         group_map = {}
 
         # sort nodes by group
@@ -42,6 +41,14 @@ class WhitemindProject:
             if target_handle[0] == "val":
                 target_handle = target_handle[1:]
 
+            # create empty data attribute if not present
+            if "data" not in class_nodes[group_map[source_handle[1]]][source_handle[1]]:
+                class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"] = {}
+
+            if "data" not in class_nodes[group_map[target_handle[1]]][target_handle[1]]:
+                class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"] = {}
+
+            # create empty list if attribute is not present
             if (
                 source_handle[0]
                 not in class_nodes[group_map[source_handle[1]]][source_handle[1]][
@@ -62,17 +69,43 @@ class WhitemindProject:
                     target_handle[0]
                 ] = []
 
+            # create a list of edges for each node containing the other node and the attribute
             class_nodes[group_map[source_handle[1]]][source_handle[1]]["data"][
                 source_handle[0]
-            ].append(target_handle[1])
+            ].append([target_handle[1], target_handle[0]])
             class_nodes[group_map[target_handle[1]]][target_handle[1]]["data"][
                 target_handle[0]
-            ].append(source_handle[1])
+            ].append([source_handle[1], source_handle[0]])
+
+        def get_dataset(model_name: str, node: str):
+            if (
+                class_nodes["model"][node]["data"]["name"] == model_name
+                and class_nodes["model"][node]["identifier"] == "fit"
+            ):
+                return [
+                    class_nodes["model"][node]["data"]["x"][0][0],
+                    class_nodes["model"][node]["data"]["x"][0][1],
+                ]
+
+            for child in class_nodes["model"][node]["data"]["out"]:
+                dataset = get_dataset(model_name, child[0])
+                if dataset:
+                    return dataset
+
+            return None
+
+        for node in class_nodes["model"].values():
+            if node["identifier"] == "Model":
+                dataset = get_dataset(node["data"]["name"], node["id"])
+                if dataset:
+                    class_nodes["model"][node["id"]]["data"]["dataset"] = dataset
 
         # ATTENTION order of execution is important
         dataset_factory_call(self, class_nodes["dataset"])
 
-        layer_factory_call(self, class_nodes["layer"])
+        layer_factory_call(self, class_nodes["layer"], class_nodes["model"])
+
+        visualizer_factory_call(self, class_nodes["visualizer"])
 
         model_factory_call(self, class_nodes["model"])
 

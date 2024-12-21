@@ -1,6 +1,4 @@
-import tensorflow as tf
-import keras
-from numpy import dtype
+from ..m_dependencies import *
 
 
 def call(self, operation: dict) -> None:

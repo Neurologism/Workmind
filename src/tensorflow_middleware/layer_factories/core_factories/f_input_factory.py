@@ -1,15 +1,16 @@
-import tensorflow as tf
-import keras
-from keras.src.utils.module_utils import tensorflow
+from ...m_dependencies import *
 
 
 def call(self, operation: dict) -> None:
+    shape = (
+        self.project_data[operation["data"]["dataset"][0]][
+            operation["data"]["dataset"][1]
+        ]
+        .element_spec[0]
+        .shape
+    )
     self.project_data[operation["id"]] = keras.layers.Input(
-        shape=(
-            tuple(x for x in operation["data"]["shape"])
-            if "shape" in operation["data"]
-            else None
-        ),
+        shape=shape[1:],
         batch_size=(
             operation["data"]["batch_size"] if operation["data"]["batch_size"] else None
         ),
