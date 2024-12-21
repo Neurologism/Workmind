@@ -179,17 +179,21 @@ def call(self, nodes: dict) -> None:
     for node in sorted_nodes:
         match node["identifier"]:
             case "Model":
-                create(self, node)
-                compile(self, node)
+                if "dataset" in node["data"]:
+                    create(self, node)
+                    compile(self, node)
 
             case "fit":
-                fit(self, node)
+                if node["data"]["model"] in self.project_data:
+                    fit(self, node)
 
             case "evaluate":
-                evaluate(self, node)
+                if node["data"]["model"] in self.project_data:
+                    evaluate(self, node)
 
             case "predict":
-                predict(self, node)
+                if node["data"]["model"] in self.project_data:
+                    predict(self, node)
 
             case _:
                 raise ValueError(f"Unknown operation: {node['identifier']}")
