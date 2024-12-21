@@ -94,6 +94,9 @@ class QueueInterface:
 
         model = self.db_models.find_one({"_id": self.model["_id"]})
         user = self.db_users.find_one({"_id": model["ownerId"]})
+        print(
+            f"Training model {model['_id']} for user {user['brainetTag']} ({user['_id']}). Remaining credits: {user['remainingCredits']}"
+        )
         credits = user["remainingCredits"]
         if credits <= 0:
             print("Insufficient credits.")
@@ -143,15 +146,21 @@ class QueueInterface:
         p2.start()
 
         while p1.is_alive() and p2.is_alive():
-            time.sleep(1)
+
             model = self.db_models.find_one({"_id": self.model["_id"]})
             if model["status"] == "stopped":
                 print("\nTraining stopped.")
-                break
+                return
 
             user = self.db_users.find_one({"_id": model["ownerId"]})
             credits = user["remainingCredits"]
             if credits <= 0:
+                if p1.is_alive():
+                    p1.terminate()
+
+                if p2.is_alive():
+                    p2.terminate()
+
                 print("\nInsufficient credits.")
                 self.db_models.update_one(
                     {"_id": self.model["_id"]},
@@ -166,11 +175,13 @@ class QueueInterface:
                         }
                     },
                 )
+                return
             else:
                 self.db_users.update_one(
                     {"_id": model["ownerId"]},
                     {"$set": {"remainingCredits": credits - 1}},
                 )
+            time.sleep(1)
 
         if p1.is_alive():
             p1.terminate()
