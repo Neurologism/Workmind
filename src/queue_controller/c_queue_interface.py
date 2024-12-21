@@ -6,8 +6,20 @@ import multiprocessing
 
 
 def run_whitemind_project(conn, task):
-    project = WhitemindProject(task, lambda payload: conn.send(payload))
-    project.execute()
+    try:
+        project = WhitemindProject(task, lambda payload: conn.send(payload))
+        project.execute()
+    except Exception as e:
+        print(f"Error during training, check database for details: {e}")
+        conn.send(
+            {
+                "type": "error",
+                "message": str(e),
+            }
+        )
+        time.sleep(2)
+    finally:
+        conn.close()
 
 
 def db_updater(conn, mongo_uri, db_name, id):
@@ -16,22 +28,41 @@ def db_updater(conn, mongo_uri, db_name, id):
     db_models = db["tasks"]
 
     while 1:
-        payloads = []
-        while conn.poll():
-            payloads.append(conn.recv())
-        db_models.update_one(
-            {"_id": id},
-            {
-                "$set": {
-                    "datelastUpdated": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
+        try:
+            payloads = []
+            while conn.poll():
+                payloads.append(conn.recv())
+                if "type" in payloads[-1] and payloads[-1]["type"] == "error":
+                    db_models.update_one(
+                        {"_id": id},
+                        {
+                            "$set": {
+                                "status": "error",
+                                "datelastUpdated": datetime.now(timezone.utc).strftime(
+                                    "%Y-%m-%dT%H:%M:%S.%f"
+                                )[:-3]
+                                + "Z",
+                                "error": payloads[-1]["message"],
+                            }
+                        },
+                    )
+                    return
+            db_models.update_one(
+                {"_id": id},
+                {
+                    "$set": {
+                        "datelastUpdated": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z",
+                    },
+                    "$push": {"output": {"$each": payloads}},
                 },
-                "$push": {"output": {"$each": payloads}},
-            },
-        )
-        time.sleep(1)
+            )
+            time.sleep(1)
+        except Exception as e:
+            print(f"Error during updating database: {e}")
+            time.sleep(2)
 
 
 class QueueInterface:
@@ -95,11 +126,13 @@ class QueueInterface:
             time.sleep(1)
             model = self.db_models.find_one({"_id": self.model["_id"]})
             if model["status"] == "stopped":
+                print("\nTraining stopped.")
                 break
 
             user = self.db_users.find_one({"_id": model["ownerId"]})
             credits = user["remainingCredits"] if "remainingCredits" in user else 0
             if credits <= 0:
+                print("\nInsufficient credits.")
                 self.db_models.update_one(
                     {"_id": self.model["_id"]},
                     {
@@ -124,31 +157,6 @@ class QueueInterface:
 
         if p2.is_alive():
             p2.terminate()
-
-        # try:
-        #     db_updater_thread = threading.Thread(target=self.db_updater)
-        #     db_updater_thread.start()
-        #     project.execute()
-        # except Exception as e:
-        #     print(f"Error during training, check database for details: {e}")
-        #     self.db_models.update_one(
-        #         {"_id": self.model["_id"]},
-        #         {
-        #             "$set": {
-        #                 "status": "error",
-        #                 "datelastUpdated": datetime.now(timezone.utc).strftime(
-        #                     "%Y-%m-%dT%H:%M:%S.%f"
-        #                 )[:-3]
-        #                 + "Z",
-        #                 "error": str(e),
-        #             }
-        #         },
-        #     )
-        #     print(f"Error: ")
-        # finally:
-        #     self.db_updater_running = False
-        #
-        # db_updater_thread.join()
 
         self.db_models.update_one(
             {"_id": self.model["_id"]},
