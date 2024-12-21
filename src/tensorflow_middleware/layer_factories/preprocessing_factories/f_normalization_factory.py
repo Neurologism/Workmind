@@ -1,5 +1,6 @@
 from ...m_dependencies import *
 
+
 def call(self, operation: dict) -> None:
     self.project_data[operation["id"]] = keras.layers.Normalization(
         axis=(operation["data"]["axis"] if "axis" in operation["data"] else -1),

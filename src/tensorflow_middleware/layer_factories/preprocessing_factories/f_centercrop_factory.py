@@ -1,5 +1,6 @@
 from ...m_dependencies import *
 
+
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.CenterCrop(
         height=(operation["args"]["height"] if "height" in operation["args"] else None),

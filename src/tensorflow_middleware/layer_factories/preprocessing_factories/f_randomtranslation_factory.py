@@ -1,5 +1,6 @@
 from ...m_dependencies import *
 
+
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.layers.RandomTranslation(
         height_factor=operation["args"]["height_factor"],

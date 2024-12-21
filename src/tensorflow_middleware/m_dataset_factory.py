@@ -61,6 +61,7 @@ def load(self, operation: dict) -> None:
         ),
     )
     if operation["type"] == "wine_quality":
+
         def preprocess(features, label):
             feature_list = [
                 tf.cast(features[key], np.float32) for key in sorted(features.keys())

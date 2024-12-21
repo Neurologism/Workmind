@@ -1,5 +1,6 @@
 from ..m_dependencies import *
 
+
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.losses.CategoricalFocalCrossentropy(
         alpha=(operation["args"]["alpha"] if "alpha" in operation["args"] else 0.25),

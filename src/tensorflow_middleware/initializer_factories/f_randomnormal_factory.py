@@ -1,5 +1,6 @@
 from ..m_dependencies import *
 
+
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.initializers.RandomNormal(
         mean=(operation["args"]["mean"] if "mean" in operation["args"] else 0.0),

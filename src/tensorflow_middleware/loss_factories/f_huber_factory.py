@@ -1,5 +1,6 @@
 from ..m_dependencies import *
 
+
 def call(self, operation: dict) -> None:
     self.project_data[operation["uid"]] = keras.losses.Huber(
         delta=(operation["args"]["delta"] if "delta" in operation["args"] else 1.0),
