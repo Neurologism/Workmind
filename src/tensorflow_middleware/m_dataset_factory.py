@@ -70,10 +70,10 @@ def load(self, operation: dict) -> None:
 
         ds["train"] = ds["train"].map(preprocess)
     if isinstance(ds, tf.data.Dataset):
-        ds = ds.prefetch(tf.data.experimental.AUTOTUNE)
+        ds = ds.cache().prefetch(tf.data.experimental.AUTOTUNE).cache()
     else:
         for key in ds:
-            ds[key] = ds[key].prefetch(tf.data.experimental.AUTOTUNE)
+            ds[key] = ds[key].cache().prefetch(tf.data.experimental.AUTOTUNE).cache()
     self.project_data[operation["id"]] = ds
 
 
