@@ -376,9 +376,26 @@ def topo_sort(self, layers: dict) -> list:
     return stack[::-1]
 
 
-def call(self, layers: dict) -> None:
+def call(self, layers: dict, models: dict) -> None:
     sorted_layers = topo_sort(self, layers)
+    i = 0
     for layer in sorted_layers:
+        for input in layer["data"]["in"]:
+            if input[0] in models:
+                if "dataset" in models[input[0]]["data"]:
+                    sorted_layers[i]["data"]["dataset"] = models[input[0]]["data"][
+                        "dataset"
+                    ]
+            elif input[0] in layers:
+                if "dataset" in layers[input[0]]["data"]:
+                    sorted_layers[i]["data"]["dataset"] = layers[input[0]]["data"][
+                        "dataset"
+                    ]
+        i += 1
+
+    for layer in sorted_layers:
+        if "dataset" not in layer["data"]:
+            continue
         create(self, layer)
         inputs = layer["data"]["in"]
         layer_inputs = []

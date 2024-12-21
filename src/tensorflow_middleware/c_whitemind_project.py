@@ -82,7 +82,10 @@ class WhitemindProject:
                 class_nodes["model"][node]["data"]["name"] == model_name
                 and class_nodes["model"][node]["identifier"] == "fit"
             ):
-                return class_nodes["model"][node]["data"]["x"][0][0]
+                return [
+                    class_nodes["model"][node]["data"]["x"][0][0],
+                    class_nodes["model"][node]["data"]["x"][0][1],
+                ]
 
             for child in class_nodes["model"][node]["data"]["out"]:
                 dataset = get_dataset(model_name, child[0])
@@ -100,7 +103,7 @@ class WhitemindProject:
         # ATTENTION order of execution is important
         dataset_factory_call(self, class_nodes["dataset"])
 
-        layer_factory_call(self, class_nodes["layer"])
+        layer_factory_call(self, class_nodes["layer"], class_nodes["model"])
 
         visualizer_factory_call(self, class_nodes["visualizer"])
 
