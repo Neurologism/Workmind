@@ -154,6 +154,10 @@ class QueueInterface:
             model = self.db_models.find_one({"_id": self.model["_id"]})
             if model["status"] == "stopped":
                 print("\nTraining stopped.")
+                if p1.is_alive():
+                    p1.terminate()
+                if p2.is_alive():
+                    p2.terminate()
                 return
 
             user = self.db_users.find_one({"_id": model["ownerId"]})
