@@ -92,6 +92,26 @@ class QueueInterface:
         if self.model is None:
             raise ValueError("Model does not exist.")
 
+        model = self.db_models.find_one({"_id": self.model["_id"]})
+        user = self.db_users.find_one({"_id": model["ownerId"]})
+        credits = user["remainingCredits"]
+        if credits <= 0:
+            print("Insufficient credits.")
+            self.db_models.update_one(
+                {"_id": self.model["_id"]},
+                {
+                    "$set": {
+                        "status": "stopped",
+                        "datelastUpdated": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z",
+                        "error": "Insufficient credits",
+                    }
+                },
+            )
+            return
+
         self.db_models.update_one(
             {"_id": self.model["_id"]},
             {
@@ -130,7 +150,7 @@ class QueueInterface:
                 break
 
             user = self.db_users.find_one({"_id": model["ownerId"]})
-            credits = user["remainingCredits"] if "remainingCredits" in user else 0
+            credits = user["remainingCredits"]
             if credits <= 0:
                 print("\nInsufficient credits.")
                 self.db_models.update_one(
