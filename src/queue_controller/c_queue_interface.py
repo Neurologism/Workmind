@@ -78,19 +78,40 @@ class QueueInterface:
         self.model = None
 
     def train_one(self) -> None:
-        queue_item = self.db_training_queue.find_one_and_delete({})
+        queue_item = self.db_training_queue.find_one_and_delete(
+            {}, sort=[("priority", -1), ("_id", 1)]
+        )
 
         if queue_item is None:
             print("Queue is empty, sleeping...")
             while queue_item is None:
                 time.sleep(5)
-                queue_item = self.db_training_queue.find_one_and_delete({})
+                queue_item = self.db_training_queue.find_one_and_delete(
+                    {}, sort=[("priority", -1), ("_id", 1)]
+                )
         print("Queue item found.")
 
         self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
 
         if self.model is None:
             raise ValueError("Model does not exist.")
+
+        self.db_models.update_one(
+            {"_id": self.model["_id"]},
+            {
+                "$set": {
+                    "status": "training",
+                    "datelastUpdated": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
+                    "dateStarted": datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%f"
+                    )[:-3]
+                    + "Z",
+                }
+            },
+        )
 
         model = self.db_models.find_one({"_id": self.model["_id"]})
         user = self.db_users.find_one({"_id": model["ownerId"]})
@@ -114,23 +135,6 @@ class QueueInterface:
                 },
             )
             return
-
-        self.db_models.update_one(
-            {"_id": self.model["_id"]},
-            {
-                "$set": {
-                    "status": "training",
-                    "datelastUpdated": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
-                    "dateStarted": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
-                }
-            },
-        )
 
         parent_conn, child_conn = multiprocessing.Pipe()
 
