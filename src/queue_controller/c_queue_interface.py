@@ -94,7 +94,8 @@ class QueueInterface:
         self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
 
         if self.model is None:
-            raise ValueError("Model does not exist.")
+            print("Model does not exist or was deleted.")
+            return
 
         self.db_models.update_one(
             {"_id": self.model["_id"]},
@@ -114,6 +115,11 @@ class QueueInterface:
         )
 
         model = self.db_models.find_one({"_id": self.model["_id"]})
+
+        if model is None:
+            print("Model was deleted during training.")
+            return
+
         user = self.db_users.find_one({"_id": model["ownerId"]})
         print(
             f"Training model {model['_id']} for user {user['brainetTag']} ({user['_id']}). Remaining credits: {user['remainingCredits']}"
@@ -152,6 +158,15 @@ class QueueInterface:
         while p1.is_alive() and p2.is_alive():
 
             model = self.db_models.find_one({"_id": self.model["_id"]})
+
+            if model is None:
+                print("Model was deleted during training.")
+                if p1.is_alive():
+                    p1.terminate()
+                if p2.is_alive():
+                    p2.terminate()
+                return
+
             if model["status"] == "stopped":
                 print("\nTraining stopped.")
                 if p1.is_alive():
