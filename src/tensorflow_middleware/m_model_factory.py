@@ -1,3 +1,5 @@
+import keras.src.callbacks
+
 from .m_dependencies import *
 
 
@@ -71,6 +73,13 @@ def fit(self, operation: dict) -> None:
                 else []
             )
             + self.callbacks
+            + (
+                keras.callbacks.EarlyStopping(
+                    patience=operation["data"]["early_stopping"]
+                )
+                if operation["data"]["early_stopping"] is not None
+                else []
+            )
         ),
         validation_data=(
             self.project_data[operation["data"]["validation_data"][0][0]][
