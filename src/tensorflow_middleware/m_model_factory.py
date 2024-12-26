@@ -74,9 +74,11 @@ def fit(self, operation: dict) -> None:
             )
             + self.callbacks
             + (
-                keras.callbacks.EarlyStopping(
-                    patience=operation["data"]["early_stopping"]
-                )
+                [
+                    keras.callbacks.EarlyStopping(
+                        patience=operation["data"]["early_stopping"]
+                    )
+                ]
                 if operation["data"]["early_stopping"] is not None
                 else []
             )
