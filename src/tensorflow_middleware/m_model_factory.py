@@ -76,7 +76,8 @@ def fit(self, operation: dict) -> None:
             + (
                 [
                     keras.callbacks.EarlyStopping(
-                        patience=operation["data"]["early_stopping"]
+                        patience=operation["data"]["early_stopping"],
+                        restore_best_weights=True,
                     )
                 ]
                 if operation["data"]["early_stopping"] is not None
