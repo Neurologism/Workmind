@@ -11,3 +11,5 @@ class LineChart:
             "x_label": self.x_label,
             "y_label": self.y_label,
         }
+        if "val_" + self.y_label in logs:
+            payload[self.id]["val_y"] = logs["val_" + self.y_label]
