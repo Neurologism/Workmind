@@ -38,6 +38,7 @@ class DatabaseLogger(Callback):
             ]
             + "Z",
             "epoch": epoch,
+            "performance": logs or {},
         }
         logs["epoch"] = epoch
         for visualizer in self.project.project_data["visualizer"]:
