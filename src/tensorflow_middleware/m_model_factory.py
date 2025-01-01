@@ -5,8 +5,8 @@ from .m_dependencies import *
 
 def create(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]] = keras.Model(
-        self.project_data[operation["data"]["inputs"][0][0]],
-        self.project_data[operation["data"]["outputs"][0][0]],
+        self.project_data[operation["data"]["input"][0][0]],
+        self.project_data[operation["data"]["output"][0][0]],
     )
 
 
@@ -58,7 +58,9 @@ def compile(self, operation: dict) -> None:
 
 def fit(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].fit(
-        x=self.project_data[operation["data"]["x"][0][0]][operation["data"]["x"][0][1]],
+        x=self.project_data[operation["data"]["data"][0][0]][
+            operation["data"]["data"][0][1]
+        ],
         epochs=(operation["data"]["epochs"] if "epochs" in operation["data"] else 1),
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
@@ -126,7 +128,9 @@ def fit(self, operation: dict) -> None:
 
 def evaluate(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].evaluate(
-        x=self.project_data[operation["data"]["x"][0][0]][operation["data"]["x"][0][1]],
+        x=self.project_data[operation["data"]["data"][0][0]][
+            operation["data"]["x"][0][1]
+        ],
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),
