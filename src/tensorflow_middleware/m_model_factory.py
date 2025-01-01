@@ -129,7 +129,7 @@ def fit(self, operation: dict) -> None:
 def evaluate(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].evaluate(
         x=self.project_data[operation["data"]["data"][0][0]][
-            operation["data"]["x"][0][1]
+            operation["data"]["data"][0][1]
         ],
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
@@ -155,7 +155,9 @@ def evaluate(self, operation: dict) -> None:
 
 def predict(self, operation: dict) -> None:
     self.project_data[operation["data"]["name"]].predict(
-        x=self.project_data[operation["data"]["x"][0][0]][operation["data"]["x"][0][1]],
+        x=self.project_data[operation["data"]["data"][0][0]][
+            operation["data"]["data"][0][1]
+        ],
         verbose=(
             operation["data"]["verbose"] if "verbose" in operation["data"] else "auto"
         ),

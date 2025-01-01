@@ -83,8 +83,8 @@ class WhitemindProject:
                 and class_nodes["model"][node]["identifier"] == "fit"
             ):
                 return [
-                    class_nodes["model"][node]["data"]["x"][0][0],
-                    class_nodes["model"][node]["data"]["x"][0][1],
+                    class_nodes["model"][node]["data"]["data"][0][0],
+                    class_nodes["model"][node]["data"]["data"][0][1],
                 ]
 
             for child in class_nodes["model"][node]["data"]["out"]:
