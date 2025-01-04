@@ -3,14 +3,7 @@ import os
 import datetime
 from queue_controller import QueueInterface
 import time
-
-dotenv.load_dotenv()
-
-MONGO_URI = os.getenv("MONGO_URI")
-
-if not MONGO_URI:
-    raise EnvironmentError("MONGO_URI is not set")
-DB_NAME = os.getenv("DB_NAME") or "backmind"
+from env import *
 
 if __name__ == "__main__":
     qi = QueueInterface(MONGO_URI, DB_NAME)

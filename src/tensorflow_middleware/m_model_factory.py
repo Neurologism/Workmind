@@ -1,6 +1,8 @@
 import keras.src.callbacks
-
+import onnx
+import tf2onnx
 from .m_dependencies import *
+from ..env import MODEL_DIRECTORY
 
 
 def create(self, operation: dict) -> None:
@@ -170,6 +172,14 @@ def predict(self, operation: dict) -> None:
     )
 
 
+def export(self, operation: dict) -> None:
+    onnx_model = tf2onnx.convert.from_keras(
+        self.project_data[operation["data"]["name"]],
+    )
+
+    onnx.save_model(onnx_model, f"{MODEL_DIRECTORY}/{str(self.json_data["_id"])}.onnx")
+
+
 def topo_sort(self, nodes: dict) -> list:
     visited = set()
     stack = []
@@ -212,6 +222,10 @@ def call(self, nodes: dict) -> None:
             case "predict":
                 if node["data"]["name"] in self.project_data:
                     predict(self, node)
+
+            case "export":
+                if node["data"]["name"] in self.project_data:
+                    export(self, node)
 
             case _:
                 raise ValueError(f"Unknown operation: {node['identifier']}")
