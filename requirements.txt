@@ -4,3 +4,5 @@ numpy
 tensorflow
 keras
 tensorflow-datasets
+onnx
+tf2onnx
