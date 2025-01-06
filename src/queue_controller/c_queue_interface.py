@@ -5,9 +5,9 @@ from tensorflow_middleware import WhitemindProject
 import multiprocessing
 
 
-def run_whitemind_project(conn, task):
+def run_whitemind_project(conn, task, id):
     try:
-        project = WhitemindProject(task, lambda payload: conn.send(payload))
+        project = WhitemindProject(task, lambda payload: conn.send(payload), task_id=id)
         project.execute()
     except Exception as e:
         print(f"Error during training, check database for details: {e}")
@@ -145,7 +145,8 @@ class QueueInterface:
         parent_conn, child_conn = multiprocessing.Pipe()
 
         p1 = multiprocessing.Process(
-            target=run_whitemind_project, args=(parent_conn, self.model["task"])
+            target=run_whitemind_project,
+            args=(parent_conn, self.model["task"], self.model["_id"]),
         )
         p2 = multiprocessing.Process(
             target=db_updater,
