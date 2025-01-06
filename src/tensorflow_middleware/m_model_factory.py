@@ -173,11 +173,17 @@ def predict(self, operation: dict) -> None:
 
 
 def export(self, operation: dict) -> None:
-    onnx_model = tf2onnx.convert.from_keras(
-        self.project_data[operation["data"]["name"]],
-    )
+    model = self.project_data[operation["data"]["name"]]
+    input_signature = [
+        tf.TensorSpec(tensor.shape, tensor.dtype) for tensor in model.inputs
+    ]
 
-    onnx.save_model(onnx_model, f"{MODEL_DIRECTORY}/{str(self.json_data["_id"])}.onnx")
+    onnx_model = tf2onnx.convert.from_keras(model, input_signature=input_signature)
+
+    if isinstance(onnx_model, tuple):
+        onnx_model = onnx_model[0]
+
+    onnx.save_model(onnx_model, f"{MODEL_DIRECTORY}/{self.task_id}.onnx")
 
 
 def topo_sort(self, nodes: dict) -> list:

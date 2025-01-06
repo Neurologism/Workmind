@@ -10,12 +10,15 @@ from .m_visualizer_factory import call as visualizer_factory_call
 
 
 class WhitemindProject:
-    def __init__(self, json_data: dict | None = None, log_function=None) -> None:
+    def __init__(
+        self, json_data: dict | None = None, log_function=None, task_id="test"
+    ) -> None:
         if json_data is None:
             json_data = {}
         self.json_data = json_data
         self.project_data = {}
         self.callbacks = [DatabaseLogger(log_function, self)] if log_function else []
+        self.task_id = task_id
 
     def read_json(self, file_path: str) -> None:
         with open(file_path, "r") as file:
