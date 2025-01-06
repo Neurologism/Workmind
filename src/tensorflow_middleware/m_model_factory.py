@@ -2,7 +2,7 @@ import keras.src.callbacks
 import onnx
 import tf2onnx
 from .m_dependencies import *
-from ..env import MODEL_DIRECTORY
+from env import MODEL_DIRECTORY
 
 
 def create(self, operation: dict) -> None:
