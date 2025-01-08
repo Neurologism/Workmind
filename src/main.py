@@ -1,5 +1,3 @@
-import dotenv
-import os
 import datetime
 from queue_controller import QueueInterface
 import time
