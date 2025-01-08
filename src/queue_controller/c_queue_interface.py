@@ -3,7 +3,7 @@ import time
 from datetime import datetime, timedelta, timezone
 from tensorflow_middleware import WhitemindProject
 import multiprocessing
-from queue_controller.f_discord_logger import webhook_error
+from queue_controller.f_discord_logger import webhook_training_error
 
 
 def run_whitemind_project(conn, task, id):
@@ -12,7 +12,7 @@ def run_whitemind_project(conn, task, id):
         project.execute()
     except Exception as e:
         print(f"Error during training, check database for details: {e}")
-        webhook_error(id, e)
+        webhook_training_error(id, e)
         conn.send(
             {
                 "type": "error",
