@@ -79,6 +79,9 @@ def load(self, operation: dict) -> None:
 
 def split(self, operation: dict) -> None:
     result = {}
+    if not "data" in operation or not "in" in operation["data"]:
+        print("No data in split operation")
+        return
     dataset = self.project_data[operation["data"]["in"][0][0]][
         operation["data"]["in"][0][1]
     ]
