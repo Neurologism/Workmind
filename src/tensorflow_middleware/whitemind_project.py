@@ -7,6 +7,7 @@ from .m_regularizer_factory import call as regularizer_factory_call
 from .m_constraint_factory import call as constraint_factory_call
 from .c_callbacks import DatabaseLogger
 from .m_visualizer_factory import call as visualizer_factory_call
+from .block import Block
 
 
 class WhitemindProject:
@@ -16,17 +17,36 @@ class WhitemindProject:
         self.database_logger = DatabaseLogger(log_function, self)
         self.task_id = task_id
 
-        self.layers = []
-        self.model_operations = []
-        self.datasets = []
-        self.visualizers = []
+        self.blocks = {}
 
-        self.execution_head = None
+        self.execution_head = json_data["start_node"]
 
-        # build the project objects here out of helper classes
+        # build the project objects out of blocks
+
+        for node in json_data["nodes"]:
+            self.blocks[node["id"]] = Block(node["data"] or {}, node["identifier"])
+
+        for edge in json_data["edges"]:
+            source_handle = edge["sourceHandle"].split("-")
+            target_handle = edge["targetHandle"].split("-")
+
+            if source_handle[0] == "val":
+                source_handle = source_handle[1:]
+
+            if target_handle[0] == "val":
+                target_handle = target_handle[1:]
+
+            source_block = self.blocks[source_handle[1]]
+            target_block = self.blocks[target_handle[1]]
+
+            source_block.add_connection(
+                source_handle[0], target_block, target_handle[0]
+            )
+            target_block.add_connection(
+                target_handle[0], source_block, source_handle[0]
+            )
 
     def __call__(self):
-        while self.execution_head is not None:
-            self.execution_head()
+        pass
 
         # execute the project here with call functions of the helper classes
