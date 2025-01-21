@@ -1,5 +1,5 @@
-from .m_dependencies import *
-from .c_callbacks import DatabaseLogger
+from .dependencies import *
+from .database_logger import DatabaseLogger
 from .block import Block
 
 
@@ -7,7 +7,7 @@ class WhitemindProject:
     def __init__(
         self, json_data: dict | None = None, log_function=None, task_id="test"
     ) -> None:
-        self.database_logger = DatabaseLogger(log_function, self)
+        self.database_logger = DatabaseLogger(log_function)
         self.task_id = task_id
 
         self.blocks = {}
@@ -15,7 +15,15 @@ class WhitemindProject:
         # build the project objects out of blocks
 
         for node in json_data["nodes"]:
-            self.blocks[node["id"]] = Block(node["data"] or {}, node["identifier"])
+            additional_data = {
+                "logger": self.database_logger.block_payloads,
+                "task_id": task_id,
+                "block_id": node["id"],
+            }
+            self.blocks[node["id"]] = Block(
+                node["data"].update(additional_data) or additional_data,
+                node["identifier"],
+            )
 
         self.execution_head = self.blocks[json_data["start_node"]]
 

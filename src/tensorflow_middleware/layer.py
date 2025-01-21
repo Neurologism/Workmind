@@ -1,10 +1,10 @@
-from .m_dependencies import *
+from .dependencies import *
 
 # customize layer functionality
 
 
 def input_layer(params: dict):
-    shape = (params["dataset"].element_spec[0].shape)[1:]
+    shape = params["dataset"].element_spec[0].shape[1:]
 
     params["shape"] = shape
 

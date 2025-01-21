@@ -1,11 +1,11 @@
-from .m_dependencies import *
+from .dependencies import *
 
 
 class DatabaseLogger(Callback):
-    def __init__(self, log, project) -> None:
+    def __init__(self, log) -> None:
         super().__init__()
         self.log = log
-        self.project = project
+        self.block_payloads = {}
 
     def on_train_begin(self, logs=None):
         payload = {
@@ -41,8 +41,16 @@ class DatabaseLogger(Callback):
             "performance": logs or {},
         }
         logs["epoch"] = epoch
-        for visualizer in self.project.project_data["visualizer"]:
-            visualizer(logs, payload)
+        for block_id, responses in self.block_payloads:
+            payload[block_id] = {}
+
+            for key, value in responses[0].items():
+                if value in logs:
+                    payload[block_id][key] = logs[value]
+
+            if responses.length > 1:
+                payload[block_id].update(responses[1])
+
         self.log(payload)
 
     def on_train_end(self, logs=None):

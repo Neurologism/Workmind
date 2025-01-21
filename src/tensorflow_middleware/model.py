@@ -1,4 +1,4 @@
-from .m_dependencies import *
+from .dependencies import *
 
 
 def register_model(params: dict) -> keras.Model:
