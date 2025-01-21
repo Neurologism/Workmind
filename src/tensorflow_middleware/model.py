@@ -5,27 +5,6 @@ import tf2onnx
 import onnx
 
 
-def topo_sort(self, nodes: dict) -> list:
-    visited = set()
-    stack = []
-
-    def dfs(node: dict) -> None:
-        if node["id"] in visited:
-            return
-        visited.add(node["id"])
-        if "out" in node["data"]:
-            for child_id in node["data"]["out"]:
-                if child_id[0] in nodes:
-                    dfs(nodes[child_id[0]])
-
-        stack.append(node)
-
-    for node in nodes.values():
-        dfs(node)
-
-    return stack[::-1]
-
-
 def register_model(params: dict) -> keras.Model:
     # build layers
     sorted_layers = []
@@ -45,8 +24,24 @@ def register_model(params: dict) -> keras.Model:
 
     sorted_layers = sorted_layers[::-1]
 
+    def get_dataset(layer):
+        if layer.type == "fit":
+            return [layer.params["data"][0][0], layer.params["data"][0][1]]
+
+        for out in layer.params["out"]:
+            dataset = get_dataset(out[0])
+            if dataset:
+                return dataset
+
+        return None
+
+    dataset = get_dataset(params["output"][0][0])
+
+    if dataset is None:
+        raise ValueError("No dataset found for this model")
+
     for layer in sorted_layers:
-        layer()
+        layer({"dataset": dataset})
 
     model = keras.Model(params["input"][0][0].object, params["output"][0][0].object)
 
@@ -54,6 +49,8 @@ def register_model(params: dict) -> keras.Model:
     compile_params = {k: v for k, v in params.items() if k in compile_params}
 
     model.compile(**compile_params)
+
+    params["out"][0][0]({"model": model})
 
     return model
 
@@ -66,6 +63,10 @@ def fit_model(params: dict) -> None:
 
     model.fit(**fit_params)
 
+    params["out"][0][0]({"model": model})
+
+    return model
+
 
 def predict_model(params: dict) -> None:
     model = params["model"]
@@ -75,6 +76,10 @@ def predict_model(params: dict) -> None:
 
     model.predict(**predict_params)
 
+    params["out"][0][0]({"model": model})
+
+    return model
+
 
 def evaluate_model(params: dict) -> None:
     model = params["model"]
@@ -83,6 +88,10 @@ def evaluate_model(params: dict) -> None:
     evaluate_params = {k: v for k, v in params.items() if k in evaluate_params}
 
     model.evaluate(**evaluate_params)
+
+    params["out"][0][0]({"model": model})
+
+    return model
 
 
 def export_model(params: dict) -> None:
@@ -98,6 +107,10 @@ def export_model(params: dict) -> None:
         onnx_model = onnx_model[0]
 
     onnx.save_model(onnx_model, f"{params['output']}.onnx")
+
+    params["out"][0][0]({"model": model})
+
+    return model
 
 
 model_to_function = {
