@@ -1,8 +1,4 @@
-import keras
-import inspect
-import tensorflow as tf
-import tf2onnx
-import onnx
+from .m_dependencies import *
 
 
 def register_model(params: dict) -> keras.Model:
@@ -35,13 +31,26 @@ def register_model(params: dict) -> keras.Model:
 
         return None
 
-    dataset = get_dataset(params["output"][0][0])
+    dataset, shard = get_dataset(params["output"][0][0])
 
     if dataset is None:
         raise ValueError("No dataset found for this model")
 
+    dataset()
+
     for layer in sorted_layers:
-        layer({"dataset": dataset})
+        layer({"dataset": dataset.object[shard]})
+
+        if callable(layer.object):
+            layer_inputs = []
+            for input in layer.params["in"]:
+                layer_inputs.append(input[0].object)
+
+            if len(layer_inputs) == 1:
+                layer.object = layer.object(layer_inputs[0])
+
+            elif len(layer_inputs) > 1:
+                layer.object = layer.object(layer_inputs)
 
     model = keras.Model(params["input"][0][0].object, params["output"][0][0].object)
 
@@ -55,7 +64,7 @@ def register_model(params: dict) -> keras.Model:
     return model
 
 
-def fit_model(params: dict) -> None:
+def fit_model(params: dict):
     model = params["model"]
 
     fit_params = inspect.signature(model.fit).parameters
@@ -68,7 +77,7 @@ def fit_model(params: dict) -> None:
     return model
 
 
-def predict_model(params: dict) -> None:
+def predict_model(params: dict):
     model = params["model"]
 
     predict_params = inspect.signature(model.predict).parameters
@@ -81,7 +90,7 @@ def predict_model(params: dict) -> None:
     return model
 
 
-def evaluate_model(params: dict) -> None:
+def evaluate_model(params: dict):
     model = params["model"]
 
     evaluate_params = inspect.signature(model.evaluate).parameters
@@ -94,7 +103,7 @@ def evaluate_model(params: dict) -> None:
     return model
 
 
-def export_model(params: dict) -> None:
+def export_model(params: dict):
     model = params["model"]
 
     input_signature = [

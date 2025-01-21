@@ -1,12 +1,5 @@
 from .m_dependencies import *
-from .m_layer_factory import call as layer_factory_call
-from .m_model_factory import call as model_factory_call
-from .m_dataset_factory import call as dataset_factory_call
-from .m_initializer_factory import call as initializer_factory_call
-from .m_regularizer_factory import call as regularizer_factory_call
-from .m_constraint_factory import call as constraint_factory_call
 from .c_callbacks import DatabaseLogger
-from .m_visualizer_factory import call as visualizer_factory_call
 from .block import Block
 
 
@@ -19,12 +12,12 @@ class WhitemindProject:
 
         self.blocks = {}
 
-        self.execution_head = json_data["start_node"]
-
         # build the project objects out of blocks
 
         for node in json_data["nodes"]:
             self.blocks[node["id"]] = Block(node["data"] or {}, node["identifier"])
+
+        self.execution_head = self.blocks[json_data["start_node"]]
 
         for edge in json_data["edges"]:
             source_handle = edge["sourceHandle"].split("-")
@@ -47,6 +40,6 @@ class WhitemindProject:
             )
 
     def __call__(self):
-        pass
+        self.execution_head()
 
         # execute the project here with call functions of the helper classes

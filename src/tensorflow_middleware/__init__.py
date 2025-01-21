@@ -1,1 +1,1 @@
-from .c_whitemind_project import WhitemindProject
+from .whitemind_project import WhitemindProject
