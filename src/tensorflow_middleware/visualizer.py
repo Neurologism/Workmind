@@ -1,5 +1,5 @@
 def line_chart(params: dict):
-    params["logger"][params["id"]] = [
+    params["logger"].block_payloads[params["id"]] = [
         {
             "x": params["x_label"],
             "y": params["y_label"],

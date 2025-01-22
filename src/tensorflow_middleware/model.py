@@ -67,6 +67,15 @@ def register_model(params: dict) -> keras.Model:
 def fit_model(params: dict):
     model = params["model"]
 
+    callbacks = [params["logger"]]
+
+    if "early_stopping" in params:
+        callbacks.append(
+            keras.callbacks.EarlyStopping(patience=params["early_stopping"])
+        )
+
+    params["callbacks"] = callbacks
+
     fit_params = inspect.signature(model.fit).parameters
     fit_params = {k: v for k, v in params.items() if k in fit_params}
 
@@ -80,6 +89,10 @@ def fit_model(params: dict):
 def predict_model(params: dict):
     model = params["model"]
 
+    callbacks = [params["logger"]]
+
+    params["callbacks"] = callbacks
+
     predict_params = inspect.signature(model.predict).parameters
     predict_params = {k: v for k, v in params.items() if k in predict_params}
 
@@ -92,6 +105,10 @@ def predict_model(params: dict):
 
 def evaluate_model(params: dict):
     model = params["model"]
+
+    callbacks = [params["logger"]]
+
+    params["callbacks"] = callbacks
 
     evaluate_params = inspect.signature(model.evaluate).parameters
     evaluate_params = {k: v for k, v in params.items() if k in evaluate_params}

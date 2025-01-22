@@ -16,7 +16,7 @@ class WhitemindProject:
 
         for node in json_data["nodes"]:
             additional_data = {
-                "logger": self.database_logger.block_payloads,
+                "logger": self.database_logger,
                 "task_id": task_id,
                 "block_id": node["id"],
             }
