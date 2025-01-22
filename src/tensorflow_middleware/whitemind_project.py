@@ -15,14 +15,16 @@ class WhitemindProject:
         # build the project objects out of blocks
 
         for node in json_data["nodes"]:
-            additional_data = {
+            params = {
                 "logger": self.database_logger,
                 "task_id": task_id,
                 "block_id": node["id"],
             }
+            if "data" in node:
+                params.update(node["data"])
             self.blocks[node["id"]] = Block(
-                node["data"].update(additional_data) or additional_data,
-                node["identifier"],
+                params=params,
+                type=node["identifier"],
             )
 
         self.execution_head = self.blocks[json_data["start_node"]]

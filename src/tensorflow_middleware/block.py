@@ -42,7 +42,7 @@ class Block:
             self.params[connection_name] = []
         self.params[connection_name].append([connection, connection_type])
 
-    def __call__(self, **kwargs):
+    def __call__(self, *args, **kwargs):
         if self.object is not None:
             return
 

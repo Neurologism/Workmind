@@ -8,6 +8,8 @@ class DatabaseLogger(Callback):
         self.block_payloads = {}
 
     def on_train_begin(self, logs=None):
+        if self.log is None:
+            return
         payload = {
             "event": "train_start",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
@@ -31,6 +33,8 @@ class DatabaseLogger(Callback):
         # self.log(payload)
 
     def on_epoch_end(self, epoch, logs=None):
+        if self.log is None:
+            return
         payload = {
             "event": "epoch_end",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
@@ -54,7 +58,8 @@ class DatabaseLogger(Callback):
         self.log(payload)
 
     def on_train_end(self, logs=None):
-        pass
+        if self.log is None:
+            return
         payload = {
             "event": "train_end",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[

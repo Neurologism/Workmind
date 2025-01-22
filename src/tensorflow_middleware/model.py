@@ -1,4 +1,5 @@
 from .dependencies import *
+from env import MODEL_DIRECTORY
 
 
 def register_model(params: dict) -> keras.Model:
@@ -7,6 +8,9 @@ def register_model(params: dict) -> keras.Model:
 
     def dfs(layer):
         if layer in sorted_layers:
+            return
+
+        if layer.type == "Model":
             return
 
         if "out" in layer.params:
@@ -39,7 +43,7 @@ def register_model(params: dict) -> keras.Model:
     dataset()
 
     for layer in sorted_layers:
-        layer({"dataset": dataset.object[shard]})
+        layer(**{"dataset": dataset.object[shard]})
 
         if callable(layer.object):
             layer_inputs = []
@@ -59,7 +63,8 @@ def register_model(params: dict) -> keras.Model:
 
     model.compile(**compile_params)
 
-    params["out"][0][0]({"model": model})
+    if "out" in params:
+        params["out"][0][0](**{"model": model})
 
     return model
 
@@ -69,19 +74,25 @@ def fit_model(params: dict):
 
     callbacks = [params["logger"]]
 
-    if "early_stopping" in params:
+    if "early_stopping" in params and params["early_stopping"]:
         callbacks.append(
             keras.callbacks.EarlyStopping(patience=params["early_stopping"])
         )
 
     params["callbacks"] = callbacks
+    params["x"] = params["data"][0][0].object[params["data"][0][1]]
+    if "validation_data" in params:
+        params["validation_data"] = params["validation_data"][0][0].object[
+            params["validation_data"][0][1]
+        ]
 
     fit_params = inspect.signature(model.fit).parameters
     fit_params = {k: v for k, v in params.items() if k in fit_params}
 
     model.fit(**fit_params)
 
-    params["out"][0][0]({"model": model})
+    if "out" in params:
+        params["out"][0][0](**{"model": model})
 
     return model
 
@@ -98,7 +109,8 @@ def predict_model(params: dict):
 
     model.predict(**predict_params)
 
-    params["out"][0][0]({"model": model})
+    if "out" in params:
+        params["out"][0][0](**{"model": model})
 
     return model
 
@@ -115,7 +127,8 @@ def evaluate_model(params: dict):
 
     model.evaluate(**evaluate_params)
 
-    params["out"][0][0]({"model": model})
+    if "out" in params:
+        params["out"][0][0](**{"model": model})
 
     return model
 
@@ -132,9 +145,10 @@ def export_model(params: dict):
     if isinstance(onnx_model, tuple):
         onnx_model = onnx_model[0]
 
-    onnx.save_model(onnx_model, f"{params['output']}.onnx")
+    onnx.save_model(onnx_model, f"{MODEL_DIRECTORY}/{params["task_id"]}.onnx")
 
-    params["out"][0][0]({"model": model})
+    if "out" in params:
+        params["out"][0][0](**{"model": model})
 
     return model
 

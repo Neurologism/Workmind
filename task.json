@@ -1,4 +1,5 @@
 {
+  "start_node": "0.q5ksc0frt3g",
   "nodes": [
     {
       "id": "0.6dqpz78gtu",
@@ -26,8 +27,8 @@
       },
       "data": {
         "optimizer": "adam",
-        "loss": "categorical_crossentropy",
-        "metrics": ["accuracy"],
+        "loss": "mean_squared_error",
+        "metrics": ["mean_absolute_error"],
         "name": "model",
         "isExpanded": true
       },
@@ -107,17 +108,18 @@
     },
     {
       "id": "0.0mrofq2mm1mr",
-      "type": "wine_quality",
+      "type": "dataset",
       "initialized": false,
       "position": {
         "x": -319.3809936913825,
         "y": 326.3140859240152
       },
       "data": {
+        "name": "wine_quality",
         "batch_size": 32,
         "isExpanded": true
       },
-      "identifier": "dataset_wine_quality",
+      "identifier": "dataset",
       "group_identifier": "dataset"
     }
   ],

@@ -2,8 +2,12 @@ from .dependencies import *
 
 
 def create_dataset(params: dict) -> tf.data.Dataset:
-    load_params = inspect.signature(tfds.load).parameters
-    load_params = {k: v for k, v in params.items() if k in load_params}
+    params["as_supervised"] = True
+    params["shuffle_files"] = True
+
+    load_params = {
+        k: v for k, v in params.items() if k in tfds.load.__code__.co_varnames
+    }
 
     dataset = tfds.load(**load_params)
 
@@ -27,5 +31,5 @@ def create_dataset(params: dict) -> tf.data.Dataset:
 
 
 dataset_to_function = {
-    "create": create_dataset,
+    "dataset": create_dataset,
 }
