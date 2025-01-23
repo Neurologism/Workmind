@@ -8,8 +8,7 @@ from queue_controller.f_discord_logger import webhook_training_error
 
 def run_whitemind_project(conn, task, id):
     try:
-        project = WhitemindProject(task, lambda payload: conn.send(payload), task_id=id)
-        project.execute()
+        WhitemindProject(task, lambda payload: conn.send(payload), task_id=id)()
     except Exception as e:
         print(f"Error during training, check database for details: {e}")
         webhook_training_error(id, e)
