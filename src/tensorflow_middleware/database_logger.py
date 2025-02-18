@@ -12,35 +12,29 @@ class DatabaseLogger(Callback):
             return
         payload = {
             "event": "train_start",
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
-                :-3
-            ]
-            + "Z",
+            "timestamp": {
+                "$date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
+                    :-3
+                ]
+                + "Z"
+            },
         }
         self.log(payload)
 
     def on_epoch_begin(self, epoch, logs=None):
         pass
-        # payload = {
-        #     "event": "epoch_begin",
-        #     "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
-        #         :-3
-        #     ]
-        #     + "Z",
-        #     "epoch": epoch,
-        #     # "performance": logs or {},
-        # }
-        # self.log(payload)
 
     def on_epoch_end(self, epoch, logs=None):
         if self.log is None:
             return
         payload = {
             "event": "epoch_end",
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
-                :-3
-            ]
-            + "Z",
+            "timestamp": {
+                "$date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
+                    :-3
+                ]
+                + "Z"
+            },
             "epoch": epoch,
             "performance": logs or {},
         }
@@ -62,10 +56,12 @@ class DatabaseLogger(Callback):
             return
         payload = {
             "event": "train_end",
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
-                :-3
-            ]
-            + "Z",
+            "timestamp": {
+                "$date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
+                    :-3
+                ]
+                + "Z"
+            },
             "logs": logs or {},
         }
         self.log(payload)

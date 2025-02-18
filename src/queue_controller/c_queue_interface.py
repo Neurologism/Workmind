@@ -39,10 +39,12 @@ def db_updater(conn, mongo_uri, db_name, id):
                         {
                             "$set": {
                                 "status": "error",
-                                "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                    "%Y-%m-%dT%H:%M:%S.%f"
-                                )[:-3]
-                                + "Z",
+                                "datelastUpdated": {
+                                    "$date": datetime.now(timezone.utc).strftime(
+                                        "%Y-%m-%dT%H:%M:%S.%f"
+                                    )[:-3]
+                                    + "Z"
+                                },
                                 "error": payloads[-1]["message"],
                             }
                         },
@@ -52,10 +54,12 @@ def db_updater(conn, mongo_uri, db_name, id):
                 {"_id": id},
                 {
                     "$set": {
-                        "datelastUpdated": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        }
                     },
                     "$push": {"output": {"$each": payloads}},
                 },
@@ -103,14 +107,18 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "training",
-                    "datelastUpdated": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
-                    "dateStarted": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
+                    "datelastUpdated": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
+                    "dateStarted": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
                 }
             },
         )
@@ -133,10 +141,12 @@ class QueueInterface:
                 {
                     "$set": {
                         "status": "stopped",
-                        "datelastUpdated": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
                         "error": "Insufficient credits",
                     }
                 },
@@ -192,10 +202,12 @@ class QueueInterface:
                     {
                         "$set": {
                             "status": "stopped",
-                            "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                "%Y-%m-%dT%H:%M:%S.%f"
-                            )[:-3]
-                            + "Z",
+                            "datelastUpdated": {
+                                "$date": datetime.now(timezone.utc).strftime(
+                                    "%Y-%m-%dT%H:%M:%S.%f"
+                                )[:-3]
+                                + "Z"
+                            },
                             "error": "Insufficient credits",
                         }
                     },
@@ -221,14 +233,18 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "finished",
-                    "datelastUpdated": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
-                    "dateFinished": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
+                    "datelastUpdated": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
+                    "dateFinished": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
                 }
             },
         )
@@ -246,10 +262,12 @@ class QueueInterface:
                     {
                         "$set": {
                             "status": "queued",
-                            "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                "%Y-%m-%dT%H:%M:%S.%f"
-                            )[:-3]
-                            + "Z",
+                            "datelastUpdated": {
+                                "$date": datetime.now(timezone.utc).strftime(
+                                    "%Y-%m-%dT%H:%M:%S.%f"
+                                )[:-3]
+                                + "Z"
+                            },
                         }
                     },
                 )
