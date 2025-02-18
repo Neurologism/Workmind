@@ -79,6 +79,7 @@ class QueueInterface:
         self.db_training_queue = self.db["queueitems"]
         self.db_models = self.db["tasks"]
         self.db_users = self.db["users"]
+        self.db_projects = self.db["projects"]
         self.logging_payloads = []
         self.model = None
 
@@ -129,7 +130,9 @@ class QueueInterface:
             print("Model was deleted during training.")
             return
 
-        user = self.db_users.find_one({"_id": model["ownerId"]})
+        project = self.db_projects.find_one({"_id": model["projectId"]})
+
+        user = self.db_users.find_one({"_id": project["ownerId"]})
         print(
             f"Training model {model['_id']} for user {user['brainetTag']} ({user['_id']}). Remaining credits: {user['remainingCredits']}"
         )
@@ -157,7 +160,7 @@ class QueueInterface:
 
         p1 = multiprocessing.Process(
             target=run_whitemind_project,
-            args=(parent_conn, self.model["task"], self.model["_id"]),
+            args=(parent_conn, self.model["components"], self.model["_id"]),
         )
         p2 = multiprocessing.Process(
             target=db_updater,
@@ -187,7 +190,7 @@ class QueueInterface:
                     p2.terminate()
                 return
 
-            user = self.db_users.find_one({"_id": model["ownerId"]})
+            user = self.db_users.find_one({"_id": project["ownerId"]})
             credits = user["remainingCredits"]
             if credits <= 0:
                 if p1.is_alive():
@@ -215,7 +218,7 @@ class QueueInterface:
                 return
             else:
                 self.db_users.update_one(
-                    {"_id": model["ownerId"]},
+                    {"_id": project["ownerId"]},
                     {"$set": {"remainingCredits": credits - 1}},
                 )
             time.sleep(1)
@@ -254,7 +257,7 @@ class QueueInterface:
         found = False
         for model in self.db_models.find({"status": "training"}):
             lastUpdated = datetime.strptime(
-                model["datelastUpdated"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                model["datelastUpdated"]["$date"], "%Y-%m-%dT%H:%M:%S.%fZ"
             ).replace(tzinfo=timezone.utc)
             if lastUpdated < datetime.now(timezone.utc) - timedelta(minutes=1):
                 self.db_models.update_one(
