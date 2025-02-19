@@ -30,6 +30,18 @@ def create_dataset(params: dict) -> tf.data.Dataset:
     return dataset
 
 
+def create_mnist(params: dict) -> tf.data.Dataset:
+    params["name"] = "mnist"
+    return create_dataset(params)
+
+
+def create_wine_quality(params: dict) -> tf.data.Dataset:
+    params["name"] = "wine_quality"
+    return create_dataset(params)
+
+
 dataset_to_function = {
     "dataset": create_dataset,
+    "dataset_mnist": create_mnist,
+    "dataset_wine_quality": create_wine_quality,
 }

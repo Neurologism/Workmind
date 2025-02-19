@@ -5,7 +5,10 @@ from .block import Block
 
 class WhitemindProject:
     def __init__(
-        self, json_data: dict | None = None, log_function=None, task_id="test"
+        self,
+        json_data: dict | None = None,
+        log_function=None,
+        task_id="test",
     ) -> None:
         self.database_logger = DatabaseLogger(log_function)
         self.task_id = task_id

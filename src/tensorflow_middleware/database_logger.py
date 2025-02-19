@@ -39,14 +39,14 @@ class DatabaseLogger(Callback):
             "performance": logs or {},
         }
         logs["epoch"] = epoch
-        for block_id, responses in self.block_payloads:
+        for block_id, responses in self.block_payloads.items():
             payload[block_id] = {}
 
             for key, value in responses[0].items():
                 if value in logs:
                     payload[block_id][key] = logs[value]
 
-            if responses.length > 1:
+            if len(responses) > 1:  # dicts should be passed without any changes
                 payload[block_id].update(responses[1])
 
         self.log(payload)

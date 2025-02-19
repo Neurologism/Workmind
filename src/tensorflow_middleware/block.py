@@ -30,7 +30,7 @@ class Block:
     def __init__(self, params: dict, type: str) -> None:
         self.params = params
         if type not in type_to_function:
-            raise ValueError(f"Type {type} not a known node type")
+            raise ValueError(f"Type {type} is not a known node type.")
         self.function = type_to_function[type]
         self.object = None
         self.type = type
@@ -57,4 +57,4 @@ class Block:
             filtered_params = {
                 k: v for k, v in self.params.items() if k in function_params
             }
-            self.object = self.function(filtered_params)
+            self.object = self.function(**filtered_params)

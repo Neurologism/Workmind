@@ -156,11 +156,14 @@ class QueueInterface:
             )
             return
 
+        # write start node from model into project
+        project["components"]["start_node"] = model["startNodeId"]
+
         parent_conn, child_conn = multiprocessing.Pipe()
 
         p1 = multiprocessing.Process(
             target=run_whitemind_project,
-            args=(parent_conn, self.model["components"], self.model["_id"]),
+            args=(parent_conn, project["components"], self.model["_id"]),
         )
         p2 = multiprocessing.Process(
             target=db_updater,
@@ -223,7 +226,7 @@ class QueueInterface:
                 )
             time.sleep(1)
 
-        time.sleep(2)
+        time.sleep(200)
 
         if p1.is_alive():
             p1.terminate()
@@ -256,6 +259,8 @@ class QueueInterface:
         print("Searching for abandoned trainings...")
         found = False
         for model in self.db_models.find({"status": "training"}):
+            if "$date" not in model["datelastUpdated"]:
+                model["datelastUpdated"] = {"$date": model["datelastUpdated"]}
             lastUpdated = datetime.strptime(
                 model["datelastUpdated"]["$date"], "%Y-%m-%dT%H:%M:%S.%fZ"
             ).replace(tzinfo=timezone.utc)

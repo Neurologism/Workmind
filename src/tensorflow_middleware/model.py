@@ -70,6 +70,12 @@ def register_model(params: dict) -> keras.Model:
 
 
 def fit_model(params: dict):
+    params["logger"].block_payloads[params["block_id"]] = [
+        {
+            "loss": "loss",
+            "val_loss": "val_loss",
+        }
+    ]
     model = params["model"]
 
     callbacks = [params["logger"]]

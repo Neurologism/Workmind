@@ -48,6 +48,7 @@ def dense_layer(params: dict):
 layer_to_function = {
     "input": input_layer,
     "dense": dense_layer,
+    "flatten": keras.layers.Flatten,
     "conv1d": keras.layers.Conv1D,
     "conv2d": keras.layers.Conv2D,
     "conv3d": keras.layers.Conv3D,
