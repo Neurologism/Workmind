@@ -1,252 +1,275 @@
 {
+  "start_node": "0.q5ksc0frt3g",
   "nodes": [
     {
-      "id": "0.7ejxflskore",
-      "type": "wine_quality",
+      "id": "0.6dqpz78gtu",
+      "type": "export",
       "initialized": false,
       "position": {
-        "x": 733.6345613176061,
-        "y": 360.0257806457164
+        "x": 93.21579941771799,
+        "y": 469.1000598298749
       },
       "data": {
-        "batch_size": 32
+        "format": "onnx",
+        "name": "model",
+        "isExpanded": false
       },
-      "identifier": "dataset_wine_quality",
-      "group_identifier": "dataset"
+      "identifier": "export",
+      "group_identifier": "model"
     },
     {
-      "id": "0.pm49f2qq8if",
+      "id": "0.q5ksc0frt3g",
+      "type": "Model",
+      "initialized": false,
+      "position": {
+        "x": 58.48677290509656,
+        "y": -88.71869430987338
+      },
+      "data": {
+        "optimizer": "adam",
+        "loss": "mean_squared_error",
+        "metrics": ["mean_absolute_error"],
+        "name": "model",
+        "isExpanded": true
+      },
+      "identifier": "Model",
+      "group_identifier": "model"
+    },
+    {
+      "id": "0.tvq10z80j8",
+      "type": "fit",
+      "initialized": false,
+      "position": {
+        "x": 46.33148999800861,
+        "y": 167.2088663072287
+      },
+      "data": {
+        "epochs": 1,
+        "early_stopping": null,
+        "name": "model",
+        "isExpanded": true
+      },
+      "identifier": "fit",
+      "group_identifier": "model"
+    },
+    {
+      "id": "0.fmf8nkl8cot",
       "type": "input_layer",
       "initialized": false,
       "position": {
-        "x": 1065.6904873254348,
-        "y": 238.93771740226
+        "x": -169.33468130178443,
+        "y": -100.54382559632356
       },
       "data": {
-        "shape": [
-          11
-        ],
         "batch_size": null,
         "dtype": "float32",
         "sparse": false,
-        "optional": false
+        "optional": false,
+        "isExpanded": false
       },
       "identifier": "input",
       "group_identifier": "layer"
     },
     {
-      "id": "0.wtvuy5z3mj",
+      "id": "0.4a50e3ci646",
       "type": "dense",
       "initialized": false,
       "position": {
-        "x": 1108.1337259880897,
-        "y": 368.76409448802764
+        "x": -169.03409939205204,
+        "y": -0.07758847435428251
       },
       "data": {
         "activation": "relu",
         "use_bias": true,
         "lora_rank": null,
+        "isExpanded": false,
         "units": 128
       },
       "identifier": "dense",
       "group_identifier": "layer"
     },
     {
-      "id": "0.vk885w852if",
+      "id": "0.h31qjb3cner",
       "type": "dense",
       "initialized": false,
       "position": {
-        "x": 1030.7372319561898,
-        "y": 464.8855467534517
+        "x": -169.0237970929658,
+        "y": 107.64276883530732
       },
       "data": {
         "activation": "linear",
         "use_bias": true,
         "lora_rank": null,
+        "isExpanded": false,
         "units": 1
       },
       "identifier": "dense",
       "group_identifier": "layer"
     },
     {
-      "id": "0.9csa4xleno",
-      "type": "Model",
+      "id": "0.0mrofq2mm1mr",
+      "type": "dataset",
       "initialized": false,
       "position": {
-        "x": 523.9150291021353,
-        "y": 238.93771740225995
+        "x": -319.3809936913825,
+        "y": 326.3140859240152
       },
       "data": {
-        "optimizer": "adam",
-        "loss": "mean_squared_error",
-        "metrics": [
-          "mean_absolute_error"
-        ],
-        "name": "model"
+        "name": "wine_quality",
+        "batch_size": 32,
+        "isExpanded": true
       },
-      "identifier": "Model",
-      "group_identifier": "model"
-    },
-    {
-      "id": "0.8stbki9r509",
-      "type": "fit",
-      "initialized": false,
-      "position": {
-        "x": 491.4584348306934,
-        "y": 478.61718279136926
-      },
-      "data": {
-        "epochs": 5,
-        "name": "model"
-      },
-      "identifier": "fit",
-      "group_identifier": "model"
-    },
-    {
-      "id": "0.lzk0g3gwgde",
-      "type": "split",
-      "initialized": false,
-      "position": {
-        "x": 878.7341396105978,
-        "y": 563.7717487520621
-      },
-      "data": {
-        "ratio": 0.8
-      },
-      "identifier": "split",
+      "identifier": "dataset",
       "group_identifier": "dataset"
     }
   ],
   "edges": [
     {
-      "id": "vueflow__edge-0.pm49f2qq8ifout-0.pm49f2qq8if-0.wtvuy5z3mjin-0.wtvuy5z3mj",
+      "id": "vueflow__edge-0.q5ksc0frt3gout-0.q5ksc0frt3g-0.tvq10z80j8in-0.tvq10z80j8",
       "type": "smoothstep",
-      "source": "0.pm49f2qq8if",
-      "target": "0.wtvuy5z3mj",
-      "sourceHandle": "out-0.pm49f2qq8if",
-      "targetHandle": "in-0.wtvuy5z3mj",
+      "source": "0.q5ksc0frt3g",
+      "target": "0.tvq10z80j8",
+      "sourceHandle": "out-0.q5ksc0frt3g",
+      "targetHandle": "in-0.tvq10z80j8",
       "data": {},
       "label": "",
-      "sourceX": 1125.6863773296154,
-      "sourceY": 287.9477658028503,
-      "targetX": 1171.492986380182,
-      "targetY": 363.7644789322568
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "teal",
+        "strokeWidth": 2
+      },
+      "sourceX": 145.4979632167056,
+      "sourceY": 91.28937698299758,
+      "targetX": 145.9347490398354,
+      "targetY": 161.20748737262872
     },
     {
-      "id": "vueflow__edge-0.wtvuy5z3mjout-0.wtvuy5z3mj-0.vk885w852ifin-0.vk885w852if",
+      "id": "vueflow__edge-0.q5ksc0frt3gval-input-0.q5ksc0frt3g-0.fmf8nkl8cotin-0.fmf8nkl8cot",
       "type": "smoothstep",
-      "source": "0.wtvuy5z3mj",
-      "target": "0.vk885w852if",
-      "sourceHandle": "out-0.wtvuy5z3mj",
-      "targetHandle": "in-0.vk885w852if",
+      "source": "0.q5ksc0frt3g",
+      "target": "0.fmf8nkl8cot",
+      "sourceHandle": "val-input-0.q5ksc0frt3g",
+      "targetHandle": "in-0.fmf8nkl8cot",
       "data": {},
       "label": "",
-      "sourceX": 1171.492986380182,
-      "sourceY": 417.76117191308913,
-      "targetX": 1094.096492348282,
-      "targetY": 459.88593119768086
-    },
-    {
-      "id": "vueflow__edge-0.9csa4xlenoval-inputs-0.9csa4xleno-0.pm49f2qq8ifin-0.pm49f2qq8if",
-      "type": "smoothstep",
-      "source": "0.9csa4xleno",
-      "target": "0.pm49f2qq8if",
-      "sourceHandle": "val-inputs-0.9csa4xleno",
-      "targetHandle": "in-0.pm49f2qq8if",
-      "data": {
-        "key": "inputs"
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "green",
+        "strokeWidth": 2
       },
-      "label": "",
-      "sourceX": 645.41500518467,
-      "sourceY": 308.9458213825813,
-      "targetX": 1125.6863773296154,
-      "targetY": 233.93810184648916
+      "sourceX": 236.49445554072506,
+      "sourceY": -44.70986167473291,
+      "targetX": -92.52759283257043,
+      "targetY": -106.54523292597322
     },
     {
-      "id": "vueflow__edge-0.vk885w852ifout-0.vk885w852if-0.9csa4xlenoval-outputs-0.9csa4xleno",
+      "id": "vueflow__edge-0.fmf8nkl8cotout-0.fmf8nkl8cot-0.4a50e3ci646in-0.4a50e3ci646",
       "type": "smoothstep",
-      "source": "0.vk885w852if",
-      "target": "0.9csa4xleno",
-      "sourceHandle": "out-0.vk885w852if",
-      "targetHandle": "val-outputs-0.9csa4xleno",
+      "source": "0.fmf8nkl8cot",
+      "target": "0.4a50e3ci646",
+      "sourceHandle": "out-0.fmf8nkl8cot",
+      "targetHandle": "in-0.4a50e3ci646",
       "data": {},
       "label": "",
-      "sourceX": 1094.096492348282,
-      "sourceY": 513.8826004003729,
-      "targetX": 645.41500518467,
-      "targetY": 352.94251436341364
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "sourceX": -92.52759283257043,
+      "sourceY": -58.552363632823614,
+      "targetX": -92.24240103976354,
+      "targetY": -6.078967408954272
     },
     {
-      "id": "vueflow__edge-0.9csa4xlenoout-0.9csa4xleno-0.8stbki9r509in-0.8stbki9r509",
+      "id": "vueflow__edge-0.h31qjb3cnerout-0.h31qjb3cner-0.q5ksc0frt3gval-output-0.q5ksc0frt3g",
       "type": "smoothstep",
-      "source": "0.9csa4xleno",
-      "target": "0.8stbki9r509",
-      "sourceHandle": "out-0.9csa4xleno",
-      "targetHandle": "in-0.8stbki9r509",
+      "source": "0.h31qjb3cner",
+      "target": "0.q5ksc0frt3g",
+      "sourceHandle": "out-0.h31qjb3cner",
+      "targetHandle": "val-output-0.q5ksc0frt3g",
       "data": {},
       "label": "",
-      "sourceX": 583.9108715500355,
-      "sourceY": 387.94025525431925,
-      "targetX": 571.4657699225564,
-      "targetY": 473.6175672355984
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "sourceX": -92.21665183365243,
+      "sourceY": 149.63421660128242,
+      "targetX": 54.48591040546259,
+      "targetY": -16.718845158574794
     },
     {
-      "id": "vueflow__edge-0.7ejxflskoreval-train-0.7ejxflskore-0.lzk0g3gwgdein-0.lzk0g3gwgde",
+      "id": "vueflow__edge-0.4a50e3ci646out-0.4a50e3ci646-0.h31qjb3cnerin-0.h31qjb3cner",
       "type": "smoothstep",
-      "source": "0.7ejxflskore",
-      "target": "0.lzk0g3gwgde",
-      "sourceHandle": "val-train-0.7ejxflskore",
-      "targetHandle": "in-0.lzk0g3gwgde",
-      "data": {
-        "key": "train"
-      },
+      "source": "0.4a50e3ci646",
+      "target": "0.h31qjb3cner",
+      "sourceHandle": "out-0.4a50e3ci646",
+      "targetHandle": "in-0.h31qjb3cner",
+      "data": {},
       "label": "",
-      "sourceX": 861.8353600030465,
-      "sourceY": 430.0208779832985,
-      "targetX": 938.7299345022174,
-      "targetY": 558.772109418151
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "green",
+        "strokeWidth": 2
+      },
+      "sourceX": -92.24240103976354,
+      "sourceY": 41.929391383794695,
+      "targetX": -92.21665183365243,
+      "targetY": 101.64136150565766
     },
     {
-      "id": "vueflow__edge-0.lzk0g3gwgdeval-split1-0.lzk0g3gwgde-0.8stbki9r509val-x-0.8stbki9r509",
+      "id": "vueflow__edge-0.0mrofq2mm1mrval-train-0.0mrofq2mm1mr-0.tvq10z80j8val-data-0.tvq10z80j8",
       "type": "smoothstep",
-      "source": "0.lzk0g3gwgde",
-      "target": "0.8stbki9r509",
-      "sourceHandle": "val-split1-0.lzk0g3gwgde",
-      "targetHandle": "val-x-0.8stbki9r509",
-      "data": {
-        "key": "split1"
-      },
+      "source": "0.0mrofq2mm1mr",
+      "target": "0.tvq10z80j8",
+      "sourceHandle": "val-train-0.0mrofq2mm1mr",
+      "targetHandle": "val-data-0.tvq10z80j8",
+      "data": {},
       "label": "",
-      "sourceX": 1000.2340681368519,
-      "sourceY": 633.7798051761029,
-      "targetX": 652.9684133365549,
-      "targetY": 548.6122801289513
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "#ff5722",
+        "strokeWidth": 2
+      },
+      "sourceX": -152.1821138760923,
+      "sourceY": 370.30740066450664,
+      "targetX": 42.346074405399484,
+      "targetY": 211.2022094427698
     },
     {
-      "id": "vueflow__edge-0.lzk0g3gwgdeval-split2-0.lzk0g3gwgde-0.8stbki9r509val-validation_data-0.8stbki9r509",
+      "id": "vueflow__edge-0.tvq10z80j8out-0.tvq10z80j8-0.6dqpz78gtuin-0.6dqpz78gtu",
       "type": "smoothstep",
-      "source": "0.lzk0g3gwgde",
-      "target": "0.8stbki9r509",
-      "sourceHandle": "val-split2-0.lzk0g3gwgde",
-      "targetHandle": "val-validation_data-0.8stbki9r509",
-      "data": {
-        "key": "split2"
-      },
+      "source": "0.tvq10z80j8",
+      "target": "0.6dqpz78gtu",
+      "sourceHandle": "out-0.tvq10z80j8",
+      "targetHandle": "in-0.6dqpz78gtu",
+      "data": {},
       "label": "",
-      "sourceX": 1000.2340681368519,
-      "sourceY": 677.7764981569352,
-      "targetX": 652.9684133365549,
-      "targetY": 592.6219559743827
+      "animated": false,
+      "animationSpeed": 0.5,
+      "style": {
+        "stroke": "teal",
+        "strokeWidth": 2
+      },
+      "sourceX": 145.9347490398354,
+      "sourceY": 355.20328667996694,
+      "targetX": 146.01742893863138,
+      "targetY": 463.0987092903246
     }
   ],
-  "position": [
-    -27.209409645511187,
-    -195.38607671172326
-  ],
-  "zoom": 1.2834258975629043,
+  "position": [1193.1636137412574, 320.9050989978833],
+  "zoom": 1.0747491728555012,
   "viewport": {
-    "x": -27.209409645511187,
-    "y": -195.38607671172326,
-    "zoom": 1.2834258975629043
+    "x": 1193.1636137412574,
+    "y": 320.9050989978833,
+    "zoom": 1.0747491728555012
   }
 }
