@@ -3,14 +3,15 @@ import time
 from datetime import datetime, timedelta, timezone
 from tensorflow_middleware import WhitemindProject
 import multiprocessing
+from queue_controller.f_discord_logger import webhook_training_error
 
 
-def run_whitemind_project(conn, task):
+def run_whitemind_project(conn, task, id):
     try:
-        project = WhitemindProject(task, lambda payload: conn.send(payload))
-        project.execute()
+        WhitemindProject(task, lambda payload: conn.send(payload), task_id=id)()
     except Exception as e:
         print(f"Error during training, check database for details: {e}")
+        webhook_training_error(id, e)
         conn.send(
             {
                 "type": "error",
@@ -38,10 +39,12 @@ def db_updater(conn, mongo_uri, db_name, id):
                         {
                             "$set": {
                                 "status": "error",
-                                "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                    "%Y-%m-%dT%H:%M:%S.%f"
-                                )[:-3]
-                                + "Z",
+                                "datelastUpdated": {
+                                    "$date": datetime.now(timezone.utc).strftime(
+                                        "%Y-%m-%dT%H:%M:%S.%f"
+                                    )[:-3]
+                                    + "Z"
+                                },
                                 "error": payloads[-1]["message"],
                             }
                         },
@@ -51,10 +54,12 @@ def db_updater(conn, mongo_uri, db_name, id):
                 {"_id": id},
                 {
                     "$set": {
-                        "datelastUpdated": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        }
                     },
                     "$push": {"output": {"$each": payloads}},
                 },
@@ -74,6 +79,7 @@ class QueueInterface:
         self.db_training_queue = self.db["queueitems"]
         self.db_models = self.db["tasks"]
         self.db_users = self.db["users"]
+        self.db_projects = self.db["projects"]
         self.logging_payloads = []
         self.model = None
 
@@ -94,27 +100,39 @@ class QueueInterface:
         self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
 
         if self.model is None:
-            raise ValueError("Model does not exist.")
+            print("Model does not exist or was deleted.")
+            return
 
         self.db_models.update_one(
             {"_id": self.model["_id"]},
             {
                 "$set": {
                     "status": "training",
-                    "datelastUpdated": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
-                    "dateStarted": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
+                    "datelastUpdated": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
+                    "dateStarted": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
                 }
             },
         )
 
         model = self.db_models.find_one({"_id": self.model["_id"]})
-        user = self.db_users.find_one({"_id": model["ownerId"]})
+
+        if model is None:
+            print("Model was deleted during training.")
+            return
+
+        project = self.db_projects.find_one({"_id": model["projectId"]})
+
+        user = self.db_users.find_one({"_id": project["ownerId"]})
         print(
             f"Training model {model['_id']} for user {user['brainetTag']} ({user['_id']}). Remaining credits: {user['remainingCredits']}"
         )
@@ -126,20 +144,26 @@ class QueueInterface:
                 {
                     "$set": {
                         "status": "stopped",
-                        "datelastUpdated": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
                         "error": "Insufficient credits",
                     }
                 },
             )
             return
 
+        # write start node from model into project
+        project["components"]["start_node"] = model["startNodeId"]
+
         parent_conn, child_conn = multiprocessing.Pipe()
 
         p1 = multiprocessing.Process(
-            target=run_whitemind_project, args=(parent_conn, self.model["task"])
+            target=run_whitemind_project,
+            args=(parent_conn, project["components"], self.model["_id"]),
         )
         p2 = multiprocessing.Process(
             target=db_updater,
@@ -152,6 +176,15 @@ class QueueInterface:
         while p1.is_alive() and p2.is_alive():
 
             model = self.db_models.find_one({"_id": self.model["_id"]})
+
+            if model is None:
+                print("Model was deleted during training.")
+                if p1.is_alive():
+                    p1.terminate()
+                if p2.is_alive():
+                    p2.terminate()
+                return
+
             if model["status"] == "stopped":
                 print("\nTraining stopped.")
                 if p1.is_alive():
@@ -160,7 +193,7 @@ class QueueInterface:
                     p2.terminate()
                 return
 
-            user = self.db_users.find_one({"_id": model["ownerId"]})
+            user = self.db_users.find_one({"_id": project["ownerId"]})
             credits = user["remainingCredits"]
             if credits <= 0:
                 if p1.is_alive():
@@ -175,10 +208,12 @@ class QueueInterface:
                     {
                         "$set": {
                             "status": "stopped",
-                            "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                "%Y-%m-%dT%H:%M:%S.%f"
-                            )[:-3]
-                            + "Z",
+                            "datelastUpdated": {
+                                "$date": datetime.now(timezone.utc).strftime(
+                                    "%Y-%m-%dT%H:%M:%S.%f"
+                                )[:-3]
+                                + "Z"
+                            },
                             "error": "Insufficient credits",
                         }
                     },
@@ -186,10 +221,12 @@ class QueueInterface:
                 return
             else:
                 self.db_users.update_one(
-                    {"_id": model["ownerId"]},
+                    {"_id": project["ownerId"]},
                     {"$set": {"remainingCredits": credits - 1}},
                 )
             time.sleep(1)
+
+        time.sleep(2)
 
         if p1.is_alive():
             p1.terminate()
@@ -202,14 +239,18 @@ class QueueInterface:
             {
                 "$set": {
                     "status": "finished",
-                    "datelastUpdated": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
-                    "dateFinished": datetime.now(timezone.utc).strftime(
-                        "%Y-%m-%dT%H:%M:%S.%f"
-                    )[:-3]
-                    + "Z",
+                    "datelastUpdated": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
+                    "dateFinished": {
+                        "$date": datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%S.%f"
+                        )[:-3]
+                        + "Z"
+                    },
                 }
             },
         )
@@ -218,8 +259,10 @@ class QueueInterface:
         print("Searching for abandoned trainings...")
         found = False
         for model in self.db_models.find({"status": "training"}):
+            if "$date" not in model["datelastUpdated"]:
+                model["datelastUpdated"] = {"$date": model["datelastUpdated"]}
             lastUpdated = datetime.strptime(
-                model["datelastUpdated"], "%Y-%m-%dT%H:%M:%S.%fZ"
+                model["datelastUpdated"]["$date"], "%Y-%m-%dT%H:%M:%S.%fZ"
             ).replace(tzinfo=timezone.utc)
             if lastUpdated < datetime.now(timezone.utc) - timedelta(minutes=1):
                 self.db_models.update_one(
@@ -227,10 +270,12 @@ class QueueInterface:
                     {
                         "$set": {
                             "status": "queued",
-                            "datelastUpdated": datetime.now(timezone.utc).strftime(
-                                "%Y-%m-%dT%H:%M:%S.%f"
-                            )[:-3]
-                            + "Z",
+                            "datelastUpdated": {
+                                "$date": datetime.now(timezone.utc).strftime(
+                                    "%Y-%m-%dT%H:%M:%S.%f"
+                                )[:-3]
+                                + "Z"
+                            },
                         }
                     },
                 )
