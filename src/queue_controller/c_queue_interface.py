@@ -226,7 +226,7 @@ class QueueInterface:
                 )
             time.sleep(1)
 
-        time.sleep(200)
+        time.sleep(2)
 
         if p1.is_alive():
             p1.terminate()
