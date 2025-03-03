@@ -92,8 +92,9 @@ def fit_model(params: dict):
             params["validation_data"][0][1]
         ]
 
-    for visualizer, connection in params["visualizers"]:
-        visualizer()
+    if "visualizers" in params:
+        for visualizer, connection in params["visualizers"]:
+            visualizer()
 
     fit_params = inspect.signature(model.fit).parameters
     fit_params = {k: v for k, v in params.items() if k in fit_params}
