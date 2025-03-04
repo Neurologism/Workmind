@@ -89,8 +89,6 @@ def db_updater(conn, mongo_uri, db_name, id):
                 },
             )
             time.sleep(2)
-        finally:
-            conn.close()
 
 
 class QueueInterface:
