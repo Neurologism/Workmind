@@ -1,5 +1,4 @@
 from .dependencies import *
-from env import MODEL_DIRECTORY
 
 
 def register_model(params: dict) -> keras.Model:
@@ -155,7 +154,22 @@ def export_model(params: dict):
     if isinstance(onnx_model, tuple):
         onnx_model = onnx_model[0]
 
-    onnx.save_model(onnx_model, f"{MODEL_DIRECTORY}/{params["task_id"]}.onnx")
+    onnx.save_model(onnx_model, f"{params["task_id"]}.onnx")
+
+    s3 = boto3.client(
+        "s3",
+        config=boto3.session.Config(signature_version="s3v4"),
+        region_name="eu-central-1",
+    )
+    with open(f"{params["task_id"]}.onnx", "rb") as f:
+        s3.upload_fileobj(f, "whitemind-models", f"{params["task_id"]}.onnx")
+
+    url = s3.generate_presigned_url(
+        "get_object",
+        Params={"Bucket": "whitemind-models", "Key": f"{params["task_id"]}.onnx"},
+    )
+
+    params["logger"].on_export(url)
 
     if "out" in params:
         params["out"][0][0](**{"model": model})
