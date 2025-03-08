@@ -46,20 +46,67 @@ def dense_layer(params: dict):
 # map layer types to functions
 
 layer_to_function = {
+    # core layers
     "input": input_layer,
     "dense": dense_layer,
-    "flatten": keras.layers.Flatten,
+    "activation": keras.layers.Activation,
+    "embedding": keras.layers.Embedding,
+    # convolution layers
     "conv1d": keras.layers.Conv1D,
     "conv2d": keras.layers.Conv2D,
     "conv3d": keras.layers.Conv3D,
+    # pooling layers
+    "maxpooling1d": keras.layers.MaxPooling1D,
+    "maxpooling2d": keras.layers.MaxPooling2D,
+    "maxpooling3d": keras.layers.MaxPooling3D,
+    "averagepooling1d": keras.layers.AveragePooling1D,
+    "averagepooling2d": keras.layers.AveragePooling2D,
+    "averagepooling3d": keras.layers.AveragePooling3D,
+    "globalmaxpooling1d": keras.layers.GlobalMaxPooling1D,
+    "globalmaxpooling2d": keras.layers.GlobalMaxPooling2D,
+    "globalmaxpooling3d": keras.layers.GlobalMaxPooling3D,
+    "globalaveragepooling1d": keras.layers.GlobalAveragePooling1D,
+    "globalaveragepooling2d": keras.layers.GlobalAveragePooling2D,
+    "globalaveragepooling3d": keras.layers.GlobalAveragePooling3D,
+    # recurrent layers
+    "lstm": keras.layers.LSTM,
+    "gru": keras.layers.GRU,
+    # preprocessing layers
     "normalization": normalization_layer,
+    # normalization layers
     "batch_normalization": keras.layers.BatchNormalization,
+    "layer_normalization": keras.layers.LayerNormalization,
+    "unit_normalization": keras.layers.UnitNormalization,
+    "group_normalization": keras.layers.GroupNormalization,
+    # regularization layers
     "dropout": keras.layers.Dropout,
-    "average_pooling1d": keras.layers.AveragePooling1D,
-    "average_pooling2d": keras.layers.AveragePooling2D,
-    "average_pooling3d": keras.layers.AveragePooling3D,
-    "embedding": keras.layers.Embedding,
+    "gaussian_dropout": keras.layers.GaussianDropout,
+    "alpha_dropout": keras.layers.AlphaDropout,
+    "gaussian_noise": keras.layers.GaussianNoise,
+    "activity_regularization": keras.layers.ActivityRegularization,
+    # attention layers
+    "multi_head_attention": keras.layers.MultiHeadAttention,
+    "attention": keras.layers.Attention,
+    # reshaping layers
+    "reshape": keras.layers.Reshape,
+    "flatten": keras.layers.Flatten,
+    "permute": keras.layers.Permute,
+    "zero_padding1d": keras.layers.ZeroPadding1D,
+    "zero_padding2d": keras.layers.ZeroPadding2D,
+    "zero_padding3d": keras.layers.ZeroPadding3D,
+    # merging layers
+    "concatenate": keras.layers.Concatenate,
     "average": keras.layers.Average,
-    "activation": keras.layers.Activation,
+    "maximum": keras.layers.Maximum,
+    "minimum": keras.layers.Minimum,
+    "add": keras.layers.Add,
+    "subtract": keras.layers.Subtract,
+    "multiply": keras.layers.Multiply,
+    "dot": keras.layers.Dot,
+    # activation layers
     "relu": keras.layers.ReLU,
+    "softmax": keras.layers.Softmax,
+    "leaky_relu": keras.layers.LeakyReLU,
+    "prelu": keras.layers.PReLU,
+    "elu": keras.layers.ELU,
 }
