@@ -45,6 +45,12 @@ class WhitemindProject:
             source_block = self.blocks[source_handle[1]]
             target_block = self.blocks[target_handle[1]]
 
+            if source_handle[0].endswith("_dataset"):
+                source_handle[0] = source_handle[0][:-8]
+
+            if target_handle[0].endswith("_dataset"):
+                target_handle[0] = target_handle[0][:-8]
+
             source_block.add_connection(
                 source_handle[0], target_block, target_handle[0]
             )
