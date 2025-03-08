@@ -10,3 +10,4 @@ import numpy as np
 import inspect
 import tf2onnx
 import onnx
+import boto3

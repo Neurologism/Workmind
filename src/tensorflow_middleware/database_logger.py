@@ -65,3 +65,18 @@ class DatabaseLogger(Callback):
             "logs": logs or {},
         }
         self.log(payload)
+
+    def on_export(self, url: str):
+        if self.log is None:
+            return
+        payload = {
+            "event": "export",
+            "timestamp": {
+                "$date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%f")[
+                    :-3
+                ]
+                + "Z"
+            },
+            "url": url,
+        }
+        self.log(payload)

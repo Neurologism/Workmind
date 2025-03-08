@@ -7,3 +7,5 @@ tensorflow-datasets
 onnx
 tf2onnx
 requests
+boto3
+awscli

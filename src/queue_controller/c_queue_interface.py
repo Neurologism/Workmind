@@ -4,18 +4,21 @@ from datetime import datetime, timedelta, timezone
 from tensorflow_middleware import WhitemindProject
 import multiprocessing
 from queue_controller.f_discord_logger import webhook_training_error
+import traceback
 
 
 def run_whitemind_project(conn, task, id):
     try:
         WhitemindProject(task, lambda payload: conn.send(payload), task_id=id)()
     except Exception as e:
-        print(f"Error during training, check database for details: {e}")
-        webhook_training_error(id, e)
+        tb = traceback.format_exc()
+        print(f"Training project {id} failed at {datetime.now()}")
+        print(tb)
+        webhook_training_error(id, tb)
         conn.send(
             {
                 "type": "error",
-                "message": str(e),
+                "message": str(tb),
             }
         )
         time.sleep(2)
@@ -66,7 +69,25 @@ def db_updater(conn, mongo_uri, db_name, id):
             )
             time.sleep(1)
         except Exception as e:
-            print(f"Error during updating database: {e}")
+            print(f"DB updater for project {id} failed at {datetime.now()}")
+            tb = traceback.format_exc()
+            print(tb)
+            webhook_training_error(id, tb)
+            db_models.update_one(
+                {"_id": id},
+                {
+                    "$set": {
+                        "status": "error",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
+                        "error": str(tb),
+                    }
+                },
+            )
             time.sleep(2)
 
 
@@ -84,125 +105,68 @@ class QueueInterface:
         self.model = None
 
     def train_one(self) -> None:
-        queue_item = self.db_training_queue.find_one_and_delete(
-            {}, sort=[("priority", -1), ("_id", 1)]
-        )
+        try:
+            queue_item = self.db_training_queue.find_one_and_delete(
+                {}, sort=[("priority", -1), ("_id", 1)]
+            )
 
-        if queue_item is None:
-            print("Queue is empty, sleeping...")
-            while queue_item is None:
-                time.sleep(5)
-                queue_item = self.db_training_queue.find_one_and_delete(
-                    {}, sort=[("priority", -1), ("_id", 1)]
-                )
-        print("Queue item found.")
+            if queue_item is None:
+                print("Queue is empty, sleeping...")
+                while queue_item is None:
+                    time.sleep(5)
+                    queue_item = self.db_training_queue.find_one_and_delete(
+                        {}, sort=[("priority", -1), ("_id", 1)]
+                    )
+            print("Queue item found.")
 
-        self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
+            self.model = self.db_models.find_one({"_id": queue_item["taskId"]})
 
-        if self.model is None:
-            print("Model does not exist or was deleted.")
+            if self.model is None:
+                print("Model does not exist or was deleted.")
+                return
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(f"Error during queue item retrieval: {tb}")
+            time.sleep(2)
             return
 
-        self.db_models.update_one(
-            {"_id": self.model["_id"]},
-            {
-                "$set": {
-                    "status": "training",
-                    "datelastUpdated": {
-                        "$date": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z"
-                    },
-                    "dateStarted": {
-                        "$date": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z"
-                    },
-                }
-            },
-        )
-
-        model = self.db_models.find_one({"_id": self.model["_id"]})
-
-        if model is None:
-            print("Model was deleted during training.")
-            return
-
-        project = self.db_projects.find_one({"_id": model["projectId"]})
-
-        user = self.db_users.find_one({"_id": project["ownerId"]})
-        print(
-            f"Training model {model['_id']} for user {user['brainetTag']} ({user['_id']}). Remaining credits: {user['remainingCredits']}"
-        )
-        credits = user["remainingCredits"]
-        if credits <= 0:
-            print("Insufficient credits.")
+        try:
             self.db_models.update_one(
                 {"_id": self.model["_id"]},
                 {
                     "$set": {
-                        "status": "stopped",
+                        "status": "training",
                         "datelastUpdated": {
                             "$date": datetime.now(timezone.utc).strftime(
                                 "%Y-%m-%dT%H:%M:%S.%f"
                             )[:-3]
                             + "Z"
                         },
-                        "error": "Insufficient credits",
+                        "dateStarted": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
                     }
                 },
             )
-            return
-
-        # write start node from model into project
-        project["components"]["start_node"] = model["startNodeId"]
-
-        parent_conn, child_conn = multiprocessing.Pipe()
-
-        p1 = multiprocessing.Process(
-            target=run_whitemind_project,
-            args=(parent_conn, project["components"], self.model["_id"]),
-        )
-        p2 = multiprocessing.Process(
-            target=db_updater,
-            args=(child_conn, self.mongo_uri, self.db_name, self.model["_id"]),
-        )
-
-        p1.start()
-        p2.start()
-
-        while p1.is_alive() and p2.is_alive():
 
             model = self.db_models.find_one({"_id": self.model["_id"]})
 
             if model is None:
                 print("Model was deleted during training.")
-                if p1.is_alive():
-                    p1.terminate()
-                if p2.is_alive():
-                    p2.terminate()
                 return
 
-            if model["status"] == "stopped":
-                print("\nTraining stopped.")
-                if p1.is_alive():
-                    p1.terminate()
-                if p2.is_alive():
-                    p2.terminate()
-                return
+            project = self.db_projects.find_one({"_id": model["projectId"]})
 
             user = self.db_users.find_one({"_id": project["ownerId"]})
+            print(
+                f"Training model {model['_id']} for user {user['brainetTag']} ({user['_id']}). Remaining credits: {user['remainingCredits']}"
+            )
             credits = user["remainingCredits"]
             if credits <= 0:
-                if p1.is_alive():
-                    p1.terminate()
-
-                if p2.is_alive():
-                    p2.terminate()
-
-                print("\nInsufficient credits.")
+                print("Insufficient credits.")
                 self.db_models.update_one(
                     {"_id": self.model["_id"]},
                     {
@@ -219,41 +183,127 @@ class QueueInterface:
                     },
                 )
                 return
-            else:
-                self.db_users.update_one(
-                    {"_id": project["ownerId"]},
-                    {"$set": {"remainingCredits": credits - 1}},
-                )
-            time.sleep(1)
 
-        time.sleep(2)
+            # write start node from model into project
+            project["components"]["start_node"] = model["startNodeId"]
 
-        if p1.is_alive():
-            p1.terminate()
+            parent_conn, child_conn = multiprocessing.Pipe()
 
-        if p2.is_alive():
-            p2.terminate()
+            p1 = multiprocessing.Process(
+                target=run_whitemind_project,
+                args=(parent_conn, project["components"], self.model["_id"]),
+            )
+            p2 = multiprocessing.Process(
+                target=db_updater,
+                args=(child_conn, self.mongo_uri, self.db_name, self.model["_id"]),
+            )
 
-        self.db_models.update_one(
-            {"_id": self.model["_id"]},
-            {
-                "$set": {
-                    "status": "finished",
-                    "datelastUpdated": {
-                        "$date": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z"
-                    },
-                    "dateFinished": {
-                        "$date": datetime.now(timezone.utc).strftime(
-                            "%Y-%m-%dT%H:%M:%S.%f"
-                        )[:-3]
-                        + "Z"
-                    },
-                }
-            },
-        )
+            p1.start()
+            p2.start()
+
+            while p1.is_alive() and p2.is_alive():
+
+                model = self.db_models.find_one({"_id": self.model["_id"]})
+
+                if model is None:
+                    print("Model was deleted during training.")
+                    if p1.is_alive():
+                        p1.terminate()
+                    if p2.is_alive():
+                        p2.terminate()
+                    return
+
+                if model["status"] == "stopped":
+                    print("\nTraining stopped.")
+                    if p1.is_alive():
+                        p1.terminate()
+                    if p2.is_alive():
+                        p2.terminate()
+                    return
+
+                user = self.db_users.find_one({"_id": project["ownerId"]})
+                credits = user["remainingCredits"]
+                if credits <= 0:
+                    if p1.is_alive():
+                        p1.terminate()
+
+                    if p2.is_alive():
+                        p2.terminate()
+
+                    print("\nInsufficient credits.")
+                    self.db_models.update_one(
+                        {"_id": self.model["_id"]},
+                        {
+                            "$set": {
+                                "status": "stopped",
+                                "datelastUpdated": {
+                                    "$date": datetime.now(timezone.utc).strftime(
+                                        "%Y-%m-%dT%H:%M:%S.%f"
+                                    )[:-3]
+                                    + "Z"
+                                },
+                                "error": "Insufficient credits",
+                            }
+                        },
+                    )
+                    return
+                else:
+                    self.db_users.update_one(
+                        {"_id": project["ownerId"]},
+                        {"$set": {"remainingCredits": credits - 1}},
+                    )
+                time.sleep(1)
+
+            time.sleep(2)
+
+            if p1.is_alive():
+                p1.terminate()
+
+            if p2.is_alive():
+                p2.terminate()
+
+            self.db_models.update_one(
+                {"_id": self.model["_id"]},
+                {
+                    "$set": {
+                        "status": "finished",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
+                        "dateFinished": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
+                    }
+                },
+            )
+        except Exception as e:
+            print(
+                f"Initializing project {self.model['_id']} failed at {datetime.now()}"
+            )
+            tb = traceback.format_exc()
+            print(tb)
+            webhook_training_error(self.model["_id"], tb)
+            self.db_models.update_one(
+                {"_id": self.model["_id"]},
+                {
+                    "$set": {
+                        "status": "error",
+                        "datelastUpdated": {
+                            "$date": datetime.now(timezone.utc).strftime(
+                                "%Y-%m-%dT%H:%M:%S.%f"
+                            )[:-3]
+                            + "Z"
+                        },
+                        "error": str(tb),
+                    }
+                },
+            )
 
     def requeue_abandoned_trainigs(self) -> None:
         print("Searching for abandoned trainings...")
@@ -264,7 +314,8 @@ class QueueInterface:
             lastUpdated = datetime.strptime(
                 model["datelastUpdated"]["$date"], "%Y-%m-%dT%H:%M:%S.%fZ"
             ).replace(tzinfo=timezone.utc)
-            if lastUpdated < datetime.now(timezone.utc) - timedelta(minutes=1):
+            now = datetime.now(timezone.utc)
+            if lastUpdated > datetime.now(timezone.utc) - timedelta(hours=1):
                 self.db_models.update_one(
                     {"_id": model["_id"]},
                     {
@@ -287,6 +338,24 @@ class QueueInterface:
                 )
 
                 found = True
+            else:
+                print(f"Model {model['_id']} is abandoned.")
+
+                self.db_models.update_one(
+                    {"_id": model["_id"]},
+                    {
+                        "$set": {
+                            "status": "error",
+                            "datelastUpdated": {
+                                "$date": datetime.now(timezone.utc).strftime(
+                                    "%Y-%m-%dT%H:%M:%S.%f"
+                                )[:-3]
+                                + "Z"
+                            },
+                            "error": "Abandoned training",
+                        }
+                    },
+                )
 
         if found:
             print("Found and requeued abandoned trainings.")
