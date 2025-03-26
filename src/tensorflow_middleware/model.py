@@ -169,7 +169,7 @@ def export_model(params: dict):
         Params={"Bucket": "whitemind-models", "Key": f"{params["task_id"]}.onnx"},
     )
 
-    params["logger"].on_export(url)
+    params["logger"].on_export(params["block_id"],url)
 
     if "out" in params:
         params["out"][0][0](**{"model": model})
