@@ -66,7 +66,7 @@ class DatabaseLogger(Callback):
         }
         self.log(payload)
 
-    def on_export(self, url: str):
+    def on_export(self, id: str, url: str):
         if self.log is None:
             return
         payload = {
@@ -77,6 +77,8 @@ class DatabaseLogger(Callback):
                 ]
                 + "Z"
             },
-            "url": url,
+            id: {
+                "url": url,
+            },
         }
         self.log(payload)
