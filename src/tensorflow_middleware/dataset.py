@@ -4,7 +4,7 @@ from .dependencies import *
 def create_dataset(params: dict) -> tf.data.Dataset:
     params["as_supervised"] = True
     params["shuffle_files"] = True
-    params["batch_size"] = 32
+    params["batch_size"] = 64
 
     params["name"] = params["datasetIdentifier"]
 
