@@ -162,7 +162,7 @@ def export_model(params: dict):
         region_name="eu-central-1",
     )
     with open(f"{params["task_id"]}.onnx", "rb") as f:
-        s3.upload_fileobj(f, "whitemind-models", f"{params["task_id"]}.onnx")
+        s3.upload_fileobj(f, "whitemind-models", f"{params['task_id']}.onnx")
 
     url = s3.generate_presigned_url(
         "get_object",
