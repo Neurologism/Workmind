@@ -142,39 +142,39 @@ def evaluate_model(params: dict):
     return model
 
 
-def export_model(params: dict):
-    model = params["model"]
+# def export_model(params: dict):
+#     model = params["model"]
 
-    input_signature = [
-        tf.TensorSpec(tensor.shape, tensor.dtype) for tensor in model.inputs
-    ]
+#     input_signature = [
+#         tf.TensorSpec(tensor.shape, tensor.dtype) for tensor in model.inputs
+#     ]
 
-    onnx_model = tf2onnx.convert.from_keras(model, input_signature=input_signature)
+#     onnx_model = tf2onnx.convert.from_keras(model, input_signature=input_signature)
 
-    if isinstance(onnx_model, tuple):
-        onnx_model = onnx_model[0]
+#     if isinstance(onnx_model, tuple):
+#         onnx_model = onnx_model[0]
 
-    onnx.save_model(onnx_model, f"{params['task_id']}.onnx")
+#     onnx.save_model(onnx_model, f"{params['task_id']}.onnx")
 
-    s3 = boto3.client(
-        "s3",
-        config=boto3.session.Config(signature_version="s3v4"),
-        region_name="eu-central-1",
-    )
-    with open(f"{params['task_id']}.onnx", "rb") as f:
-        s3.upload_fileobj(f, "whitemind-models", f"{params['task_id']}.onnx")
+#     s3 = boto3.client(
+#         "s3",
+#         config=boto3.session.Config(signature_version="s3v4"),
+#         region_name="eu-central-1",
+#     )
+#     with open(f"{params['task_id']}.onnx", "rb") as f:
+#         s3.upload_fileobj(f, "whitemind-models", f"{params['task_id']}.onnx")
 
-    url = s3.generate_presigned_url(
-        "get_object",
-        Params={"Bucket": "whitemind-models", "Key": f"{params['task_id']}.onnx"},
-    )
+#     url = s3.generate_presigned_url(
+#         "get_object",
+#         Params={"Bucket": "whitemind-models", "Key": f"{params['task_id']}.onnx"},
+#     )
 
-    params["logger"].on_export(params["block_id"],url)
+#     params["logger"].on_export(params["block_id"],url)
 
-    if "out" in params:
-        params["out"][0][0](**{"model": model})
+#     if "out" in params:
+#         params["out"][0][0](**{"model": model})
 
-    return model
+#     return model
 
 
 model_to_function = {
