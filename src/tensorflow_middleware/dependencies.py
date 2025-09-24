@@ -8,6 +8,6 @@ from datetime import datetime, timezone
 from keras.src.callbacks.callback import Callback
 import numpy as np
 import inspect
-import tf2onnx
-import onnx
+# import tf2onnx
+# import onnx
 import boto3
