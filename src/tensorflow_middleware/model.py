@@ -154,7 +154,7 @@ def export_model(params: dict):
     if isinstance(onnx_model, tuple):
         onnx_model = onnx_model[0]
 
-    onnx.save_model(onnx_model, f"{params["task_id"]}.onnx")
+    onnx.save_model(onnx_model, f"{params['task_id']}.onnx")
 
     s3 = boto3.client(
         "s3",
@@ -166,7 +166,7 @@ def export_model(params: dict):
 
     url = s3.generate_presigned_url(
         "get_object",
-        Params={"Bucket": "whitemind-models", "Key": f"{params["task_id"]}.onnx"},
+        Params={"Bucket": "whitemind-models", "Key": f"{params['task_id']}.onnx"},
     )
 
     params["logger"].on_export(params["block_id"],url)
