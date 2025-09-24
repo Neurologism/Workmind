@@ -182,5 +182,5 @@ model_to_function = {
     "fit": fit_model,
     "predict": predict_model,
     "evaluate": evaluate_model,
-    "export": export_model,
+    # "export": export_model,
 }
